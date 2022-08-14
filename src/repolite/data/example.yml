@@ -1,5 +1,6 @@
 prog_name: repolite
 top_dir: ext  # local directory path for enabled repositories
+pull_with_rebase: false  # use --ff-only if false
 # add new repo_name sections as needed 
 repos:
   - repo_name: pyserv

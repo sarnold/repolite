@@ -5,10 +5,7 @@ __pycache__/
 
 # generated/user files
 src/repolite/_version.py
-.repolite.y*
-in.*
-out.*
-munch/
+.repo*.yml
 
 # C extensions
 *.so
