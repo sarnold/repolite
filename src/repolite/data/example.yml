@@ -1,0 +1,16 @@
+prog_name: repolite
+top_dir: ext  # local directory path for enabled repositories
+# add new repo_name sections as needed 
+repos:
+  - repo_name: pyserv
+    repo_alias: None
+    repo_url: https://github.com/sarnold/pyserv.git
+    repo_opts: []
+    repo_branch: master
+    repo_enable: true
+  - repo_name: python-daemonizer
+    repo_alias: daemonizer
+    repo_url: https://github.com/sarnold/python-daemonizer.git
+    repo_opts: []
+    repo_branch: master
+    repo_enable: true

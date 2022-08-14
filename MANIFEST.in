@@ -1,0 +1,6 @@
+graft tests
+graft docs
+
+include tox.ini README.rst
+
+global-exclude *~ *.py[cod]
