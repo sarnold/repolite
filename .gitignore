@@ -3,9 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# generated/user files
+# generated/user files and directories
 src/repolite/_version.py
 .repo*.yml
+ext/
 
 # C extensions
 *.so

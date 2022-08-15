@@ -22,6 +22,7 @@ import pkg_resources
 from munch import Munch
 from ruamel.yaml import YAML
 from ruamel.yaml.compat import StringIO
+# from logging_tree import printout  # debug logger environment
 
 
 class FileTypeError(Exception):
@@ -58,6 +59,7 @@ def load_config(file_encoding='utf-8'):
         raise FileTypeError("FileTypeError: unknown config file extension")
     if not cfgfile.exists():
         cfgfile = Path(pkg_resources.resource_filename(__name__, 'data/example.yml'))
+    logging.debug('Using config: %s', str(cfgfile.resolve()))
     cfgobj = Munch.fromYAML(cfgfile.read_text(encoding=file_encoding))
 
     return cfgobj, cfgfile
@@ -90,7 +92,7 @@ def parse_config(ucfg):
     return [udir, urebase], urepos
 
 
-def process_git_repos(flags, repos, pull=False):
+def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
     """
     Process list of git repository objs and populate/update ``top_dir``.
 
@@ -100,34 +102,54 @@ def process_git_repos(flags, repos, pull=False):
     :type repos: list
     :param pull: Pull with rebase if True, else use --ff-only
     :type pull: bool
+    :param quiet: Suppress some git output
+    :type quiet: bool
     """
     work_dir, top_dir = resolve_top_dir(flags[0])
+    logging.debug('Running with top-level repo dir: %s', str(top_dir))
     try:
         top_dir.mkdir(parents=True, exist_ok=True)
     except (FileExistsError, PermissionError) as exc:
-        logging.exception("Could not create top repo directory: %s", exc)
+        logging.exception('Could not create top repo directory: %s', exc)
 
     os.chdir(top_dir)
     git_action = 'git clone '
+    checkout_cmd = 'git checkout '
+
+    if quiet:
+        git_action = git_action + '-q '
+        checkout_cmd = checkout_cmd + '-q '
+
     if pull:
         git_action = 'git pull --ff-only '
         if flags[1]:
             git_action = 'git pull --rebase=merges '
 
     for item in repos:
-        git_checkout = f'git checkout {item.repo_branch}'
+        git_fetch = f'git fetch {item.repo_remote}'
+        git_checkout = checkout_cmd + f'{item.repo_branch}'
+        logging.debug('Checkout cmd: %s', git_checkout)
         if not pull:
             git_clone = git_action + f'{item.repo_url} '
             if item.repo_alias:
                 git_clone += item.repo_alias
+            logging.debug('Clone cmd: %s', git_clone)
             sp.check_call(split(git_clone))
             sp.check_call(split(git_checkout))
         else:
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
             git_dir = item.repo_alias if item.repo_alias else item.repo_name
-            os.chdir(git_dir)
+            try:
+                os.chdir(git_dir)
+            except OSError as exc:
+                logging.exception("Could not change to repo directory: %s", exc)
+
+            logging.debug('Fetch cmd: %s', git_fetch)
+            sp.check_call(split(git_fetch))
             sp.check_call(split(git_checkout))
+            logging.debug('Pull cmd: %s', git_pull)
             sp.check_call(split(git_pull))
+
         os.chdir(top_dir)
     os.chdir(work_dir)
 
@@ -136,11 +158,13 @@ def main(argv=None):
     """
     Manage git repository-based project dependencies.
     """
-    cfg, pfile = load_config()
-    flag_list, repo_list = parse_config(cfg)
-
     if argv is None:
         argv = sys.argv
+
+    debug = False
+    quiet = False
+    update = False
+
     parser = OptionParser(
         usage="usage: %prog [options]", version=f"%prog {VERSION}"
     )
@@ -150,34 +174,51 @@ def main(argv=None):
         "--update",
         action="store_true",
         dest="update",
-        help="Update existing repositories",
+        help="update existing repositories",
+    )
+    parser.add_option(
+        "-q",
+        "--quiet",
+        action="store_true",
+        dest="quiet",
+        help="suppress output from git command",
     )
     parser.add_option(
         "-v",
         "--verbose",
         action="store_true",
         dest="verbose",
-        help="Display more processing info",
+        help="display more logging info",
     )
     parser.add_option(
         '-d',
         '--dump-config',
         action='store_true',
         dest="dump",
-        help='Dump configuration file or example to stdout',
+        help='dump configuration file or example to stdout and exit',
     )
 
     (options, _) = parser.parse_args()
 
-    if options.dump:
-        sys.stdout.write(pfile.read_text(encoding='utf-8'))
-        sys.exit(0)
-    # if options.verbose:  # needs logging
-    #     verbose = True
+    if options.verbose:
+        debug = True
+    if options.quiet:
+        quiet = True
     if options.update:
         update = True
 
-    process_git_repos(flag_list, repo_list, update)
+    # basic logging setup must come before any other logging calls
+    log_level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(stream=sys.stdout, level=log_level)
+    # printout()  # logging_tree
+
+    cfg, pfile = load_config()
+    if options.dump:
+        sys.stdout.write(pfile.read_text(encoding='utf-8'))
+        sys.exit(0)
+
+    flag_list, repo_list = parse_config(cfg)
+    process_git_repos(flag_list, repo_list, update, quiet)
 
 
 VERSION = pkg_resources.get_distribution('repolite').version

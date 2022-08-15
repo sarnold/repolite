@@ -4,7 +4,7 @@ pull_with_rebase: false  # use --ff-only if false
 # add new repo_name sections as needed 
 repos:
   - repo_name: pyserv
-    repo_alias: None
+    repo_alias: null
     repo_url: https://github.com/sarnold/pyserv.git
     repo_remote: origin
     repo_opts: []
