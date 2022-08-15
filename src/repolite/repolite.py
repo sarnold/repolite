@@ -10,15 +10,15 @@ Manage small set of repository dependencies without manifest.xml or git
 submodules. You get to write (local) project config files in yaml instead.
 """
 
+import logging
 import os
-import sys
 import subprocess as sp
+import sys
 from optparse import OptionParser  # pylint: disable=W0402
 from pathlib import Path
 from shlex import split
 
 import pkg_resources
-import yaml as yaml_loader
 from munch import Munch
 from ruamel.yaml import YAML
 from ruamel.yaml.compat import StringIO
@@ -63,6 +63,17 @@ def load_config(file_encoding='utf-8'):
     return cfgobj, cfgfile
 
 
+def resolve_top_dir(upath):
+    """
+    Resolve top_dir, ie, containing directory for git repositories. The
+    suggested path is project working directory, but we should support
+    any writable path.
+    """
+    workpath = Path('.').resolve()
+    userpath = Path(upath).resolve()
+    return workpath, userpath
+
+
 def parse_config(ucfg):
     """
     Parse config file options and build list of repo objects. Return both
@@ -72,32 +83,75 @@ def parse_config(ucfg):
     :type ucfg: Munch object from yaml cfg
     """
     urepos = []
-    top_dir = ucfg.top_dir
-    rebase = ucfg.pull_with_rebase
+    udir = ucfg.top_dir
+    urebase = ucfg.pull_with_rebase
     for item in [x for x in ucfg.repos if x.repo_enable]:
         urepos.append(item)
-    return top_dir, rebase, urepos
+    return [udir, urebase], urepos
 
 
-def process_git_repos():
+def process_git_repos(flags, repos, pull=False):
     """
     Process list of git repository objs and populate/update ``top_dir``.
+
+    :param flags: List of options (from yaml cfg)
+    :type flags: list
+    :param repos: List of repository objs (from yaml cfg)
+    :type repos: list
+    :param pull: Pull with rebase if True, else use --ff-only
+    :type pull: bool
     """
+    work_dir, top_dir = resolve_top_dir(flags[0])
+    try:
+        top_dir.mkdir(parents=True, exist_ok=True)
+    except (FileExistsError, PermissionError) as exc:
+        logging.exception("Could not create top repo directory: %s", exc)
+
+    os.chdir(top_dir)
+    git_action = 'git clone '
+    if pull:
+        git_action = 'git pull --ff-only '
+        if flags[1]:
+            git_action = 'git pull --rebase=merges '
+
+    for item in repos:
+        git_checkout = f'git checkout {item.repo_branch}'
+        if not pull:
+            git_clone = git_action + f'{item.repo_url} '
+            if item.repo_alias:
+                git_clone += item.repo_alias
+            sp.check_call(split(git_clone))
+            sp.check_call(split(git_checkout))
+        else:
+            git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
+            git_dir = item.repo_alias if item.repo_alias else item.repo_name
+            os.chdir(git_dir)
+            sp.check_call(split(git_checkout))
+            sp.check_call(split(git_pull))
+        os.chdir(top_dir)
+    os.chdir(work_dir)
 
 
 def main(argv=None):
     """
     Manage git repository-based project dependencies.
     """
-    debug = False
     cfg, pfile = load_config()
+    flag_list, repo_list = parse_config(cfg)
 
     if argv is None:
         argv = sys.argv
     parser = OptionParser(
         usage="usage: %prog [options]", version=f"%prog {VERSION}"
     )
-    parser.description = 'Manage local (git) project dependencies.'
+    parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
+    parser.add_option(
+        "-u",
+        "--update",
+        action="store_true",
+        dest="update",
+        help="Update existing repositories",
+    )
     parser.add_option(
         "-v",
         "--verbose",
@@ -113,20 +167,22 @@ def main(argv=None):
         help='Dump configuration file or example to stdout',
     )
 
-    (options, args) = parser.parse_args()
+    (options, _) = parser.parse_args()
 
-    if options.verbose:
-        debug = True
-    elif options.dump:
+    if options.dump:
         sys.stdout.write(pfile.read_text(encoding='utf-8'))
         sys.exit(0)
-    if not args:
-        parser.print_help()
-        sys.exit(1)
+    # if options.verbose:  # needs logging
+    #     verbose = True
+    if options.update:
+        update = True
+
+    process_git_repos(flag_list, repo_list, update)
 
 
 VERSION = pkg_resources.get_distribution('repolite').version
 REPO_CFG = os.getenv('REPO_CFG', default='')
+
 
 if __name__ == '__main__':
     main()
