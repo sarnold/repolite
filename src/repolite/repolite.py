@@ -6,7 +6,7 @@
 # available in the accompanying LICENSE file.
 
 """
-Manage small set of repository dependencies without manifest.xml or git
+Manage a small set of repository dependencies without manifest.xml or git
 submodules. You get to write (local) project config files in yaml instead.
 """
 
