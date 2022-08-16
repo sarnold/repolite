@@ -28,7 +28,7 @@ Quick Start
 
 The basic functionality is "in", however, we still have some TODOs left:
 
-* defaults: check for existing directories before executing ``clone``
+* defaults: check for existing directories before executing ``clone`` - **Done**
 * config: wire up ``repo_opts`` for extra git options
 * documentation: add sphinx docs
 * testing: create some unittests
@@ -91,7 +91,7 @@ Notes:
 
 By default (with no options) ``repolite`` will clone all the repositories
 in the configuration file and checkout each configured branch.  Once you
-have done that, run tool with the ``--update`` arg to pull in upstream changes. 
+have done that, run tool with the ``--update`` arg to pull in upstream changes.
 
 To create your own config file in the working directory, the local
 copy must be named ``.repolite.yml``.  To get a copy of the example
