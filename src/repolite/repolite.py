@@ -190,7 +190,14 @@ def main(argv=None):
         '--dump-config',
         action='store_true',
         dest="dump",
-        help='dump configuration file or example to stdout and exit',
+        help='dump active configuration file or example to stdout and exit',
+    )
+    parser.add_option(
+        '-s',
+        '--save-config',
+        action='store_true',
+        dest="save",
+        help='save example config to default filename (.repolite.yml) and exit',
     )
 
     (options, _) = parser.parse_args()
@@ -208,8 +215,14 @@ def main(argv=None):
     # printout()  # logging_tree
 
     cfg, pfile = load_config()
-    if options.dump:
+    if options.save:
+        cfg_data = pfile.read_bytes()
+        def_config = Path('.repolite.yml')
+        def_config.write_bytes(cfg_data)
+        sys.exit(0)
+    elif options.dump:
         sys.stdout.write(pfile.read_text(encoding='utf-8'))
+        sys.stdout.flush()
         sys.exit(0)
 
     flag_list, repo_list = parse_config(cfg)

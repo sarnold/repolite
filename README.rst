@@ -84,7 +84,10 @@ required arguments::
     -u, --update       update existing repositories
     -q, --quiet        suppress output from git command
     -v, --verbose      display more logging info
-    -d, --dump-config  dump configuration file or example to stdout and exit
+    -d, --dump-config  dump active configuration file or example to stdout and
+                       exit
+    -s, --save-config  save example config to default filename (.repolite.yml)
+                       and exit
 
 Notes:
 
@@ -93,29 +96,35 @@ Notes:
 * use ``--quiet`` to suppress most of the git output
 * we don't create new branches; configured branches must already exist in
   the remote repositories
+* use the appropriate clone URL for upstream projects; if you have commit
+  access, the ssh format is probably what you want
+* using a correctly configured ``ssh-agent`` can help save extra typing
+* you may want to add your ``top_dir`` path or default local config file
+  patterns to your ``.gitignore`` file
 
 By default (with no options) ``repolite`` will clone all the repositories
 in the configuration file and checkout each configured branch.  Once you
 have done that, run ``repolite`` with the ``--update`` arg to pull in
 upstream changes.
 
-To create your own config file in the working directory, the local
+To create your own default config file in the working directory, the local
 copy must be named ``.repolite.yml``.  To get a copy of the example
 configuration file, do::
 
   $ cd path/to/work/dir/
-  $ repolite --dump-config > .repolite.yml
+  $ repolite --save-config
   $ $EDITOR .repolite.yml
-  $ repolite
+  $ repolite --dump-config  # you should see your config settings
 
-If needed, you can also create alternate config files (per project) to
+If needed, you can also create additional config files (per project) to
 override your default project configuration. These alternate config files
 can have arbitrary names (ending in '.yml' or '.yaml') but we recommend
 using something like ``repo-devbranch.yml`` or similar. Since only one
 configuration can be "active", the non-default config file must be set
 via the environment variable ``REPO_CFG``, eg::
 
-  $ $EDITOR repo-develop.yml  # set alternate branches
+  $ repolite --dump-config > repo-develop.yml
+  $ $EDITOR repo-develop.yml  # set repos, alternate branches
   $ REPO_CFG="repo-develop.yml" repolite --update
 
 
