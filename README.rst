@@ -233,13 +233,9 @@ To run all ``pre-commit`` checks manually, try::
     :target: https://github.com/sarnold/repolite/actions/workflows/release.yml
     :alt: Release Status
 
-.. |cov| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/test-coverage.svg
-    :target: https://github.com/sarnold/repolite/
-    :alt: Test coverage
-
 .. |pylint| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml
-    :alt: Pylint score
+    :alt: Pylint Score
 
 .. |license| image:: https://img.shields.io/github/license/sarnold/repolite
     :target: https://github.com/sarnold/repolite/blob/master/LICENSE
