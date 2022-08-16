@@ -6,7 +6,7 @@
 # available in the accompanying LICENSE file.
 
 """
-Manage small set of repository dependencies without manifest.xml or git
+Manage a small set of repository dependencies without manifest.xml or git
 submodules. You get to write (local) project config files in yaml instead.
 """
 
@@ -22,6 +22,7 @@ import pkg_resources
 from munch import Munch
 from ruamel.yaml import YAML
 from ruamel.yaml.compat import StringIO
+
 # from logging_tree import printout  # debug logger environment
 
 
@@ -112,6 +113,17 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
     except (FileExistsError, PermissionError) as exc:
         logging.exception('Could not create top repo directory: %s', exc)
 
+    # find any existing directories and check for name clash
+    if not pull:
+        top_dir_list = [x for x in top_dir.iterdir() if x.is_dir()]
+        if top_dir_list:
+            repo_name_list = []
+            for item in repos:
+                dir_name = item.repo_alias if item.repo_alias else item.repo_name
+                repo_name_list.append(dir_name)
+            if not set(top_dir_list).intersection(repo_name_list):
+                raise FileExistsError('Git cannot clone with existing directories')
+
     os.chdir(top_dir)
     git_action = 'git clone '
     checkout_cmd = 'git checkout '
@@ -129,16 +141,17 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
         git_fetch = f'git fetch {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
         logging.debug('Checkout cmd: %s', git_checkout)
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
         if not pull:
             git_clone = git_action + f'{item.repo_url} '
             if item.repo_alias:
                 git_clone += item.repo_alias
             logging.debug('Clone cmd: %s', git_clone)
             sp.check_call(split(git_clone))
+            os.chdir(git_dir)
             sp.check_call(split(git_checkout))
         else:
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
-            git_dir = item.repo_alias if item.repo_alias else item.repo_name
             try:
                 os.chdir(git_dir)
             except OSError as exc:
@@ -165,9 +178,7 @@ def main(argv=None):
     quiet = False
     update = False
 
-    parser = OptionParser(
-        usage="usage: %prog [options]", version=f"%prog {VERSION}"
-    )
+    parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {VERSION}")
     parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
     parser.add_option(
         "-u",
@@ -218,7 +229,10 @@ def main(argv=None):
         sys.exit(0)
 
     flag_list, repo_list = parse_config(cfg)
-    process_git_repos(flag_list, repo_list, update, quiet)
+    try:
+        process_git_repos(flag_list, repo_list, update, quiet)
+    except FileExistsError as exc:
+        logging.error('Top dir: %s', exc)
 
 
 VERSION = pkg_resources.get_distribution('repolite').version
