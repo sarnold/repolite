@@ -20,8 +20,6 @@ from shlex import split
 
 import pkg_resources
 from munch import Munch
-from ruamel.yaml import YAML
-from ruamel.yaml.compat import StringIO
 
 # from logging_tree import printout  # debug logger environment
 
@@ -30,18 +28,6 @@ class FileTypeError(Exception):
     """Raise when the file extension is not '.yml' or '.yaml'"""
 
     __module__ = Exception.__module__
-
-
-class StrYAML(YAML):
-    """
-    New API likes dumping straight to file/stdout, so we subclass and
-    create 'inefficient' custom string dumper.
-    """
-
-    def dump(self, data, stream=None, **kw):
-        stream = StringIO()
-        YAML.dump(self, data, stream, **kw)
-        return stream.getvalue()
 
 
 def load_config(file_encoding='utf-8'):
@@ -69,8 +55,11 @@ def load_config(file_encoding='utf-8'):
 def resolve_top_dir(upath):
     """
     Resolve top_dir, ie, containing directory for git repositories. The
-    suggested path is project working directory, but we should support
-    any writable path.
+    suggested path is inside the project working directory, but we should
+    support any writable path. Also set the working dir path and return
+    both as Path objs.
+
+    :return workpath, userpath: tuple of Path objs
     """
     workpath = Path('.').resolve()
     userpath = Path(upath).resolve()
@@ -79,11 +68,12 @@ def resolve_top_dir(upath):
 
 def parse_config(ucfg):
     """
-    Parse config file options and build list of repo objects. Return both
-    global options and a list of Munch repo objects.
+    Parse config file options and build list of repo objects. Return list
+    of global options and list of Munch repo objects.
 
     :param ucfg:
     :type ucfg: Munch object from yaml cfg
+    :return tuple: list of flags, list of repository objs
     """
     urepos = []
     udir = ucfg.top_dir
@@ -125,17 +115,11 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
                 raise FileExistsError('Git cannot clone with existing directories')
 
     os.chdir(top_dir)
-    git_action = 'git clone '
-    checkout_cmd = 'git checkout '
-
-    if quiet:
-        git_action = git_action + '-q '
-        checkout_cmd = checkout_cmd + '-q '
+    git_action = 'git clone -q ' if quiet else 'git clone '
+    checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
 
     if pull:
-        git_action = 'git pull --ff-only '
-        if flags[1]:
-            git_action = 'git pull --rebase=merges '
+        git_action = 'git pull --rebase=merges ' if flags[1] else 'git pull --ff-only '
 
     for item in repos:
         git_fetch = f'git fetch {item.repo_remote}'

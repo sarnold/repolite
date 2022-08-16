@@ -30,8 +30,13 @@ The basic functionality is "in", however, we still have some TODOs left:
 
 * defaults: check for existing directories before executing ``clone`` - **Done**
 * config: wire up ``repo_opts`` for extra git options
-* documentation: add sphinx docs
+* documentation: add sphinx docs - **Done**
 * testing: create some unittests
+
+Once installed, running ``repolite`` without any local configuration file
+will use the (internal) example configuration, ie, running it without any
+arguments will clone the example repos to a subdirectory ``ext/`` in the
+current directory.
 
 
 Install with pip
@@ -91,7 +96,8 @@ Notes:
 
 By default (with no options) ``repolite`` will clone all the repositories
 in the configuration file and checkout each configured branch.  Once you
-have done that, run tool with the ``--update`` arg to pull in upstream changes.
+have done that, run ``repolite`` with the ``--update`` arg to pull in
+upstream changes.
 
 To create your own config file in the working directory, the local
 copy must be named ``.repolite.yml``.  To get a copy of the example
