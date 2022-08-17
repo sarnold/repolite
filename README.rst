@@ -86,11 +86,16 @@ required arguments::
     -v, --verbose      display more logging info
     -d, --dump-config  dump active configuration file or example to stdout and
                        exit
+    -l, --lock-config  lock active configuration in new config file and checkout
+                       hashes
     -s, --save-config  save example config to default filename (.repolite.yml)
                        and exit
 
 Notes:
 
+* use ``--lock-config`` to create a new config file with git hashes, then
+  run that config later to reproduce a build using those hashes (this uses
+  the current active config as baseline)
 * use ``--verbose`` to see more about what the tool is doing, eg, git
   cmd strings
 * use ``--quiet`` to suppress most of the git output

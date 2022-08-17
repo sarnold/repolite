@@ -1,7 +1,7 @@
 prog_name: repolite
 top_dir: ext  # local directory path for enabled repositories
 pull_with_rebase: false  # use --ff-only if false
-# add new repo_name sections as needed 
+# add new repo_name sections as needed
 repos:
   - repo_name: pyserv
     repo_alias: null
@@ -9,6 +9,8 @@ repos:
     repo_remote: origin
     repo_opts: []
     repo_branch: master
+    repo_hash: null
+    repo_use_rebase: false
     repo_enable: true
   - repo_name: python-daemonizer
     repo_alias: daemonizer
@@ -16,4 +18,6 @@ repos:
     repo_remote: origin
     repo_opts: []
     repo_branch: master
+    repo_hash: null
+    repo_use_rebase: false
     repo_enable: true

@@ -24,6 +24,12 @@ from munch import Munch
 # from logging_tree import printout  # debug logger environment
 
 
+class DirectoryTypeError(Exception):
+    """Raise when there is a directory mismatch between cfg and actual"""
+
+    __module__ = Exception.__module__
+
+
 class FileTypeError(Exception):
     """Raise when the file extension is not '.yml' or '.yaml'"""
 
@@ -71,8 +77,8 @@ def parse_config(ucfg):
     Parse config file options and build list of repo objects. Return list
     of global options and list of Munch repo objects.
 
-    :param ucfg:
-    :type ucfg: Munch object from yaml cfg
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
     :return tuple: list of flags, list of repository objs
     """
     urepos = []
@@ -83,7 +89,65 @@ def parse_config(ucfg):
     return [udir, urebase], urepos
 
 
-def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
+def create_locked_cfg(ucfg, ufile, quiet):  # pylint: disable=R0914
+    """
+    Create a 'locked' cfg file, ie, read the active config file and
+    populate the ``repo_hash`` values with HEAD from each branch, then
+    write a new config file with '-locked' appended to the name.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    :param ufile: active config file
+    :type ufile: Path obj
+    :param quiet: Suppress some git output
+    :type quiet: bool
+    """
+
+    def write_locked_cfg(ucfg, ufile):
+        """
+        Write a new config file with '-locked' appended to the name.
+        """
+        locked_cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
+        Path(locked_cfg_name).write_text(Munch.toYAML(ucfg), encoding='utf-8')
+
+    work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
+    logging.debug('Using top-level repo dir: %s', str(top_dir))
+    try:
+        os.chdir(top_dir)
+    except OSError as exc:
+        logging.exception("Could not find repo directory: %s", exc)
+
+    sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
+    repo_name_list = []
+    sorted_name_list = []
+    for item in sorted_dir_list:
+        sorted_name_list.append(item.stem)
+    for item in [x for x in ucfg.repos if x.repo_enable]:
+        dir_name = item.repo_alias if item.repo_alias else item.repo_name
+        repo_name_list.append(dir_name)
+    valid_repo_state = sorted(repo_name_list) == sorted_name_list
+    if not valid_repo_state:
+        logging.error('%s not equal to %s', repo_name_list, sorted_name_list)
+        raise DirectoryTypeError('Cannot lock cfg with mismatched directories')
+
+    git_action = 'git rev-parse --verify HEAD'
+    logging.debug('Get hash cmd: %s', git_action)
+    checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
+    for item in [x for x in ucfg.repos if x.repo_enable]:
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        os.chdir(git_dir)
+        item.repo_hash = sp.check_output(split(git_action), text=True).strip()
+        logging.debug('Repository %s HEAD is %s', str(git_dir), item.repo_hash)
+        git_checkout = checkout_cmd + f'{item.repo_hash}'
+        logging.debug('Checkout cmd: %s', git_checkout)
+        sp.check_call(split(git_checkout))
+
+        os.chdir(top_dir)
+    os.chdir(work_dir)
+    write_locked_cfg(ucfg, ufile)
+
+
+def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914,R0915
     """
     Process list of git repository objs and populate/update ``top_dir``.
 
@@ -96,7 +160,8 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
     :param quiet: Suppress some git output
     :type quiet: bool
     """
-    work_dir, top_dir = resolve_top_dir(flags[0])
+    udir, urebase, ulock = flags
+    work_dir, top_dir = resolve_top_dir(udir)
     logging.debug('Running with top-level repo dir: %s', str(top_dir))
     try:
         top_dir.mkdir(parents=True, exist_ok=True)
@@ -119,7 +184,8 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
 
     if pull:
-        git_action = 'git pull --rebase=merges ' if flags[1] else 'git pull --ff-only '
+        # move this and add repo-level flag check
+        git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
         git_fetch = f'git fetch {item.repo_remote}'
@@ -136,16 +202,22 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0914
             sp.check_call(split(git_checkout))
         else:
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
+            if ulock:
+                checkout_lock = checkout_cmd + f'{item.repo_hash}'
             try:
                 os.chdir(git_dir)
             except OSError as exc:
                 logging.exception("Could not change to repo directory: %s", exc)
 
-            logging.debug('Fetch cmd: %s', git_fetch)
-            sp.check_call(split(git_fetch))
-            sp.check_call(split(git_checkout))
-            logging.debug('Pull cmd: %s', git_pull)
-            sp.check_call(split(git_pull))
+            if ulock:
+                logging.debug('Checkout cmd: %s', git_checkout)
+                sp.check_call(split(checkout_lock))
+            else:
+                logging.debug('Fetch cmd: %s', git_fetch)
+                sp.check_call(split(git_fetch))
+                sp.check_call(split(git_checkout))
+                logging.debug('Pull cmd: %s', git_pull)
+                sp.check_call(split(git_pull))
 
         os.chdir(top_dir)
     os.chdir(work_dir)
@@ -193,6 +265,13 @@ def main(argv=None):
         help='dump active configuration file or example to stdout and exit',
     )
     parser.add_option(
+        '-l',
+        '--lock-config',
+        action='store_true',
+        dest="lock",
+        help='lock active configuration in new config file and checkout hashes',
+    )
+    parser.add_option(
         '-s',
         '--save-config',
         action='store_true',
@@ -215,6 +294,8 @@ def main(argv=None):
     # printout()  # logging_tree
 
     cfg, pfile = load_config()
+    flag_list, repo_list = parse_config(cfg)
+
     if options.save:
         cfg_data = pfile.read_bytes()
         def_config = Path('.repolite.yml')
@@ -224,8 +305,17 @@ def main(argv=None):
         sys.stdout.write(pfile.read_text(encoding='utf-8'))
         sys.stdout.flush()
         sys.exit(0)
+    elif options.lock:
+        try:
+            create_locked_cfg(cfg, pfile, quiet)
+        except DirectoryTypeError as exc:
+            logging.error('Top dir: %s', exc)
+        finally:
+            sys.exit(0)
 
-    flag_list, repo_list = parse_config(cfg)
+    ulock = 'locked' in pfile.name
+    flag_list.append(ulock)
+
     try:
         process_git_repos(flag_list, repo_list, update, quiet)
     except FileExistsError as exc:
