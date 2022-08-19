@@ -33,6 +33,15 @@ The basic functionality is "in", however, we still have some TODOs left:
 * documentation: add sphinx docs - **Done**
 * testing: create some unittests
 
+Optional ``git`` configuration options:
+
+:pull_with_rebase: global option, useful when upstream history gets rewritten
+                   and fast-forward pull fails (see repo-level option)
+:repo_use_rebase: same as above, but per-repository instead of global
+:repo_has_lfs_files: if True, runs ``git-lfs install`` after cloning
+                     (requires ``git-lfs`` to be installed first)
+:repo_init_submodules: it True, initializes git submodules in that repository
+
 Once installed, running ``repolite`` without any local configuration file
 will use the (internal) example configuration, ie, running it without any
 arguments will clone the example repos to a subdirectory ``ext/`` in the
@@ -47,9 +56,15 @@ following to install the latest repolite on any platform::
 
   $ pip install -U -f https://github.com/sarnold/repolite/releases/ repolite
 
-or use this command to install a specific version::
+or use this command to install a specific version from source::
 
   $ pip install git+https://github.com/sarnold/repolite.git@0.1.0
+
+If you have a ``requirements.txt`` file, you can add something like this::
+
+  -f https://github.com/sarnold/repolite/releases/
+  repolite>=0.1.0
+
 
 The full package provides the ``repolite`` executable as well as
 an example configuration file that provides defaults for all values.
@@ -108,9 +123,11 @@ Notes:
   patterns to your ``.gitignore`` file
 
 By default (with no options) ``repolite`` will clone all the repositories
-in the configuration file and checkout each configured branch.  Once you
-have done that, run ``repolite`` with the ``--update`` arg to pull in
-upstream changes.
+in the configuration file and checkout each configured branch.  From there
+you can build and test, add more tests/features, until you need to update
+your dependencies or switch branches.  At that point (or any time), run
+``repolite`` with the ``--update`` option to pull in upstream changes
+and/or switch branches.
 
 To create your own default config file in the working directory, the local
 copy must be named ``.repolite.yml``.  To get a copy of the example

@@ -17,6 +17,7 @@ import sys
 from optparse import OptionParser  # pylint: disable=W0402
 from pathlib import Path
 from shlex import split
+from shutil import which
 
 import pkg_resources
 from munch import Munch
@@ -34,6 +35,24 @@ class FileTypeError(Exception):
     """Raise when the file extension is not '.yml' or '.yaml'"""
 
     __module__ = Exception.__module__
+
+
+def check_for_git():
+    """
+    Make sure we can find the ``git`` and ``git-lfs`` binaries in the
+    user environment and return a tuple of path strings.
+
+    :return git_path, lfs_path: program path strings
+    :rtype tuple: path to program if found, else None
+    """
+    git_path = which('git')
+    lfs_path = which('git-lfs')
+    if not git_path:
+        logging.error('Cannot continue, no path found for git')
+        sys.exit(1)
+    elif not lfs_path:
+        logging.debug('Cannot initialize large files, git-lfs not found')
+    return git_path, lfs_path
 
 
 def load_config(file_encoding='utf-8'):
@@ -160,7 +179,7 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
     :param quiet: Suppress some git output
     :type quiet: bool
     """
-    udir, urebase, ulock = flags
+    udir, urebase, has_lfs, ulock = flags
     work_dir, top_dir = resolve_top_dir(udir)
     logging.debug('Running with top-level repo dir: %s', str(top_dir))
     try:
@@ -182,9 +201,10 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
     os.chdir(top_dir)
     git_action = 'git clone -q ' if quiet else 'git clone '
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
+    submodule_cmd = 'git submodule update --init --recursive'
+    git_lfs_install = 'git lfs install'
 
-    if pull:
-        # move this and add repo-level flag check
+    if pull:  # baseline git pull action, overrides repo-level option
         git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
@@ -200,7 +220,13 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
             sp.check_call(split(git_clone))
             os.chdir(git_dir)
             sp.check_call(split(git_checkout))
+            if item.repo_init_submodules:
+                sp.check_call(split(submodule_cmd))
+            if item.repo_has_lfs_files and has_lfs is not None:
+                sp.check_call(split(git_lfs_install))
         else:
+            if item.repo_use_rebase and not urebase:
+                git_action = 'git pull --rebase=merges '
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
             if ulock:
                 checkout_lock = checkout_cmd + f'{item.repo_hash}'
@@ -229,10 +255,6 @@ def main(argv=None):
     """
     if argv is None:
         argv = sys.argv
-
-    debug = False
-    quiet = False
-    update = False
 
     parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {VERSION}")
     parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
@@ -279,35 +301,32 @@ def main(argv=None):
         help='save example config to default filename (.repolite.yml) and exit',
     )
 
-    (options, _) = parser.parse_args()
-
-    if options.verbose:
-        debug = True
-    if options.quiet:
-        quiet = True
-    if options.update:
-        update = True
+    (opts, _) = parser.parse_args()
 
     # basic logging setup must come before any other logging calls
-    log_level = logging.DEBUG if debug else logging.INFO
+    log_level = logging.DEBUG if opts.verbose else logging.INFO
     logging.basicConfig(stream=sys.stdout, level=log_level)
     # printout()  # logging_tree
 
     cfg, pfile = load_config()
     flag_list, repo_list = parse_config(cfg)
 
-    if options.save:
+    git_cmd, lfs_cmd = check_for_git()
+    logging.debug('Found at least one git binary: %s and %s', git_cmd, lfs_cmd)
+    flag_list.append(lfs_cmd)
+
+    if opts.save:
         cfg_data = pfile.read_bytes()
         def_config = Path('.repolite.yml')
         def_config.write_bytes(cfg_data)
         sys.exit(0)
-    elif options.dump:
+    elif opts.dump:
         sys.stdout.write(pfile.read_text(encoding='utf-8'))
         sys.stdout.flush()
         sys.exit(0)
-    elif options.lock:
+    elif opts.lock:
         try:
-            create_locked_cfg(cfg, pfile, quiet)
+            create_locked_cfg(cfg, pfile, opts.quiet)
         except DirectoryTypeError as exc:
             logging.error('Top dir: %s', exc)
         finally:
@@ -317,7 +336,7 @@ def main(argv=None):
     flag_list.append(ulock)
 
     try:
-        process_git_repos(flag_list, repo_list, update, quiet)
+        process_git_repos(flag_list, repo_list, opts.update, opts.quiet)
     except FileExistsError as exc:
         logging.error('Top dir: %s', exc)
 
