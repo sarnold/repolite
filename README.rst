@@ -26,21 +26,30 @@ files in yaml instead.
 Quick Start
 ===========
 
-The basic functionality is "in", however, we still have some TODOs left:
+Repolite is mainly configuration-driven via YAML config files; the included
+example can be displayed and copied via command-line options (see the Usage_
+section below).  To create your own configuration, you need your repository
+metadata and some ancillary info.
 
-* defaults: check for existing directories before executing ``clone`` - **Done**
-* config: wire up ``repo_opts`` for extra git options
-* documentation: add sphinx docs - **Done**
-* testing: create some unittests
+Configuration keys for repository data:
 
-Optional ``git`` configuration options:
+:top_dir: path to repository parent directory
+:repo_name: full repository name
+:repo_alias: alias (short name) for ``repo_name``
+:repo_url: full repository url, eg, Github ssh or https URL
+:repo_remote: remote name (usually origin)
+:repo_opts: reserved/not implemented
+:repo_hash: git commit hash (used by ``lock-config`` option)
+:repo_enable: if False, ignore repository
+
+Configuration keys for optional ``git`` features/behavior:
 
 :pull_with_rebase: global option, useful when upstream history gets rewritten
                    and fast-forward pull fails (see repo-level option)
 :repo_use_rebase: same as above, but per-repository instead of global
 :repo_has_lfs_files: if True, runs ``git-lfs install`` after cloning
                      (requires ``git-lfs`` to be installed first)
-:repo_init_submodules: it True, initializes git submodules in that repository
+:repo_init_submodules: if True, initializes git submodules in that repository
 
 Once installed, running ``repolite`` without any local configuration file
 will use the (internal) example configuration, ie, running it without any
