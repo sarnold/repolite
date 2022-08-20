@@ -11,6 +11,8 @@ repos:
     repo_branch: master
     repo_hash: null
     repo_use_rebase: false
+    repo_has_lfs_files: false
+    repo_init_submodules: false
     repo_enable: true
   - repo_name: python-daemonizer
     repo_alias: daemonizer
@@ -20,4 +22,6 @@ repos:
     repo_branch: master
     repo_hash: null
     repo_use_rebase: false
+    repo_has_lfs_files: false
+    repo_init_submodules: false
     repo_enable: true
