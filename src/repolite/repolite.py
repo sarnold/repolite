@@ -189,13 +189,20 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
 
     # find any existing directories and check for name clash
     if not pull:
-        top_dir_list = [x for x in top_dir.iterdir() if x.is_dir()]
+        path_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
+        top_dir_list = []
+        for path in path_list:
+            top_dir_list.append(path.stem)
         if top_dir_list:
             repo_name_list = []
             for item in repos:
                 dir_name = item.repo_alias if item.repo_alias else item.repo_name
                 repo_name_list.append(dir_name)
-            if not set(top_dir_list).intersection(repo_name_list):
+            logging.debug('Current dirs in config: %s', repo_name_list)
+            logging.debug('Current dirs in top_dir: %s', top_dir_list)
+            invalid_repo_state = sorted(repo_name_list) == top_dir_list
+            dir_name_repo_intersect = set(top_dir_list).intersection(repo_name_list)
+            if invalid_repo_state:
                 raise FileExistsError('Git cannot clone with existing directories')
 
     os.chdir(top_dir)
@@ -213,17 +220,20 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
         logging.debug('Checkout cmd: %s', git_checkout)
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         if not pull:
-            git_clone = git_action + f'{item.repo_url} '
-            if item.repo_alias:
-                git_clone += item.repo_alias
-            logging.debug('Clone cmd: %s', git_clone)
-            sp.check_call(split(git_clone))
-            os.chdir(git_dir)
-            sp.check_call(split(git_checkout))
-            if item.repo_init_submodules:
-                sp.check_call(split(submodule_cmd))
-            if item.repo_has_lfs_files and has_lfs is not None:
-                sp.check_call(split(git_lfs_install))
+            if git_dir in list(dir_name_repo_intersect):
+                logging.debug('Skipping existing repo: %s', git_dir)
+            else:
+                git_clone = git_action + f'{item.repo_url} '
+                if item.repo_alias:
+                    git_clone += item.repo_alias
+                logging.debug('Clone cmd: %s', git_clone)
+                sp.check_call(split(git_clone))
+                os.chdir(git_dir)
+                sp.check_call(split(git_checkout))
+                if item.repo_init_submodules:
+                    sp.check_call(split(submodule_cmd))
+                if item.repo_has_lfs_files and has_lfs is not None:
+                    sp.check_call(split(git_lfs_install))
         else:
             if item.repo_use_rebase and not urebase:
                 git_action = 'git pull --rebase=merges '
