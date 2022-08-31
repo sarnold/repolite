@@ -1,6 +1,6 @@
-==========
- repolite
-==========
+=======================================
+ repolite: git repo dependency manager
+=======================================
 
 A lightweight tool to manage a small set of repository dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
