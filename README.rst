@@ -33,12 +33,13 @@ metadata and some ancillary info.
 
 Configuration keys for repository data:
 
-:top_dir: path to repository parent directory
+:top_dir: path to repository parent directory (global option)
 :repo_name: full repository name
 :repo_alias: alias (short name) for ``repo_name``
 :repo_url: full repository url, eg, Github ssh or https URL
 :repo_remote: remote name (usually origin)
 :repo_opts: reserved/not implemented
+:repo_branch: gt branch (used with checkout)
 :repo_hash: git commit hash (used by ``lock-config`` option)
 :repo_enable: if False, ignore repository
 
