@@ -62,8 +62,7 @@ def load_config(file_encoding='utf-8'):
 
     :param file_encoding: file encoding of config file
     :type file_encoding: str
-    :return: Munch cfg obj and cfg file as Path obj
-    :rtype tuple:
+    :return tuple: Munch cfg obj and cfg file as Path obj
     :raises FileTypeError: if the input file is not yml
     """
     cfgfile = Path(REPO_CFG) if REPO_CFG else Path('.repolite.yml')
@@ -237,6 +236,8 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
         else:
             if item.repo_use_rebase and not urebase:
                 git_action = 'git pull --rebase=merges '
+            if item.repo_init_submodules:
+                submodule_cmd = 'git submodule update'
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
             if ulock:
                 checkout_lock = checkout_cmd + f'{item.repo_hash}'
@@ -254,6 +255,8 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
                 sp.check_call(split(git_checkout))
                 logging.debug('Pull cmd: %s', git_pull)
                 sp.check_call(split(git_pull))
+                if item.repo_init_submodules:
+                    sp.check_call(split(submodule_cmd))
 
         os.chdir(top_dir)
     os.chdir(work_dir)
