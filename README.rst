@@ -29,34 +29,40 @@ Quick Start
 Repolite is mainly configuration-driven via YAML config files; the included
 example can be displayed and copied via command-line options (see the Usage_
 section below).  To create your own configuration, you need your repository
-metadata and some ancillary info.
-
-Configuration keys for repository data:
-
-:top_dir: path to repository parent directory (global option)
-:repo_name: full repository name
-:repo_alias: alias (short name) for ``repo_name``
-:repo_url: full repository url, eg, Github ssh or https URL
-:repo_remote: remote name (usually origin)
-:repo_opts: reserved/not implemented
-:repo_branch: git branch (used with checkout)
-:repo_hash: git commit hash (used by ``lock-config`` option)
-:repo_enable: if False, ignore repository
-
-Configuration keys for optional ``git`` features/behavior:
-
-:pull_with_rebase: global option, useful when upstream history gets rewritten
-                   and fast-forward pull fails (see repo-level option)
-:repo_use_rebase: same as above, but per-repository instead of global
-:repo_has_lfs_files: if True, runs ``git-lfs install`` after cloning
-                     (requires ``git-lfs`` to be installed first)
-:repo_init_submodules: if True, initializes git submodules in that repository
+metadata and some ancillary info (see `Configuration settings`_ for more
+details).
 
 Once installed, running ``repolite`` without any local configuration file
 will use the (internal) example configuration, ie, running it without any
 arguments will clone the example repos to a subdirectory ``ext/`` in the
 current directory.
 
+By default (with no options) ``repolite`` will clone all the repositories
+in the configuration file and checkout each configured branch.  From there
+you can build and test, add more tests/features, until you need to update
+your dependencies or switch branches.  At that point (or any time), run
+``repolite`` with the ``--update`` option to pull in upstream changes
+and/or switch branches.
+
+To create your own default config file in the working directory, the local
+copy must be named ``.repolite.yml``.  To get a copy of the example
+configuration file, do::
+
+  $ cd path/to/work/dir/
+  $ repolite --save-config
+  $ $EDITOR .repolite.yml
+  $ repolite --dump-config  # you should see your config settings
+
+If needed, you can also create additional project-level config files to
+override your default project configuration. These alternate config files
+can have arbitrary names (ending in '.yml' or '.yaml') but we recommend
+using something like ``repo-dev-myproject.yml`` or similar. Since only one
+configuration can be "active", the non-default config file must be set
+via the environment variable ``REPO_CFG``, eg::
+
+  $ repolite --dump-config > repo-develop.yml
+  $ $EDITOR repo-develop.yml  # set alternate branches, other options
+  $ REPO_CFG="repo-develop.yml" repolite --update
 
 Install with pip
 ----------------
@@ -93,7 +99,7 @@ The alternative to python venv is the ``tox`` test driver.  If you have it
 installed already, see the example tox commands below.
 
 Usage
------
+=====
 
 The current version supports minimal command options and there are no
 required arguments::
@@ -116,6 +122,30 @@ required arguments::
     -s, --save-config  save example config to default filename (.repolite.yml)
                        and exit
 
+Configuration settings
+----------------------
+
+Configuration keys for repository data:
+
+:top_dir: path to repository parent directory (global option)
+:repo_name: full repository name
+:repo_alias: alias (short name) for ``repo_name``
+:repo_url: full repository url, eg, Github ssh or https URL
+:repo_remote: remote name (usually origin)
+:repo_opts: reserved/not implemented
+:repo_branch: git branch (used with checkout)
+:repo_hash: git commit hash (used by ``lock-config`` option)
+:repo_enable: if False, ignore repository
+
+Configuration keys for optional ``git`` features/behavior:
+
+:pull_with_rebase: global option, useful when upstream history gets rewritten
+                   and fast-forward pull fails (see repo-level option)
+:repo_use_rebase: same as above, but per-repository instead of global
+:repo_has_lfs_files: if True, runs ``git-lfs install`` after cloning
+                     (requires ``git-lfs`` to be installed first)
+:repo_init_submodules: if True, initialize/update git submodules in that repository
+
 Notes:
 
 * use ``--lock-config`` to create a new config file with git hashes, then
@@ -131,33 +161,6 @@ Notes:
 * using a correctly configured ``ssh-agent`` can help save extra typing
 * you may want to add your ``top_dir`` path or default local config file
   patterns to your ``.gitignore`` file
-
-By default (with no options) ``repolite`` will clone all the repositories
-in the configuration file and checkout each configured branch.  From there
-you can build and test, add more tests/features, until you need to update
-your dependencies or switch branches.  At that point (or any time), run
-``repolite`` with the ``--update`` option to pull in upstream changes
-and/or switch branches.
-
-To create your own default config file in the working directory, the local
-copy must be named ``.repolite.yml``.  To get a copy of the example
-configuration file, do::
-
-  $ cd path/to/work/dir/
-  $ repolite --save-config
-  $ $EDITOR .repolite.yml
-  $ repolite --dump-config  # you should see your config settings
-
-If needed, you can also create additional config files (per project) to
-override your default project configuration. These alternate config files
-can have arbitrary names (ending in '.yml' or '.yaml') but we recommend
-using something like ``repo-devbranch.yml`` or similar. Since only one
-configuration can be "active", the non-default config file must be set
-via the environment variable ``REPO_CFG``, eg::
-
-  $ repolite --dump-config > repo-develop.yml
-  $ $EDITOR repo-develop.yml  # set repos, alternate branches
-  $ REPO_CFG="repo-develop.yml" repolite --update
 
 
 Dev tools
@@ -281,7 +284,7 @@ To run all ``pre-commit`` checks manually, try::
     :alt: Release Status
 
 .. |bandit| image:: https://github.com/sarnold/repolite/actions/workflows/bandit.yml/badge.svg
-    :target: https://github.com/VCTLabs/sarnold/repolite/actions/workflows/bandit.yml
+    :target: https://github.com/sarnold/repolite/actions/workflows/bandit.yml
     :alt: Security check - Bandit
 
 .. |pylint| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg

@@ -107,7 +107,7 @@ def parse_config(ucfg):
     return [udir, urebase], urepos
 
 
-def create_locked_cfg(ucfg, ufile, quiet):  # pylint: disable=R0914
+def create_locked_cfg(ucfg, ufile, quiet):
     """
     Create a 'locked' cfg file, ie, read the active config file and
     populate the ``repo_hash`` values with HEAD from each branch, then
@@ -165,7 +165,7 @@ def create_locked_cfg(ucfg, ufile, quiet):  # pylint: disable=R0914
     write_locked_cfg(ucfg, ufile)
 
 
-def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914,R0915
+def process_git_repos(flags, repos, pull, quiet):
     """
     Process list of git repository objs and populate/update ``top_dir``.
 
@@ -237,7 +237,7 @@ def process_git_repos(flags, repos, pull, quiet):  # pylint: disable=R0912,R0914
             if item.repo_use_rebase and not urebase:
                 git_action = 'git pull --rebase=merges '
             if item.repo_init_submodules:
-                submodule_cmd = 'git submodule update'
+                submodule_cmd = 'git submodule update --recursive'
             git_pull = git_action + f'{item.repo_remote} {item.repo_branch}'
             if ulock:
                 checkout_lock = checkout_cmd + f'{item.repo_hash}'
