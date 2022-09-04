@@ -6,7 +6,7 @@ A lightweight tool to manage a small set of repository dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
 files in yaml instead.
 
-|ci| |wheels| |release| |badge|
+|ci| |wheels| |release| |badge| |bandit|
 
 |pre| |pylint|
 
@@ -39,7 +39,7 @@ Configuration keys for repository data:
 :repo_url: full repository url, eg, Github ssh or https URL
 :repo_remote: remote name (usually origin)
 :repo_opts: reserved/not implemented
-:repo_branch: gt branch (used with checkout)
+:repo_branch: git branch (used with checkout)
 :repo_hash: git commit hash (used by ``lock-config`` option)
 :repo_enable: if False, ignore repository
 
@@ -279,6 +279,10 @@ To run all ``pre-commit`` checks manually, try::
 .. |release| image:: https://github.com/sarnold/repolite/actions/workflows/release.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/release.yml
     :alt: Release Status
+
+.. |bandit| image:: https://github.com/sarnold/repolite/actions/workflows/bandit.yml/badge.svg
+    :target: https://github.com/VCTLabs/sarnold/repolite/actions/workflows/bandit.yml
+    :alt: Security check - Bandit
 
 .. |pylint| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml

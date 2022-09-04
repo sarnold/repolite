@@ -62,3 +62,7 @@ distance-dirty = "{next_version}.dev{distance}"
 
 [tool.versioningit.write]
 file = "src/repolite/_version.py"
+
+[tool.bandit]
+exclude_dirs = ["docs"]
+skips = ["B603", "B404"]
