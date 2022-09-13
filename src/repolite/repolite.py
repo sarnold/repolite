@@ -55,6 +55,39 @@ def check_for_git():
     return git_path, lfs_path
 
 
+def check_repo_state(ucfg):
+    """
+    Check if repo configuration is consistent, ie, does current repo state
+    match repo configuration items.  Return ``True`` if current directories
+    match the configuration, else ``False``.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    :return is_state_valid:
+    """
+    _, top_dir = resolve_top_dir(ucfg.top_dir)
+    logging.debug('Using top-level repo dir: %s', str(top_dir))
+    try:
+        os.chdir(top_dir)
+    except OSError as exc:
+        logging.exception("Could not find repo directory: %s", exc)
+
+    sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
+    repo_name_list = []
+    sorted_name_list = []
+    for item in sorted_dir_list:
+        sorted_name_list.append(item.stem)
+    for item in [x for x in ucfg.repos if x.repo_enable]:
+        dir_name = item.repo_alias if item.repo_alias else item.repo_name
+        repo_name_list.append(dir_name)
+    is_state_valid = sorted(repo_name_list) == sorted_name_list
+    if not is_state_valid:
+        logging.warning(
+            'Invalid state: %s not equal to %s', repo_name_list, sorted_name_list
+        )
+    return is_state_valid
+
+
 def load_config(file_encoding='utf-8'):
     """
     Load yaml configuration file and munchify the data. If ENV path or local
@@ -130,22 +163,9 @@ def create_locked_cfg(ucfg, ufile, quiet):
 
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
     logging.debug('Using top-level repo dir: %s', str(top_dir))
-    try:
-        os.chdir(top_dir)
-    except OSError as exc:
-        logging.exception("Could not find repo directory: %s", exc)
 
-    sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
-    repo_name_list = []
-    sorted_name_list = []
-    for item in sorted_dir_list:
-        sorted_name_list.append(item.stem)
-    for item in [x for x in ucfg.repos if x.repo_enable]:
-        dir_name = item.repo_alias if item.repo_alias else item.repo_name
-        repo_name_list.append(dir_name)
-    valid_repo_state = sorted(repo_name_list) == sorted_name_list
+    valid_repo_state = check_repo_state(ucfg)
     if not valid_repo_state:
-        logging.error('%s not equal to %s', repo_name_list, sorted_name_list)
         raise DirectoryTypeError('Cannot lock cfg with mismatched directories')
 
     git_action = 'git rev-parse --verify HEAD'
@@ -262,6 +282,33 @@ def process_git_repos(flags, repos, pull, quiet):
     os.chdir(work_dir)
 
 
+def show_repo_state(ucfg):
+    """
+    Display the current state of each repository using ``git describe``.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    """
+    work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
+    logging.debug('Using top-level repo dir: %s', str(top_dir))
+
+    valid_repo_state = check_repo_state(ucfg)
+    if not valid_repo_state:
+        raise DirectoryTypeError(
+            'Inconsistent directories, try running ``--update`` first'
+        )
+
+    git_action = 'git describe --tags --dirty --always'
+    logging.debug('Git describe cmd: %s', git_action)
+    for item in [x for x in ucfg.repos if x.repo_enable]:
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        os.chdir(git_dir)
+        item_data = sp.check_output(split(git_action), text=True).strip()
+        logging.info('Repository %s state is %s', str(git_dir), item_data)
+        os.chdir(top_dir)
+    os.chdir(work_dir)
+
+
 def main(argv=None):
     """
     Manage git repository-based project dependencies.
@@ -277,6 +324,13 @@ def main(argv=None):
         action="store_true",
         dest="update",
         help="update existing repositories",
+    )
+    parser.add_option(
+        "-S",
+        "--show",
+        action="store_true",
+        dest="show",
+        help="display current repository state",
     )
     parser.add_option(
         "-q",
@@ -333,17 +387,20 @@ def main(argv=None):
         def_config = Path('.repolite.yml')
         def_config.write_bytes(cfg_data)
         sys.exit(0)
-    elif opts.dump:
+    if opts.dump:
         sys.stdout.write(pfile.read_text(encoding='utf-8'))
         sys.stdout.flush()
         sys.exit(0)
-    elif opts.lock:
-        try:
-            create_locked_cfg(cfg, pfile, opts.quiet)
-        except DirectoryTypeError as exc:
-            logging.error('Top dir: %s', exc)
-        finally:
+
+    try:
+        if opts.show:
+            show_repo_state(cfg)
             sys.exit(0)
+        if opts.lock:
+            create_locked_cfg(cfg, pfile, opts.quiet)
+            sys.exit(0)
+    except DirectoryTypeError as exc:
+        logging.error('Top dir: %s', exc)
 
     ulock = 'locked' in pfile.name
     flag_list.append(ulock)
