@@ -63,7 +63,7 @@ def check_repo_state(ucfg):
 
     :param ucfg: Munch configuration object extracted from config file
     :type ucfg: Munch cfgobj
-    :return is_state_valid:
+    :return is_state_valid: Boolean
     """
     _, top_dir = resolve_top_dir(ucfg.top_dir)
     logging.debug('Using top-level repo dir: %s', str(top_dir))
@@ -151,7 +151,8 @@ def create_locked_cfg(ucfg, ufile, quiet):
     :param ufile: active config file
     :type ufile: Path obj
     :param quiet: Suppress some git output
-    :type quiet: bool
+    :type quiet: Boolean
+    :raises DirectoryTypeError: if repo state is invalid
     """
 
     def write_locked_cfg(ucfg, ufile):
@@ -194,9 +195,10 @@ def process_git_repos(flags, repos, pull, quiet):
     :param repos: List of repository objs (from yaml cfg)
     :type repos: list
     :param pull: Pull with rebase if True, else use --ff-only
-    :type pull: bool
+    :type pull: Boolean
     :param quiet: Suppress some git output
-    :type quiet: bool
+    :type quiet: Boolean
+    :raises FileExistsError: if cloning on top of existing directories
     """
     udir, urebase, has_lfs, ulock = flags
     work_dir, top_dir = resolve_top_dir(udir)
@@ -288,6 +290,7 @@ def show_repo_state(ucfg):
 
     :param ucfg: Munch configuration object extracted from config file
     :type ucfg: Munch cfgobj
+    :raises DirectoryTypeError: if repo state is invalid
     """
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
     logging.debug('Using top-level repo dir: %s', str(top_dir))
@@ -295,7 +298,7 @@ def show_repo_state(ucfg):
     valid_repo_state = check_repo_state(ucfg)
     if not valid_repo_state:
         raise DirectoryTypeError(
-            'Inconsistent directories, try running ``--update`` first'
+            'Inconsistent directories; try running ``--update`` first?'
         )
 
     git_action = 'git describe --tags --dirty --always'
