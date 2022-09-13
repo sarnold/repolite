@@ -113,6 +113,7 @@ required arguments::
     --version          show program's version number and exit
     -h, --help         show this help message and exit
     -u, --update       update existing repositories
+    -S, --show         display current repository state and exit
     -q, --quiet        suppress output from git command
     -v, --verbose      display more logging info
     -d, --dump-config  dump active configuration file or example to stdout and
