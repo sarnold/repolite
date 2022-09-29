@@ -70,7 +70,7 @@ def check_repo_state(ucfg):
     try:
         os.chdir(top_dir)
     except OSError as exc:
-        logging.exception("Could not find repo directory: %s", exc)
+        logging.exception("Could not change to repo directory: %s", exc)
 
     sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
     repo_name_list = []
@@ -214,17 +214,19 @@ def process_git_repos(flags, repos, pull, quiet):
         top_dir_list = []
         for path in path_list:
             top_dir_list.append(path.stem)
-        if top_dir_list:
-            repo_name_list = []
-            for item in repos:
-                dir_name = item.repo_alias if item.repo_alias else item.repo_name
-                repo_name_list.append(dir_name)
-            logging.debug('Current dirs in config: %s', repo_name_list)
-            logging.debug('Current dirs in top_dir: %s', top_dir_list)
-            invalid_repo_state = sorted(repo_name_list) == top_dir_list
-            dir_name_repo_intersect = set(top_dir_list).intersection(repo_name_list)
-            if invalid_repo_state:
-                raise FileExistsError('Git cannot clone with existing directories')
+        repo_name_list = []
+        for item in repos:
+            dir_name = item.repo_alias if item.repo_alias else item.repo_name
+            repo_name_list.append(dir_name)
+        logging.debug('Current dirs in config: %s', repo_name_list)
+        logging.debug('Current dirs in top_dir: %s', top_dir_list)
+        invalid_repo_state = sorted(repo_name_list) == top_dir_list
+        dir_name_repo_intersect = set(top_dir_list).intersection(repo_name_list)
+        logging.debug('Top_dir / repo intersect: %s', dir_name_repo_intersect)
+        if invalid_repo_state:
+            raise FileExistsError(
+                'Git cannot clone when config matches existing directories'
+            )
 
     os.chdir(top_dir)
     git_action = 'git clone -q ' if quiet else 'git clone '
@@ -236,11 +238,12 @@ def process_git_repos(flags, repos, pull, quiet):
         git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
-        git_fetch = f'git fetch {item.repo_remote}'
+        git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
-        logging.debug('Checkout cmd: %s', git_checkout)
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        logging.debug('Operating in git_dir: %s', git_dir)
         if not pull:
+            logging.debug('Checkout cmd: %s', git_checkout)
             if git_dir in list(dir_name_repo_intersect):
                 logging.debug('Skipping existing repo: %s', git_dir)
             else:
@@ -301,13 +304,21 @@ def show_repo_state(ucfg):
             'Inconsistent directories; try running ``--update`` first?'
         )
 
-    git_action = 'git describe --tags --dirty --always'
-    logging.debug('Git describe cmd: %s', git_action)
+    git_action1 = 'git describe --tags --dirty --always'
+    git_action2 = 'git rev-parse --abbrev-ref HEAD'
+    logging.debug('Git describe cmd: %s', git_action1)
+    logging.debug('Git rev-parse cmd: %s', git_action2)
     for item in [x for x in ucfg.repos if x.repo_enable]:
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         os.chdir(git_dir)
-        item_data = sp.check_output(split(git_action), text=True).strip()
-        logging.info('Repository %s state is %s', str(git_dir), item_data)
+        item1_data = sp.check_output(split(git_action1), text=True).strip()
+        item2_data = sp.check_output(split(git_action2), text=True).strip()
+        logging.info(
+            'Repository %s: branch is %s, commit is %s',
+            str(git_dir),
+            item2_data,
+            item1_data,
+        )
         os.chdir(top_dir)
     os.chdir(work_dir)
 
