@@ -415,6 +415,7 @@ def main(argv=None):
             sys.exit(0)
     except DirectoryTypeError as exc:
         logging.error('Top dir: %s', exc)
+        sys.exit(1)
 
     ulock = 'locked' in pfile.name
     flag_list.append(ulock)
