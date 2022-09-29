@@ -70,7 +70,7 @@ def check_repo_state(ucfg):
     try:
         os.chdir(top_dir)
     except OSError as exc:
-        logging.exception("Could not find repo directory: %s", exc)
+        logging.exception("Could not change to repo directory: %s", exc)
 
     sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
     repo_name_list = []
@@ -301,13 +301,21 @@ def show_repo_state(ucfg):
             'Inconsistent directories; try running ``--update`` first?'
         )
 
-    git_action = 'git describe --tags --dirty --always'
-    logging.debug('Git describe cmd: %s', git_action)
+    git_action1 = 'git describe --tags --dirty --always'
+    git_action2 = 'git rev-parse --abbrev-ref HEAD'
+    logging.debug('Git describe cmd: %s', git_action1)
+    logging.debug('Git rev-parse cmd: %s', git_action2)
     for item in [x for x in ucfg.repos if x.repo_enable]:
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         os.chdir(git_dir)
-        item_data = sp.check_output(split(git_action), text=True).strip()
-        logging.info('Repository %s state is %s', str(git_dir), item_data)
+        item1_data = sp.check_output(split(git_action1), text=True).strip()
+        item2_data = sp.check_output(split(git_action2), text=True).strip()
+        logging.info(
+            'Repository %s: branch is %s, state is %s',
+            str(git_dir),
+            item2_data,
+            item1_data,
+        )
         os.chdir(top_dir)
     os.chdir(work_dir)
 
