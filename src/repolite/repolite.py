@@ -93,10 +93,10 @@ def install_with_pip(pip_name, quiet=False):
     Install a python repository via pip; this should be done in a local
     virtual environment.
 
-    :param pip_name: directory name of python repo to install
+    :param pip_name: path to directory name of python repo to install
     :type pip_name: str
     :param quiet: filter most of the install cmd output
-    :type verbose: boolean
+    :type quiet: boolean
     """
     pip_cmd_str = '-m pip install' + f' {pip_name}'
     pip_cmd = [sys.executable] + pip_cmd_str.split()
