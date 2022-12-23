@@ -21,6 +21,7 @@ files in yaml instead.
 
 .. _versioningit: https://github.com/jwodder/versioningit
 .. _tox: https://github.com/tox-dev/tox
+.. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
 
 Quick Start
@@ -70,16 +71,15 @@ Install with pip
 This package is *not* yet published on PyPI, thus use one of the
 following to install the latest repolite on any platform::
 
-  $ pip install -U -f https://github.com/sarnold/repolite/releases/ repolite
+  $ pip install git+https://github.com/sarnold/repolite@master
 
 or use this command to install a specific version from source::
 
-  $ pip install git+https://github.com/sarnold/repolite.git@0.1.0
+  $ pip install git+https://github.com/sarnold/repolite.git@0.3.0
 
 If you have a ``requirements.txt`` file, you can add something like this::
 
-  -f https://github.com/sarnold/repolite/releases/
-  repolite>=0.1.0
+  repolite @ https://github.com/sarnold/repolite/releases/download/0.3.3/repolite-0.3.3-py3-none-any.whl
 
 
 The full package provides the ``repolite`` executable as well as
@@ -112,6 +112,7 @@ required arguments::
   Options:
     --version          show program's version number and exit
     -h, --help         show this help message and exit
+    -i, --install      install existing repositories (python only)
     -u, --update       update existing repositories
     -S, --show         display current repository state and exit
     -q, --quiet        suppress output from git command
@@ -132,20 +133,22 @@ Configuration keys for repository data:
 :repo_name: full repository name
 :repo_alias: alias (short name) for ``repo_name``
 :repo_url: full repository url, eg, Github ssh or https URL
+:repo_depth: full clone if 0, otherwise use the specified depth
 :repo_remote: remote name (usually origin)
 :repo_opts: reserved/not implemented
 :repo_branch: git branch (used with checkout)
 :repo_hash: git commit hash (used by ``lock-config`` option)
-:repo_enable: if False, ignore repository
+:repo_enable: if false, ignore repository
 
-Configuration keys for optional ``git`` features/behavior:
+Configuration keys for optional extra features/behavior:
 
 :pull_with_rebase: global option, useful when upstream history gets rewritten
                    and fast-forward pull fails (see repo-level option)
 :repo_use_rebase: same as above, but per-repository instead of global
-:repo_has_lfs_files: if True, runs ``git-lfs install`` after cloning
+:repo_has_lfs_files: if true, runs ``git-lfs install`` after cloning
                      (requires ``git-lfs`` to be installed first)
-:repo_init_submodules: if True, initialize/update git submodules in that repository
+:repo_init_submodules: if true, initialize/update git submodules in that repository
+:repo_install: if true, try to install the repo with pip_
 
 Notes:
 
@@ -208,12 +211,6 @@ To build/lint the api docs, use the following tox commands:
 
 * ``tox -e docs`` will build the documentation using sphinx and the api-doc plugin
 * ``tox -e docs-lint`` will run the sphinx doc-link checking
-
-To install the latest release, eg with your own ``tox.ini`` file in
-another project, use something like this::
-
-  $ pip install -U -f https://github.com/sarnold/repolite/releases/ repolite
-
 
 Pre-commit
 ----------

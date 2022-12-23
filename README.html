@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite: git repo dependency manager &mdash; repolite 0.3.3 documentation</title>
+  <title>repolite: git repo dependency manager &mdash; repolite 0.3.4.dev4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> repolite
           </a>
               <div class="version">
-                0.3.3
+                0.3.4.dev4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -76,8 +76,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>repolite: git repo dependency manager</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">repolite: git repo dependency manager</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/README.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -143,16 +143,15 @@ $ REPO_CFG=&quot;repo-develop.yml&quot; repolite --update
 <h3>Install with pip<a class="headerlink" href="#install-with-pip" title="Permalink to this heading"></a></h3>
 <p>This package is <em>not</em> yet published on PyPI, thus use one of the
 following to install the latest repolite on any platform:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -U -f https://github.com/sarnold/repolite/releases/ repolite
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install git+https://github.com/sarnold/repolite@master
 </pre></div>
 </div>
 <p>or use this command to install a specific version from source:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install git+https://github.com/sarnold/repolite.git@0.1.0
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install git+https://github.com/sarnold/repolite.git@0.3.0
 </pre></div>
 </div>
 <p>If you have a <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file, you can add something like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sarnold</span><span class="o">/</span><span class="n">repolite</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span>
-<span class="n">repolite</span><span class="o">&gt;=</span><span class="mf">0.1.0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">repolite</span> <span class="o">@</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sarnold</span><span class="o">/</span><span class="n">repolite</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mf">0.3.3</span><span class="o">/</span><span class="n">repolite</span><span class="o">-</span><span class="mf">0.3.3</span><span class="o">-</span><span class="n">py3</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="nb">any</span><span class="o">.</span><span class="n">whl</span>
 </pre></div>
 </div>
 <p>The full package provides the <code class="docutils literal notranslate"><span class="pre">repolite</span></code> executable as well as
@@ -183,6 +182,7 @@ Manage local (git) dependencies (default: clone and checkout).
 Options:
   --version          show program&#39;s version number and exit
   -h, --help         show this help message and exit
+  -i, --install      install existing repositories (python only)
   -u, --update       update existing repositories
   -S, --show         display current repository state and exit
   -q, --quiet        suppress output from git command
@@ -211,23 +211,26 @@ Options:
 <dt class="field-even">repo_url</dt>
 <dd class="field-even"><p>full repository url, eg, Github ssh or https URL</p>
 </dd>
-<dt class="field-odd">repo_remote</dt>
-<dd class="field-odd"><p>remote name (usually origin)</p>
+<dt class="field-odd">repo_depth</dt>
+<dd class="field-odd"><p>full clone if 0, otherwise use the specified depth</p>
 </dd>
-<dt class="field-even">repo_opts</dt>
-<dd class="field-even"><p>reserved/not implemented</p>
+<dt class="field-even">repo_remote</dt>
+<dd class="field-even"><p>remote name (usually origin)</p>
 </dd>
-<dt class="field-odd">repo_branch</dt>
-<dd class="field-odd"><p>git branch (used with checkout)</p>
+<dt class="field-odd">repo_opts</dt>
+<dd class="field-odd"><p>reserved/not implemented</p>
 </dd>
-<dt class="field-even">repo_hash</dt>
-<dd class="field-even"><p>git commit hash (used by <code class="docutils literal notranslate"><span class="pre">lock-config</span></code> option)</p>
+<dt class="field-even">repo_branch</dt>
+<dd class="field-even"><p>git branch (used with checkout)</p>
 </dd>
-<dt class="field-odd">repo_enable</dt>
-<dd class="field-odd"><p>if False, ignore repository</p>
+<dt class="field-odd">repo_hash</dt>
+<dd class="field-odd"><p>git commit hash (used by <code class="docutils literal notranslate"><span class="pre">lock-config</span></code> option)</p>
+</dd>
+<dt class="field-even">repo_enable</dt>
+<dd class="field-even"><p>if false, ignore repository</p>
 </dd>
 </dl>
-<p>Configuration keys for optional <code class="docutils literal notranslate"><span class="pre">git</span></code> features/behavior:</p>
+<p>Configuration keys for optional extra features/behavior:</p>
 <dl class="field-list simple">
 <dt class="field-odd">pull_with_rebase</dt>
 <dd class="field-odd"><p>global option, useful when upstream history gets rewritten
@@ -237,11 +240,14 @@ and fast-forward pull fails (see repo-level option)</p>
 <dd class="field-even"><p>same as above, but per-repository instead of global</p>
 </dd>
 <dt class="field-odd">repo_has_lfs_files</dt>
-<dd class="field-odd"><p>if True, runs <code class="docutils literal notranslate"><span class="pre">git-lfs</span> <span class="pre">install</span></code> after cloning
+<dd class="field-odd"><p>if true, runs <code class="docutils literal notranslate"><span class="pre">git-lfs</span> <span class="pre">install</span></code> after cloning
 (requires <code class="docutils literal notranslate"><span class="pre">git-lfs</span></code> to be installed first)</p>
 </dd>
 <dt class="field-even">repo_init_submodules</dt>
-<dd class="field-even"><p>if True, initialize/update git submodules in that repository</p>
+<dd class="field-even"><p>if true, initialize/update git submodules in that repository</p>
+</dd>
+<dt class="field-odd">repo_install</dt>
+<dd class="field-odd"><p>if true, try to install the repo with <a class="reference external" href="https://packaging.python.org/en/latest/key_projects/#pip">pip</a></p>
 </dd>
 </dl>
 <p>Notes:</p>
@@ -302,11 +308,6 @@ OS type, run something like:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">docs</span></code> will build the documentation using sphinx and the api-doc plugin</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">docs-lint</span></code> will run the sphinx doc-link checking</p></li>
 </ul>
-<p>To install the latest release, eg with your own <code class="docutils literal notranslate"><span class="pre">tox.ini</span></code> file in
-another project, use something like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -U -f https://github.com/sarnold/repolite/releases/ repolite
-</pre></div>
-</div>
 </section>
 <section id="pre-commit">
 <h3>Pre-commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading"></a></h3>

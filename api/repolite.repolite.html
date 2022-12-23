@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite module &mdash; repolite 0.3.3 documentation</title>
+  <title>repolite.repolite module &mdash; repolite 0.3.4.dev4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> repolite
           </a>
               <div class="version">
-                0.3.3
+                0.3.4.dev4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -70,10 +70,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">repolite</a> &raquo;</li>
-          <li><a href="repolite.html">repolite package</a> &raquo;</li>
-      <li>repolite.repolite module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">repolite</a></li>
+          <li class="breadcrumb-item"><a href="repolite.html">repolite package</a></li>
+      <li class="breadcrumb-item active">repolite.repolite module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/repolite.repolite.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -139,6 +139,21 @@ write a new config file with ‘-locked’ appended to the name.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.install_with_pip">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">install_with_pip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pip_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#install_with_pip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.install_with_pip" title="Permalink to this definition"></a></dt>
+<dd><p>Install a python repository via pip; this should be done in a local
+virtual environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pip_name</strong> (<em>str</em>) – directory name of python repo to install</p></li>
+<li><p><strong>quiet</strong> – filter most of the install cmd output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="repolite.repolite.load_config">
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.load_config" title="Permalink to this definition"></a></dt>
 <dd><p>Load yaml configuration file and munchify the data. If ENV path or local
@@ -197,6 +212,21 @@ of global options and list of Munch repo objects.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.process_repo_install">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_repo_install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_repo_install"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_repo_install" title="Permalink to this definition"></a></dt>
+<dd><p>Install any repos with the <code class="docutils literal notranslate"><span class="pre">repo_install</span></code> flag set. Note we do not
+check repo state here, we just process each valid repo entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>quiet</strong> – pass the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> cmd line flag to install cmd</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="repolite.repolite.resolve_top_dir">
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">resolve_top_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#resolve_top_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.resolve_top_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Resolve top_dir, ie, containing directory for git repositories. The
@@ -213,7 +243,7 @@ both as Path objs.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="repolite.repolite.show_repo_state">
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">show_repo_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#show_repo_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.show_repo_state" title="Permalink to this definition"></a></dt>
-<dd><p>Display the current state of each repository using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">describe</span></code>.</p>
+<dd><p>Display the current state of each repository using git describe/rev-parse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>

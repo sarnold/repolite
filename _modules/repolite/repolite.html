@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite &mdash; repolite 0.3.3 documentation</title>
+  <title>repolite.repolite &mdash; repolite 0.3.4.dev4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> repolite
           </a>
               <div class="version">
-                0.3.3
+                0.3.4.dev4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -58,9 +58,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>repolite.repolite</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">repolite.repolite</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -109,7 +109,7 @@
     <span class="vm">__module__</span> <span class="o">=</span> <span class="ne">Exception</span><span class="o">.</span><span class="vm">__module__</span>
 
 
-<div class="viewcode-block" id="check_for_git"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.check_for_git">[docs]</a><span class="k">def</span> <span class="nf">check_for_git</span><span class="p">():</span>
+<div class="viewcode-block" id="check_for_git"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.check_for_git">[docs]</a><span class="k">def</span> <span class="nf">check_for_git</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make sure we can find the ``git`` and ``git-lfs`` binaries in the</span>
 <span class="sd">    user environment and return a tuple of path strings.</span>
@@ -127,7 +127,7 @@
     <span class="k">return</span> <span class="n">git_path</span><span class="p">,</span> <span class="n">lfs_path</span></div>
 
 
-<div class="viewcode-block" id="check_repo_state"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.check_repo_state">[docs]</a><span class="k">def</span> <span class="nf">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<div class="viewcode-block" id="check_repo_state"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.check_repo_state">[docs]</a><span class="k">def</span> <span class="nf">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if repo configuration is consistent, ie, does current repo state</span>
 <span class="sd">    match repo configuration items.  Return ``True`` if current directories</span>
@@ -160,7 +160,30 @@
     <span class="k">return</span> <span class="n">is_state_valid</span></div>
 
 
-<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">file_encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="install_with_pip"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.install_with_pip">[docs]</a><span class="k">def</span> <span class="nf">install_with_pip</span><span class="p">(</span><span class="n">pip_name</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Install a python repository via pip; this should be done in a local</span>
+<span class="sd">    virtual environment.</span>
+
+<span class="sd">    :param pip_name: directory name of python repo to install</span>
+<span class="sd">    :type pip_name: str</span>
+<span class="sd">    :param quiet: filter most of the install cmd output</span>
+<span class="sd">    :type verbose: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pip_cmd_str</span> <span class="o">=</span> <span class="s1">&#39;-m pip install&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">pip_name</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">pip_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">]</span> <span class="o">+</span> <span class="n">pip_cmd_str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running install cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_cmd</span><span class="p">)</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">runner</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span>
+    <span class="n">runner</span><span class="p">(</span><span class="n">pip_cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">pkg_reqs</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;pip&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">])</span>
+        <span class="n">pkg_deps</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pkg_reqs</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Installed </span><span class="si">%s</span><span class="s1"> dependencies: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_name</span><span class="p">,</span> <span class="n">pkg_deps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">file_encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load yaml configuration file and munchify the data. If ENV path or local</span>
 <span class="sd">    file is not found in current directory, the default will be loaded.</span>
@@ -181,7 +204,7 @@
     <span class="k">return</span> <span class="n">cfgobj</span><span class="p">,</span> <span class="n">cfgfile</span></div>
 
 
-<div class="viewcode-block" id="resolve_top_dir"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.resolve_top_dir">[docs]</a><span class="k">def</span> <span class="nf">resolve_top_dir</span><span class="p">(</span><span class="n">upath</span><span class="p">):</span>
+<div class="viewcode-block" id="resolve_top_dir"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.resolve_top_dir">[docs]</a><span class="k">def</span> <span class="nf">resolve_top_dir</span><span class="p">(</span><span class="n">upath</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resolve top_dir, ie, containing directory for git repositories. The</span>
 <span class="sd">    suggested path is inside the project working directory, but we should</span>
@@ -195,7 +218,7 @@
     <span class="k">return</span> <span class="n">workpath</span><span class="p">,</span> <span class="n">userpath</span></div>
 
 
-<div class="viewcode-block" id="parse_config"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.parse_config">[docs]</a><span class="k">def</span> <span class="nf">parse_config</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_config"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.parse_config">[docs]</a><span class="k">def</span> <span class="nf">parse_config</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse config file options and build list of repo objects. Return list</span>
 <span class="sd">    of global options and list of Munch repo objects.</span>
@@ -212,7 +235,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">udir</span><span class="p">,</span> <span class="n">urebase</span><span class="p">],</span> <span class="n">urepos</span></div>
 
 
-<div class="viewcode-block" id="create_locked_cfg"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.create_locked_cfg">[docs]</a><span class="k">def</span> <span class="nf">create_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+<div class="viewcode-block" id="create_locked_cfg"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.create_locked_cfg">[docs]</a><span class="k">def</span> <span class="nf">create_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a &#39;locked&#39; cfg file, ie, read the active config file and</span>
 <span class="sd">    populate the ``repo_hash`` values with HEAD from each branch, then</span>
@@ -258,7 +281,7 @@
     <span class="n">write_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="process_git_repos"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.process_git_repos">[docs]</a><span class="k">def</span> <span class="nf">process_git_repos</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">repos</span><span class="p">,</span> <span class="n">pull</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+<div class="viewcode-block" id="process_git_repos"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.process_git_repos">[docs]</a><span class="k">def</span> <span class="nf">process_git_repos</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">repos</span><span class="p">,</span> <span class="n">pull</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Process list of git repository objs and populate/update ``top_dir``.</span>
 
@@ -319,6 +342,8 @@
             <span class="k">if</span> <span class="n">git_dir</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dir_name_repo_intersect</span><span class="p">):</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Skipping existing repo: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_dir</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">git_action</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;--depth </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_depth</span><span class="si">}</span><span class="s1"> &#39;</span>
                 <span class="n">git_clone</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_url</span><span class="si">}</span><span class="s1"> &#39;</span>
                 <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span><span class="p">:</span>
                     <span class="n">git_clone</span> <span class="o">+=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span>
@@ -359,9 +384,27 @@
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="show_repo_state"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.show_repo_state">[docs]</a><span class="k">def</span> <span class="nf">show_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<div class="viewcode-block" id="process_repo_install"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.process_repo_install">[docs]</a><span class="k">def</span> <span class="nf">process_repo_install</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Display the current state of each repository using ``git describe``.</span>
+<span class="sd">    Install any repos with the ``repo_install`` flag set. Note we do not</span>
+<span class="sd">    check repo state here, we just process each valid repo entry.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :param quiet: pass the ``quiet`` cmd line flag to install cmd</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_install</span><span class="p">]:</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">tgt_dir</span> <span class="o">=</span> <span class="n">top_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>  <span class="c1"># fun with Path objects</span>
+        <span class="n">install_with_pip</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_repo_state"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.show_repo_state">[docs]</a><span class="k">def</span> <span class="nf">show_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display the current state of each repository using git describe/rev-parse.</span>
 
 <span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
 <span class="sd">    :type ucfg: Munch cfgobj</span>
@@ -395,7 +438,7 @@
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Manage git repository-based project dependencies.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -404,6 +447,13 @@
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="s2">&quot;usage: %prog [options]&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;%prog </span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Manage local (git) dependencies (default: clone and checkout).&#39;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
+        <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--install&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;install&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;install existing repositories (python only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
         <span class="s2">&quot;-u&quot;</span><span class="p">,</span>
         <span class="s2">&quot;--update&quot;</span><span class="p">,</span>
@@ -479,6 +529,9 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">install</span><span class="p">:</span>
+            <span class="n">process_repo_install</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">show</span><span class="p">:</span>
             <span class="n">show_repo_state</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

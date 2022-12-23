@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite package &mdash; repolite 0.3.3 documentation</title>
+  <title>repolite package &mdash; repolite 0.3.4.dev4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> repolite
           </a>
               <div class="version">
-                0.3.3
+                0.3.4.dev4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,7 +51,10 @@
 <li class="toctree-l4"><a class="reference internal" href="repolite.repolite.html">repolite.repolite module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-repolite">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-repolite">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#repolite.install_with_pip"><code class="docutils literal notranslate"><span class="pre">install_with_pip()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -71,9 +74,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">repolite</a> &raquo;</li>
-      <li>repolite package</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">repolite</a></li>
+      <li class="breadcrumb-item active">repolite package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/repolite.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -93,10 +96,12 @@
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.check_for_git"><code class="docutils literal notranslate"><span class="pre">check_for_git()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.check_repo_state"><code class="docutils literal notranslate"><span class="pre">check_repo_state()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.create_locked_cfg"><code class="docutils literal notranslate"><span class="pre">create_locked_cfg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.install_with_pip"><code class="docutils literal notranslate"><span class="pre">install_with_pip()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.parse_config"><code class="docutils literal notranslate"><span class="pre">parse_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.process_git_repos"><code class="docutils literal notranslate"><span class="pre">process_git_repos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.process_repo_install"><code class="docutils literal notranslate"><span class="pre">process_repo_install()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.resolve_top_dir"><code class="docutils literal notranslate"><span class="pre">resolve_top_dir()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="repolite.repolite.html#repolite.repolite.show_repo_state"><code class="docutils literal notranslate"><span class="pre">show_repo_state()</span></code></a></li>
 </ul>
@@ -106,7 +111,22 @@
 </section>
 <section id="module-repolite">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-repolite" title="Permalink to this heading"></a></h2>
-<p>Repolite clones repos according to your local yaml config file.</p>
+<p>Repolite manages git repos according to your local yaml config file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.install_with_pip">
+<span class="sig-prename descclassname"><span class="pre">repolite.</span></span><span class="sig-name descname"><span class="pre">install_with_pip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pip_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#install_with_pip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.install_with_pip" title="Permalink to this definition"></a></dt>
+<dd><p>Install a python repository via pip; this should be done in a local
+virtual environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pip_name</strong> (<em>str</em>) – directory name of python repo to install</p></li>
+<li><p><strong>quiet</strong> – filter most of the install cmd output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
