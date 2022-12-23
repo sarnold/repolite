@@ -88,14 +88,14 @@ def check_repo_state(ucfg):
     return is_state_valid
 
 
-def install_with_pip(pip_name, quiet):
+def install_with_pip(pip_name, quiet=False):
     """
     Install a python repository via pip; this should be done in a local
     virtual environment.
 
     :param pip_name: directory name of python repo to install
     :type pip_name: str
-    :param verbose: enable install cmd output
+    :param quiet: filter most of the install cmd output
     :type verbose: boolean
     """
     pip_cmd_str = '-m pip install' + f' {pip_name}'
@@ -319,13 +319,14 @@ def process_repo_install(ucfg, quiet):
 
     :param ucfg: Munch configuration object extracted from config file
     :type ucfg: Munch cfgobj
+    :param quiet: pass the ``quiet`` cmd line flag to install cmd
     """
-    work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
+    _, top_dir = resolve_top_dir(ucfg.top_dir)
     logging.debug('Using top-level repo dir: %s', str(top_dir))
 
     for item in [x for x in ucfg.repos if x.repo_enable and x.repo_install]:
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
-        tgt_dir = top_dir / str(git_dir)
+        tgt_dir = top_dir / str(git_dir)  # fun with Path objects
         install_with_pip(tgt_dir, quiet)
 
 
