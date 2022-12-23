@@ -6,6 +6,7 @@ repos:
   - repo_name: pyserv
     repo_alias: null
     repo_url: https://github.com/sarnold/pyserv.git
+    repo_depth: 0
     repo_remote: origin
     repo_opts: []
     repo_branch: master
@@ -13,10 +14,12 @@ repos:
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
+    repo_install: false
     repo_enable: true
   - repo_name: python-daemonizer
-    repo_alias: daemonizer
+    repo_alias: daemonizer  # optional short name for repo directory
     repo_url: https://github.com/sarnold/python-daemonizer.git
+    repo_depth: 0
     repo_remote: origin
     repo_opts: []
     repo_branch: master
@@ -24,4 +27,5 @@ repos:
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
+    repo_install: true  # only for pip-installable packages
     repo_enable: true

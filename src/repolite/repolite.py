@@ -88,6 +88,29 @@ def check_repo_state(ucfg):
     return is_state_valid
 
 
+def install_with_pip(pip_name, quiet=False):
+    """
+    Install a python repository via pip; this should be done in a local
+    virtual environment.
+
+    :param pip_name: directory name of python repo to install
+    :type pip_name: str
+    :param quiet: filter most of the install cmd output
+    :type verbose: boolean
+    """
+    pip_cmd_str = '-m pip install' + f' {pip_name}'
+    pip_cmd = [sys.executable] + pip_cmd_str.split()
+    logging.debug('Running install cmd: %s', pip_cmd)
+    runner = sp.check_output
+    if not quiet:
+        runner = sp.check_call
+    runner(pip_cmd)
+    if not quiet:
+        pkg_reqs = sp.check_output([sys.executable, '-m', 'pip', 'freeze'])
+        pkg_deps = [r.decode().split('@')[0] for r in pkg_reqs.split()]
+        logging.debug('Installed %s dependencies: %s', pip_name, pkg_deps)
+
+
 def load_config(file_encoding='utf-8'):
     """
     Load yaml configuration file and munchify the data. If ENV path or local
@@ -247,6 +270,8 @@ def process_git_repos(flags, repos, pull, quiet):
             if git_dir in list(dir_name_repo_intersect):
                 logging.debug('Skipping existing repo: %s', git_dir)
             else:
+                if item.repo_depth > 0:
+                    git_action = git_action + f'--depth {item.repo_depth} '
                 git_clone = git_action + f'{item.repo_url} '
                 if item.repo_alias:
                     git_clone += item.repo_alias
@@ -287,9 +312,27 @@ def process_git_repos(flags, repos, pull, quiet):
     os.chdir(work_dir)
 
 
+def process_repo_install(ucfg, quiet):
+    """
+    Install any repos with the ``repo_install`` flag set. Note we do not
+    check repo state here, we just process each valid repo entry.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    :param quiet: pass the ``quiet`` cmd line flag to install cmd
+    """
+    _, top_dir = resolve_top_dir(ucfg.top_dir)
+    logging.debug('Using top-level repo dir: %s', str(top_dir))
+
+    for item in [x for x in ucfg.repos if x.repo_enable and x.repo_install]:
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        tgt_dir = top_dir / str(git_dir)  # fun with Path objects
+        install_with_pip(tgt_dir, quiet)
+
+
 def show_repo_state(ucfg):
     """
-    Display the current state of each repository using ``git describe``.
+    Display the current state of each repository using git describe/rev-parse.
 
     :param ucfg: Munch configuration object extracted from config file
     :type ucfg: Munch cfgobj
@@ -332,6 +375,13 @@ def main(argv=None):
 
     parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {VERSION}")
     parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
+    parser.add_option(
+        "-i",
+        "--install",
+        action="store_true",
+        dest="install",
+        help="install existing repositories (python only)",
+    )
     parser.add_option(
         "-u",
         "--update",
@@ -407,6 +457,9 @@ def main(argv=None):
         sys.exit(0)
 
     try:
+        if opts.install:
+            process_repo_install(cfg, opts.quiet)
+            sys.exit(0)
         if opts.show:
             show_repo_state(cfg)
             sys.exit(0)

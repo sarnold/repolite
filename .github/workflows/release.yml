@@ -32,7 +32,7 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -46,11 +46,11 @@ jobs:
         tox -e build
 
     - name: Upload artifacts
-      if: matrix.python-version == 3.8 && runner.os != 'Windows'
-      uses: actions/upload-artifact@v2
+      if: matrix.python-version == 3.8 && runner.os == 'Linux'
+      uses: actions/upload-artifact@v3
       with:
-        name: wheels
-        path: ./dist/*.whl
+        path: |
+          ./dist/*.tar.gz
 
   create_release:
     name: Create Release
@@ -64,12 +64,12 @@ jobs:
           echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
           echo ${{ env.VERSION }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       # download all artifacts to project dir
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
 
       - name: Generate changes file
         uses: sarnold/gitchangelog-action@master
@@ -78,7 +78,7 @@ jobs:
 
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -96,11 +96,11 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
@@ -114,7 +114,7 @@ jobs:
         tox -e docs-lint
         tox -e docs
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: ApiDocsHTML
         path: "docs/_build/html/"
@@ -125,7 +125,7 @@ jobs:
 
     - name: Deploy docs to gh-pages
       if: ${{ github.event_name == 'push' }}
-      uses: JamesIves/github-pages-deploy-action@3.7.1
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
