@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite &mdash; repolite 0.3.4.dev4 documentation</title>
+  <title>repolite.repolite &mdash; repolite 0.3.4.dev5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> repolite
           </a>
               <div class="version">
-                0.3.4.dev4
+                0.3.4.dev5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -165,10 +165,10 @@
 <span class="sd">    Install a python repository via pip; this should be done in a local</span>
 <span class="sd">    virtual environment.</span>
 
-<span class="sd">    :param pip_name: directory name of python repo to install</span>
+<span class="sd">    :param pip_name: path to directory name of python repo to install</span>
 <span class="sd">    :type pip_name: str</span>
 <span class="sd">    :param quiet: filter most of the install cmd output</span>
-<span class="sd">    :type verbose: boolean</span>
+<span class="sd">    :type quiet: boolean</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pip_cmd_str</span> <span class="o">=</span> <span class="s1">&#39;-m pip install&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">pip_name</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">pip_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">]</span> <span class="o">+</span> <span class="n">pip_cmd_str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
