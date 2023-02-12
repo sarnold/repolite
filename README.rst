@@ -65,6 +65,55 @@ via the environment variable ``REPO_CFG``, eg::
   $ $EDITOR repo-develop.yml  # set alternate branches, other options
   $ REPO_CFG="repo-develop.yml" repolite --update
 
+OS Package Install
+------------------
+
+Packages are available for Ubuntu_, and the latest can be installed on
+Gentoo using ``portage`` (or the ebuilds in `this portage overlay`_).
+To build from source, see the `Dev tools`_ section below.
+
+.. _Ubuntu: https://launchpad.net/~nerdboy/+archive/ubuntu/embedded
+.. _this portage overlay: https://github.com/VCTLabs/embedded-overlay/
+
+
+Prerequisites
+~~~~~~~~~~~~~
+
+A supported linux distribution, mainly something that uses either
+``.ebuilds`` (eg, Gentoo or funtoo) or ``.deb`` packages, starting with at
+least Ubuntu bionic or Debian stretch (see the above PPA package repo
+on Launchpad).
+
+On Gentoo, just install the package: ``emerge dev-util/repolite`` otherwise
+on Ubuntu bionic or newer, follow the steps below.
+
+Make sure you have the ``add-apt-repository`` command installed and
+then add the PPA:
+
+::
+
+  $ sudo apt-get install software-properties-common
+  $ sudo add-apt-repository -y -s ppa:nerdboy/embedded
+  $ sudo apt-get install python3-repolite
+
+
+.. note:: Since the package series currently published are for bionic/focal,
+          building from source is recommended if installing on Debian.
+
+
+If you get a key error you will also need to manually import the PPA
+signing key like so:
+
+::
+
+  $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <PPA_KEY>
+
+where <PPA_KEY> is the key shown in the launchpad PPA page under "Adding
+this PPA to your system", eg, ``41113ed57774ed19`` for `Embedded device ppa`_.
+
+.. _Embedded device ppa: https://launchpad.net/~nerdboy/+archive/ubuntu/embedded
+
+
 Install with pip
 ----------------
 
