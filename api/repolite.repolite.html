@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite module &mdash; repolite 0.4.1.dev1 documentation</title>
+  <title>repolite.repolite module &mdash; repolite 0.4.1.dev6 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="0.4.0 (2022-12-23)" href="../CHANGELOG.html" />
     <link rel="prev" title="repolite package" href="repolite.html" /> 
 </head>
 
@@ -28,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> repolite
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            repolite
           </a>
               <div class="version">
-                0.4.1.dev1
+                0.4.1.dev6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,6 +58,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">0.4.0 (2022-12-23)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id2">0.3.3 (2022-09-29)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id5">0.3.2 (2022-09-29)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id9">0.3.1 (2022-09-13)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id14">0.3.0 (2022-09-04)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id18">0.2.1 (2022-08-31)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id22">0.2.0 (2022-08-20)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id25">0.1.0 (2022-08-17)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id28">0.0.0 (2022-08-14)</a></li>
 </ul>
 
         </div>
@@ -70,7 +82,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">repolite</a></li>
           <li class="breadcrumb-item"><a href="repolite.html">repolite package</a></li>
       <li class="breadcrumb-item active">repolite.repolite module</li>
@@ -93,10 +105,10 @@ submodules. You get to write (local) project config files in yaml instead.</p>
 <dd><p>Make sure we can find the <code class="docutils literal notranslate"><span class="pre">git</span></code> and <code class="docutils literal notranslate"><span class="pre">git-lfs</span></code> binaries in the
 user environment and return a tuple of path strings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return git_path, lfs_path</dt>
+<dt class="field-odd">Return git_path, lfs_path<span class="colon">:</span></dt>
 <dd class="field-odd"><p>program path strings</p>
 </dd>
-<dt class="field-even">Rtype tuple</dt>
+<dt class="field-even">Rtype tuple<span class="colon">:</span></dt>
 <dd class="field-even"><p>path to program if found, else None</p>
 </dd>
 </dl>
@@ -109,10 +121,10 @@ user environment and return a tuple of path strings.</p>
 match repo configuration items.  Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if current directories
 match the configuration, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
 </dd>
-<dt class="field-even">Return is_state_valid</dt>
+<dt class="field-even">Return is_state_valid<span class="colon">:</span></dt>
 <dd class="field-even"><p>Boolean</p>
 </dd>
 </dl>
@@ -125,14 +137,14 @@ match the configuration, else <code class="docutils literal notranslate"><span c
 populate the <code class="docutils literal notranslate"><span class="pre">repo_hash</span></code> values with HEAD from each branch, then
 write a new config file with ‘-locked’ appended to the name.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
 <li><p><strong>ufile</strong> (<em>Path obj</em>) – active config file</p></li>
 <li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
 </dd>
 </dl>
@@ -144,7 +156,7 @@ write a new config file with ‘-locked’ appended to the name.</p>
 <dd><p>Install a python repository via pip; this should be done in a local
 virtual environment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pip_name</strong> (<em>str</em>) – path to directory name of python repo to install</p></li>
 <li><p><strong>quiet</strong> (<em>boolean</em>) – filter most of the install cmd output</p></li>
@@ -159,13 +171,13 @@ virtual environment.</p>
 <dd><p>Load yaml configuration file and munchify the data. If ENV path or local
 file is not found in current directory, the default will be loaded.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file_encoding</strong> (<em>str</em>) – file encoding of config file</p>
 </dd>
-<dt class="field-even">Return tuple</dt>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
 <dd class="field-even"><p>Munch cfg obj and cfg file as Path obj</p>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>FileTypeError</strong> – if the input file is not yml</p>
 </dd>
 </dl>
@@ -183,10 +195,10 @@ file is not found in current directory, the default will be loaded.</p>
 <dd><p>Parse config file options and build list of repo objects. Return list
 of global options and list of Munch repo objects.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
 </dd>
-<dt class="field-even">Return tuple</dt>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of flags, list of repository objs</p>
 </dd>
 </dl>
@@ -197,7 +209,7 @@ of global options and list of Munch repo objects.</p>
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_git_repos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pull</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_git_repos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_git_repos" title="Permalink to this definition"></a></dt>
 <dd><p>Process list of git repository objs and populate/update <code class="docutils literal notranslate"><span class="pre">top_dir</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>flags</strong> (<em>list</em>) – List of options (from yaml cfg)</p></li>
 <li><p><strong>repos</strong> (<em>list</em>) – List of repository objs (from yaml cfg)</p></li>
@@ -205,7 +217,7 @@ of global options and list of Munch repo objects.</p>
 <li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>FileExistsError</strong> – if cloning on top of existing directories</p>
 </dd>
 </dl>
@@ -217,7 +229,7 @@ of global options and list of Munch repo objects.</p>
 <dd><p>Install any repos with the <code class="docutils literal notranslate"><span class="pre">repo_install</span></code> flag set. Note we do not
 check repo state here, we just process each valid repo entry.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
 <li><p><strong>quiet</strong> – pass the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> cmd line flag to install cmd</p></li>
@@ -234,7 +246,7 @@ suggested path is inside the project working directory, but we should
 support any writable path. Also set the working dir path and return
 both as Path objs.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return workpath, userpath</dt>
+<dt class="field-odd">Return workpath, userpath<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple of Path objs</p>
 </dd>
 </dl>
@@ -245,10 +257,10 @@ both as Path objs.</p>
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">show_repo_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#show_repo_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.show_repo_state" title="Permalink to this definition"></a></dt>
 <dd><p>Display the current state of each repository using git describe/rev-parse.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
 </dd>
 </dl>
@@ -261,6 +273,7 @@ both as Path objs.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="repolite.html" class="btn btn-neutral float-left" title="repolite package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../CHANGELOG.html" class="btn btn-neutral float-right" title="0.4.0 (2022-12-23)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,12 +1,20 @@
 Welcome to the repolite documentation!
 ======================================
 
-.. toctree::
-   :caption: Contents:
-   :maxdepth: 3
+.. git_commit_detail::
+    :branch:
+    :commit:
+    :sha_length: 10
+    :uncommitted:
+    :untracked:
 
-   README.rst
-   api/modules
+.. toctree::
+    :caption: Contents:
+    :maxdepth: 3
+
+    README
+    api/modules
+    CHANGELOG
 
 
 Indices and tables
