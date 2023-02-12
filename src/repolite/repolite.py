@@ -22,6 +22,8 @@ from shutil import which
 import pkg_resources
 from munch import Munch
 
+from ._version import __version__
+
 # from logging_tree import printout  # debug logger environment
 
 
@@ -373,7 +375,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
-    parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {VERSION}")
+    parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {__version__}")
     parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
     parser.add_option(
         "-i",
@@ -479,7 +481,6 @@ def main(argv=None):
         logging.error('Top dir: %s', exc)
 
 
-VERSION = pkg_resources.get_distribution('repolite').version
 REPO_CFG = os.getenv('REPO_CFG', default='')
 
 
