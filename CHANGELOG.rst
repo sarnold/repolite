@@ -1,3 +1,34 @@
+Changelog
+=========
+
+
+0.4.1 (2023-02-13)
+------------------
+
+New
+~~~
+- Add a changelog file and include it in docs build. [Stephen L Arnold]
+
+Changes
+~~~~~~~
+- Be more explicit about OS packages in the readme. [Stephen L Arnold]
+- Use defaults on gh-pages deploy action, bump to v4. [Stephen L Arnold]
+
+Fix
+~~~
+- Stop using later constructs and pkg_resources. [Stephen L Arnold]
+
+  * do not use pkg_resources or global version in repolite module
+  * python setup.py <foo> commands should work as expected back to bionic
+    launchpad builder env (ie, early py3.6)
+
+Other
+~~~~~
+- Merge pull request #13 from sarnold/changelog-docs. [Steve Arnold]
+
+  cleanup imports, add changelog in docs
+
+
 0.4.0 (2022-12-23)
 ------------------
 
