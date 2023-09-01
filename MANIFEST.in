@@ -1,6 +1,3 @@
-graft tests
 graft docs
 
 include tox.ini README.rst CHANGELOG.rst
-
-global-exclude *~ *.py[cod]
