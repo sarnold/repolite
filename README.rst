@@ -255,6 +255,8 @@ Full list of additional ``tox`` commands:
 * ``tox -e lint`` will run ``pylint`` (somewhat less permissive than PEP8/flake8 checks)
 * ``tox -e mypy`` will run mypy import and type checking
 * ``tox -e style`` will run flake8 style checks
+* ``tox -e sync`` will install repolite in .sync and fetch the exammple repos
+* ``tox -e do`` will run a repolite command from the .sync environment
 
 To build/lint the api docs, use the following tox commands:
 
