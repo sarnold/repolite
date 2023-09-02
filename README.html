@@ -4,17 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite: git repo dependency manager &mdash; repolite 0.4.1 documentation</title>
+  <title>repolite: git repo dependency manager &mdash; repolite 0.4.2.dev6+gefb3211 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=901a4156"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
             repolite
           </a>
               <div class="version">
-                0.4.1
+                0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -95,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="repolite-git-repo-dependency-manager">
-<h1>repolite: git repo dependency manager<a class="headerlink" href="#repolite-git-repo-dependency-manager" title="Permalink to this heading"></a></h1>
+<h1>repolite: git repo dependency manager<a class="headerlink" href="#repolite-git-repo-dependency-manager" title="Link to this heading"></a></h1>
 <p>A lightweight tool to manage a small set of repository dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
 files in yaml instead.</p>
@@ -110,7 +111,7 @@ packages. In a fresh clone, running any of the <a class="reference external" hre
 should generate the current version file.</p>
 </div>
 <section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h2>
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <p>Repolite is mainly configuration-driven via YAML config files; the included
 example can be displayed and copied via command-line options (see the <a class="reference internal" href="#usage">Usage</a>
 section below).  To create your own configuration, you need your repository
@@ -147,12 +148,12 @@ $ REPO_CFG=&quot;repo-develop.yml&quot; repolite --update
 </pre></div>
 </div>
 <section id="os-package-install">
-<h3>OS Package Install<a class="headerlink" href="#os-package-install" title="Permalink to this heading"></a></h3>
+<h3>OS Package Install<a class="headerlink" href="#os-package-install" title="Link to this heading"></a></h3>
 <p>Packages are available for <a class="reference external" href="https://launchpad.net/~nerdboy/+archive/ubuntu/embedded">Ubuntu</a>, and the latest can be installed on
 Gentoo using <code class="docutils literal notranslate"><span class="pre">portage</span></code> (or the ebuilds in <a class="reference external" href="https://github.com/VCTLabs/embedded-overlay/">this portage overlay</a>).
 To build from source, see the <a class="reference internal" href="#dev-tools">Dev tools</a> section below.</p>
 <section id="prerequisites">
-<h4>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h4>
+<h4>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h4>
 <p>A supported linux distribution, mainly something that uses either
 <code class="docutils literal notranslate"><span class="pre">.ebuilds</span></code> (eg, Gentoo or funtoo) or <code class="docutils literal notranslate"><span class="pre">.deb</span></code> packages, starting with at
 least Ubuntu bionic or Debian stretch (see the above PPA package repo
@@ -181,7 +182,7 @@ this PPA to your system”, eg, <code class="docutils literal notranslate"><span
 </section>
 </section>
 <section id="install-with-pip">
-<h3>Install with pip<a class="headerlink" href="#install-with-pip" title="Permalink to this heading"></a></h3>
+<h3>Install with pip<a class="headerlink" href="#install-with-pip" title="Link to this heading"></a></h3>
 <p>This package is <em>not</em> yet published on PyPI, thus use one of the
 following to install the latest repolite on any platform:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install git+https://github.com/sarnold/repolite@master
@@ -212,7 +213,7 @@ installed already, see the example tox commands below.</p>
 </section>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <p>The current version supports minimal command options and there are no
 required arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(dev) user@host repolite (main) $ repolite -h
@@ -237,7 +238,7 @@ Options:
 </pre></div>
 </div>
 <section id="configuration-settings">
-<h3>Configuration settings<a class="headerlink" href="#configuration-settings" title="Permalink to this heading"></a></h3>
+<h3>Configuration settings<a class="headerlink" href="#configuration-settings" title="Link to this heading"></a></h3>
 <p>Configuration keys for repository data:</p>
 <dl class="field-list simple">
 <dt class="field-odd">top_dir<span class="colon">:</span></dt>
@@ -310,11 +311,11 @@ patterns to your <code class="docutils literal notranslate"><span class="pre">.g
 </section>
 </section>
 <section id="dev-tools">
-<h2>Dev tools<a class="headerlink" href="#dev-tools" title="Permalink to this heading"></a></h2>
+<h2>Dev tools<a class="headerlink" href="#dev-tools" title="Link to this heading"></a></h2>
 <p>Local tool dependencies to aid in development; install both tools for
 maximum enjoyment.</p>
 <section id="id1">
-<h3>Tox<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>Tox<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>As long as you have git and at least Python 3.6, then you can install
 and use <a class="reference external" href="https://github.com/tox-dev/tox">tox</a>.  After cloning the repository, you can run the repo
 checks with the <code class="docutils literal notranslate"><span class="pre">tox</span></code> command.  It will build a virtual python
@@ -343,6 +344,8 @@ OS type, run something like:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">lint</span></code> will run <code class="docutils literal notranslate"><span class="pre">pylint</span></code> (somewhat less permissive than PEP8/flake8 checks)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">mypy</span></code> will run mypy import and type checking</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">style</span></code> will run flake8 style checks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">sync</span></code> will install repolite in .sync and fetch the exammple repos</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">do</span></code> will run a repolite command from the .sync environment</p></li>
 </ul>
 <p>To build/lint the api docs, use the following tox commands:</p>
 <ul class="simple">
@@ -351,7 +354,7 @@ OS type, run something like:</p>
 </ul>
 </section>
 <section id="pre-commit">
-<h3>Pre-commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading"></a></h3>
+<h3>Pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading"></a></h3>
 <p>This repo is also <a class="reference external" href="https://pre-commit.com/index.html">pre-commit</a> enabled for python/rst source and file-type
 linting. The checks run automatically on commit and will fail the commit
 (if not clean) and perform simple file corrections.  For example, if the
