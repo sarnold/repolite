@@ -13,13 +13,6 @@ files in yaml instead.
 |tag| |license| |python|
 
 
-
-.. note:: This project uses versioningit_ to generate and maintain the
-          version file, which only gets included in the sdist/wheel
-          packages. In a fresh clone, running any of the tox_ commands
-          should generate the current version file.
-
-.. _versioningit: https://github.com/jwodder/versioningit
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
@@ -145,7 +138,7 @@ idiom to install it on your system in a virtual env after cloning::
   $ deactivate
 
 The alternative to python venv is the ``tox`` test driver.  If you have it
-installed already, see the example tox commands below.
+installed already, see the example tox_ commands below.
 
 Usage
 =====
