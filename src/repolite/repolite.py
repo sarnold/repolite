@@ -19,10 +19,18 @@ from pathlib import Path
 from shlex import split
 from shutil import which
 
-import pkg_resources
 from munch import Munch
 
-from ._version import __version__
+if sys.version_info < (3, 8):
+    from importlib_metadata import version
+else:
+    from importlib.metadata import version
+
+if sys.version_info < (3, 9):
+    import importlib_resources
+else:
+    import importlib.resources as importlib_resources
+
 
 # from logging_tree import printout  # debug logger environment
 
@@ -127,7 +135,7 @@ def load_config(file_encoding='utf-8'):
     if not cfgfile.name.lower().endswith(('.yml', '.yaml')):
         raise FileTypeError("FileTypeError: unknown config file extension")
     if not cfgfile.exists():
-        cfgfile = Path(pkg_resources.resource_filename(__name__, 'data/example.yml'))
+        cfgfile = importlib_resources.files('repolite.data').joinpath('example.yml')
     logging.debug('Using config: %s', str(cfgfile.resolve()))
     cfgobj = Munch.fromYAML(cfgfile.read_text(encoding=file_encoding))
 
@@ -374,6 +382,8 @@ def main(argv=None):
     """
     if argv is None:
         argv = sys.argv
+
+    __version__ = version('repolite')
 
     parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {__version__}")
     parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
