@@ -10,11 +10,11 @@ Manage a small set of repository dependencies without manifest.xml or git
 submodules. You get to write (local) project config files in yaml instead.
 """
 
+import argparse
 import logging
 import os
 import subprocess as sp
 import sys
-from optparse import OptionParser  # pylint: disable=W0402
 from pathlib import Path
 from shlex import split
 from shutil import which
@@ -60,7 +60,7 @@ def check_for_git():
     if not git_path:
         logging.error('Cannot continue, no path found for git')
         sys.exit(1)
-    elif not lfs_path:
+    if not lfs_path:
         logging.debug('Cannot initialize large files, git-lfs not found')
     return git_path, lfs_path
 
@@ -131,6 +131,8 @@ def load_config(file_encoding='utf-8'):
     :return tuple: Munch cfg obj and cfg file as Path obj
     :raises FileTypeError: if the input file is not yml
     """
+    REPO_CFG = os.getenv('REPO_CFG', default='')
+
     cfgfile = Path(REPO_CFG) if REPO_CFG else Path('.repolite.yml')
     if not cfgfile.name.lower().endswith(('.yml', '.yaml')):
         raise FileTypeError("FileTypeError: unknown config file extension")
@@ -385,66 +387,64 @@ def main(argv=None):
 
     __version__ = version('repolite')
 
-    parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {__version__}")
-    parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
-    parser.add_option(
-        "-i",
-        "--install",
-        action="store_true",
-        dest="install",
-        help="install existing repositories (python only)",
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='Manage local (git) dependencies (default: clone and checkout)',
     )
-    parser.add_option(
-        "-u",
-        "--update",
-        action="store_true",
-        dest="update",
-        help="update existing repositories",
-    )
-    parser.add_option(
-        "-S",
-        "--show",
-        action="store_true",
-        dest="show",
-        help="display current repository state",
-    )
-    parser.add_option(
-        "-q",
-        "--quiet",
-        action="store_true",
-        dest="quiet",
-        help="suppress output from git command",
-    )
-    parser.add_option(
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
-        dest="verbose",
-        help="display more logging info",
+        help="Display more processing info",
     )
-    parser.add_option(
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="suppress output from git command",
+    )
+    parser.add_argument(
         '-d',
         '--dump-config',
         action='store_true',
         dest="dump",
-        help='dump active configuration file or example to stdout and exit',
+        help='Dump default configuration file to stdout',
     )
-    parser.add_option(
+    parser.add_argument(
+        '-s',
+        '--save-config',
+        action='store_true',
+        dest="save",
+        help='save active config to default filename (.ymltoxml.yml) and exit',
+    )
+    parser.add_argument(
+        "-i",
+        "--install",
+        action="store_true",
+        help="install existing repositories (python only)",
+    )
+    parser.add_argument(
+        "-u",
+        "--update",
+        action="store_true",
+        help="update existing repositories",
+    )
+    parser.add_argument(
+        "-S",
+        "--show",
+        action="store_true",
+        help="display current repository state",
+    )
+    parser.add_argument(
         '-l',
         '--lock-config',
         action='store_true',
         dest="lock",
         help='lock active configuration in new config file and checkout hashes',
     )
-    parser.add_option(
-        '-s',
-        '--save-config',
-        action='store_true',
-        dest="save",
-        help='save example config to default filename (.repolite.yml) and exit',
-    )
 
-    (opts, _) = parser.parse_args()
+    opts = parser.parse_args()
 
     # basic logging setup must come before any other logging calls
     log_level = logging.DEBUG if opts.verbose else logging.INFO
@@ -489,9 +489,6 @@ def main(argv=None):
         process_git_repos(flag_list, repo_list, opts.update, opts.quiet)
     except FileExistsError as exc:
         logging.error('Top dir: %s', exc)
-
-
-REPO_CFG = os.getenv('REPO_CFG', default='')
 
 
 if __name__ == '__main__':

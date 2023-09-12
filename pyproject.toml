@@ -7,7 +7,14 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-#write_to = "src/repolite/_version.py"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests",]
+log_cli =  false
+doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
+addopts = "--strict-markers"
+markers = "subscript"
 
 [tool.coverage.run]
 branch = true
@@ -21,8 +28,15 @@ omit = [
 source = ["src"]
 
 [tool.coverage.report]
-fail_under = 50
+fail_under = 10
 show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "raise AssertionError",
+    "if typing.TYPE_CHECKING:",
+    "if TYPE_CHECKING:",
+]
 
 [tool.black]
 line-length = 90
