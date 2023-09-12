@@ -8,6 +8,12 @@ from repolite import *
 from repolite.repolite import *
 
 
+def test_git_check():
+    git, lfs = check_for_git()
+    assert 'git' in git
+    assert 'lfs' in lfs or not lfs
+
+
 def test_resolve_top_dir(tmp_path):
     d = tmp_path / "proj"
     d.mkdir()
@@ -38,7 +44,8 @@ def test_load_config_bogus(monkeypatch):
     monkeypatch.setenv("REPO_CFG", "testme.txt")
     with pytest.raises(FileTypeError) as excinfo:
         _, pfile = load_config()
-    assert 'unknown config file extension' in str(excinfo.value)
+    assert 'unknown file extension' in str(excinfo.value)
+    assert 'testme.txt' in str(excinfo.value)
 
 
 def test_parse_config():

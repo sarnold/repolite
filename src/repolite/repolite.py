@@ -135,7 +135,7 @@ def load_config(file_encoding='utf-8'):
 
     cfgfile = Path(REPO_CFG) if REPO_CFG else Path('.repolite.yml')
     if not cfgfile.name.lower().endswith(('.yml', '.yaml')):
-        raise FileTypeError("FileTypeError: unknown config file extension")
+        raise FileTypeError("FileTypeError: unknown file extension: %s", cfgfile.name)
     if not cfgfile.exists():
         cfgfile = importlib_resources.files('repolite.data').joinpath('example.yml')
     logging.debug('Using config: %s', str(cfgfile.resolve()))
@@ -229,7 +229,7 @@ def process_git_repos(flags, repos, pull, quiet):
     :type flags: list
     :param repos: List of repository objs (from yaml cfg)
     :type repos: list
-    :param pull: Pull with rebase if True, else use --ff-only
+    :param pull: Update if True, else checkout
     :type pull: Boolean
     :param quiet: Suppress some git output
     :type quiet: Boolean
@@ -489,6 +489,7 @@ def main(argv=None):
         process_git_repos(flag_list, repo_list, opts.update, opts.quiet)
     except FileExistsError as exc:
         logging.error('Top dir: %s', exc)
+        logging.error('Did you sync your repositories first?')
 
 
 if __name__ == '__main__':

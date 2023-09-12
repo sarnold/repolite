@@ -72,7 +72,7 @@ To build from source, see the `Dev tools`_ section below.
 Prerequisites
 ~~~~~~~~~~~~~
 
-A supported linux distribution, mainly something that uses either
+A supported Linux distribution, mainly something that uses either
 ``.ebuilds`` (eg, Gentoo or funtoo) or ``.deb`` packages, starting with at
 least Ubuntu bionic or Debian stretch (see the above PPA package repo
 on Launchpad).
@@ -117,11 +117,11 @@ following to install the latest repolite on any platform::
 
 or use this command to install a specific version from source::
 
-  $ pip install git+https://github.com/sarnold/repolite.git@0.3.0
+  $ pip install git+https://github.com/sarnold/repolite.git@0.4.2
 
 If you have a ``requirements.txt`` file, you can add something like this::
 
-  repolite @ https://github.com/sarnold/repolite/releases/download/0.3.3/repolite-0.3.3-py3-none-any.whl
+  repolite @ https://github.com/sarnold/repolite/releases/download/0.4.2/repolite-0.4.2-py3-none-any.whl
 
 
 The full package provides the ``repolite`` executable as well as
@@ -147,24 +147,25 @@ The current version supports minimal command options and there are no
 required arguments::
 
   (dev) user@host repolite (main) $ repolite -h
-  Usage: repolite [options]
+  usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-l]
 
-  Manage local (git) dependencies (default: clone and checkout).
+  Manage local (git) dependencies (default: clone and checkout)
 
-  Options:
-    --version          show program's version number and exit
+  options:
     -h, --help         show this help message and exit
-    -i, --install      install existing repositories (python only)
-    -u, --update       update existing repositories
-    -S, --show         display current repository state and exit
-    -q, --quiet        suppress output from git command
-    -v, --verbose      display more logging info
-    -d, --dump-config  dump active configuration file or example to stdout and
-                       exit
+    --version          show program's version number and exit
+    -v, --verbose      Display more processing info (default: False)
+    -q, --quiet        suppress output from git command (default: False)
+    -d, --dump-config  Dump default configuration file to stdout (default:
+                       False)
+    -s, --save-config  save active config to default filename (.ymltoxml.yml)
+                       and exit (default: False)
+    -i, --install      install existing repositories (python only) (default:
+                       False)
+    -u, --update       update existing repositories (default: False)
+    -S, --show         display current repository state (default: False)
     -l, --lock-config  lock active configuration in new config file and checkout
-                       hashes
-    -s, --save-config  save example config to default filename (.repolite.yml)
-                       and exit
+                       hashes (default: False)
 
 Configuration settings
 ----------------------
@@ -230,9 +231,9 @@ dependencies and run the specified commands, eg:
   $ cd repolite/
   $ tox -e py
 
-The above will run the default test commands (if we had tests) using the
-(local) default Python version.  To specify the Python version and host
-OS type, run something like::
+The above will run the default test command using the (local) default
+Python version.  To specify the Python version and host OS type, run
+something like::
 
   $ tox -e py39-linux
 
