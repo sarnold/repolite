@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-repo_path = Path('tests/testdata')
-repo1 = repo_path / Path('daffy')
-repo2 = repo_path / Path('porky')
+repo_path = Path('tests', 'testdata').__str__()
+repo1 = Path(repo_path, 'daffy')
+repo2 = Path(repo_path, 'porky')
 okay = repo1.exists() and repo2.exists()
 
 git_cmd = [
@@ -29,10 +29,11 @@ def pytest_configure(config):
         print(f'Creating dummy git repos in {repo_path}')
         for repo in ('daffy', 'porky'):
             git_cmd.extend(['--name', repo])
-            # print(f'Running full cmd: {git_cmd}')
+            print(f'Running full cmd: {git_cmd}')
             out = subprocess.check_output(git_cmd, universal_newlines=True)
             assert 'Generating dummy Git repo' in out
-            # print(f'Out: {out}')
+            print(f'Out: {out}')
+            print(sorted(Path('tests/testdata').glob('*')))
 
 
 @pytest.fixture(scope="module")

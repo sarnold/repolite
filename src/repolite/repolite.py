@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 from shlex import split
 from shutil import which
+from subprocess import CalledProcessError
 
 from munch import Munch
 
@@ -31,6 +32,8 @@ if sys.version_info < (3, 10):
 else:
     import importlib.resources as importlib_resources
 
+if sys.platform == 'win32':
+    from git import Repo
 
 # from logging_tree import printout  # debug logger environment
 
@@ -197,7 +200,7 @@ def create_locked_cfg(ucfg, ufile, quiet, test=None):
         Write a new config file with '-locked' appended to the name.
         """
         cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
-        locked_cfg_name = cfg_name if not test else Path(test) / cfg_name
+        locked_cfg_name = cfg_name if not test else Path(test).joinpath(cfg_name)
         Path(locked_cfg_name).write_text(Munch.toYAML(ucfg), encoding='utf-8')
 
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
@@ -276,6 +279,8 @@ def process_git_repos(flags, repos, pull, quiet):
         git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
+        logging.warning('Making sure repo_url is a string => %r', str(item.repo_url))
+        repo_url_str = str(item.repo_url)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
@@ -287,11 +292,26 @@ def process_git_repos(flags, repos, pull, quiet):
             else:
                 if item.repo_depth > 0:
                     git_action = git_action + f'--depth {item.repo_depth} '
-                git_clone = git_action + f'{item.repo_url} '
+                git_clone = git_action + f'{repo_url_str} '
                 if item.repo_alias:
                     git_clone += item.repo_alias
                 logging.debug('Clone cmd: %s', git_clone)
-                sp.check_call(split(git_clone))
+                if sys.platform != 'win32':
+                    try:
+                        ret = sp.run(
+                            split(git_clone),
+                            text=True,
+                            check=True,
+                            capture_output=True,
+                        )
+                    except CalledProcessError as exc:
+                        logging.exception('Could not clone repository: %s', exc)
+                        logging.exception('result was: %r', ret)
+                else:
+                    try:
+                        Repo.clone_from(repo_url_str, git_dir)
+                    except ValueError as exc:
+                        logging.exception('Could not clone repository: %s', exc)
                 os.chdir(git_dir)
                 sp.check_call(split(git_checkout))
                 if item.repo_init_submodules:

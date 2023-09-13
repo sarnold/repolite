@@ -21,8 +21,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: [3.7, 3.8, 3.9, '3.10', '3.11']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.8, 3.9, '3.10', '3.11']
     steps:
     - name: Set git crlf/eol
       run: |
@@ -45,6 +45,6 @@ jobs:
 
     - name: Run tests
       run: |
-        tox
+        tox -- no
       env:
         PLATFORM: ${{ matrix.os }}

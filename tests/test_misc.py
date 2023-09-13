@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -6,6 +7,8 @@ from munch import Munch
 
 from repolite import *
 from repolite.repolite import *
+
+LOGGER = logging.getLogger(__name__)
 
 
 def test_git_check():
