@@ -26,7 +26,7 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import version
 
-if sys.version_info < (3, 9):
+if sys.version_info < (3, 10):
     import importlib_resources
 else:
     import importlib.resources as importlib_resources
@@ -175,7 +175,7 @@ def parse_config(ucfg):
     return [udir, urebase], urepos
 
 
-def create_locked_cfg(ucfg, ufile, quiet):
+def create_locked_cfg(ucfg, ufile, quiet, test=None):
     """
     Create a 'locked' cfg file, ie, read the active config file and
     populate the ``repo_hash`` values with HEAD from each branch, then
@@ -187,14 +187,17 @@ def create_locked_cfg(ucfg, ufile, quiet):
     :type ufile: Path obj
     :param quiet: Suppress some git output
     :type quiet: Boolean
+    :param test: test path for locked config file
+    :type test: str or None
     :raises DirectoryTypeError: if repo state is invalid
     """
 
-    def write_locked_cfg(ucfg, ufile):
+    def write_locked_cfg(ucfg, ufile, test=None):
         """
         Write a new config file with '-locked' appended to the name.
         """
-        locked_cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
+        cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
+        locked_cfg_name = cfg_name if not test else Path(test) / cfg_name
         Path(locked_cfg_name).write_text(Munch.toYAML(ucfg), encoding='utf-8')
 
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
@@ -402,7 +405,7 @@ def main(argv=None):
         "-q",
         "--quiet",
         action="store_true",
-        help="suppress output from git command",
+        help="Suppress output from git command",
     )
     parser.add_argument(
         '-d',
@@ -416,32 +419,32 @@ def main(argv=None):
         '--save-config',
         action='store_true',
         dest="save",
-        help='save active config to default filename (.ymltoxml.yml) and exit',
+        help='Save active config to default filename (.ymltoxml.yml) and exit',
     )
     parser.add_argument(
         "-i",
         "--install",
         action="store_true",
-        help="install existing repositories (python only)",
+        help="Install existing repositories (python only)",
     )
     parser.add_argument(
         "-u",
         "--update",
         action="store_true",
-        help="update existing repositories",
+        help="Update existing repositories",
     )
     parser.add_argument(
         "-S",
         "--show",
         action="store_true",
-        help="display current repository state",
+        help="Display current repository state",
     )
     parser.add_argument(
         '-l',
         '--lock-config',
         action='store_true',
         dest="lock",
-        help='lock active configuration in new config file and checkout hashes',
+        help='Lock active configuration in new config file and checkout hashes',
     )
 
     opts = parser.parse_args()
