@@ -52,7 +52,7 @@ def test_repolite_sync(script_loc, tmpdir_session):
     cfg.top_dir = str(tmpdir_session / 'ext')
 
     for repo in cfg.repos:
-        repo.repo_url = script_loc / repo.repo_url
+        repo.repo_url = str(script_loc / repo.repo_url)
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
@@ -72,19 +72,19 @@ def test_repolite_show(script_loc, tmpdir_session):
     cfg.top_dir = str(tmpdir_session / 'ext')
 
     for repo in cfg.repos:
-        repo.repo_url = script_loc / repo.repo_url
+        repo.repo_url = str(script_loc / repo.repo_url)
 
     show_repo_state(cfg)
 
 
-def test_repolite_update(tmp_path, script_loc, tmpdir_session):
+def test_repolite_update(script_loc, tmpdir_session):
     """
     Update the repos in the test config.
     """
     cfg.top_dir = str(tmpdir_session / 'ext')
 
     for repo in cfg.repos:
-        repo.repo_url = script_loc / repo.repo_url
+        repo.repo_url = str(script_loc / repo.repo_url)
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
@@ -99,3 +99,26 @@ def test_repolite_update(tmp_path, script_loc, tmpdir_session):
     update = True
     quiet = True
     process_git_repos(flag_list, repo_list, update, quiet)
+
+
+def test_repolite_locked_cfg(tmp_path, script_loc, tmpdir_session):
+    """
+    Update the repos in the test config.
+    """
+    cfg.top_dir = str(tmpdir_session / 'ext')
+    tpath = str(tmp_path)
+    print(tmp_path)
+    pfile = Path('.repolite-pytest.yml')
+
+    for repo in cfg.repos:
+        repo.repo_url = str(script_loc / repo.repo_url)
+
+    flag_list, repo_list = parse_config(cfg)
+    git_cmd, lfs_cmd = check_for_git()
+    flag_list.append(lfs_cmd)
+    ulock = True
+    flag_list.append(ulock)
+
+    update = False
+    quiet = False
+    create_locked_cfg(cfg, pfile, quiet, tpath)

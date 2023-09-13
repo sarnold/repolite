@@ -221,7 +221,7 @@ def create_locked_cfg(ucfg, ufile, quiet, test=None):
 
         os.chdir(top_dir)
     os.chdir(work_dir)
-    write_locked_cfg(ucfg, ufile)
+    write_locked_cfg(ucfg, ufile, test)
 
 
 def process_git_repos(flags, repos, pull, quiet):
@@ -381,7 +381,7 @@ def show_repo_state(ucfg):
     os.chdir(work_dir)
 
 
-def main(argv=None):
+def main(argv=None):  # pragma: no cover
     """
     Manage git repository-based project dependencies.
     """
@@ -496,4 +496,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    main()
+    main()  # pragma: no cover
