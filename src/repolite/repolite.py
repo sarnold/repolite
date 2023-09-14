@@ -292,7 +292,7 @@ def process_git_repos(flags, repos, pull, quiet):
 
     for item in repos:
         repo_url_str = check_repo_url(item.repo_url)
-        logging.warning('Make sure repo_url is a string => %r', repo_url_str)
+        logging.debug('Make sure repo_url is a string => %r', repo_url_str)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
         git_dir = item.repo_alias if item.repo_alias else item.repo_name

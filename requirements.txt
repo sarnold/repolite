@@ -1,3 +1,2 @@
-GitPython
 munch
 PyYAML

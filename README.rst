@@ -2,13 +2,13 @@
  repolite: git repo dependency manager
 =======================================
 
-A lightweight tool to manage a small set of repository dependencies without a
+A lightweight tool to manage a small set of project dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
 files in yaml instead.
 
-|ci| |wheels| |release| |badge| |bandit|
+|ci| |wheels| |release| |bandit|
 
-|pre| |pylint|
+|pre| |cov| |pylint|
 
 |tag| |license| |python|
 
@@ -16,6 +16,11 @@ files in yaml instead.
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
+
+Repolite is tested on the 3 primary GH runner platforms, so as long as you
+have a new-ish Python and a ``git`` binary it should run on your platform
+(meaning as long as ``which git`` succeeds there's a good chance it will
+Just Work).
 
 Quick Start
 ===========
@@ -123,6 +128,9 @@ If you have a ``requirements.txt`` file, you can add something like this::
 
   repolite @ https://github.com/sarnold/repolite/releases/download/0.4.2/repolite-0.4.2-py3-none-any.whl
 
+or even this::
+
+  repolite @ https://github.com/sarnold/repolite/archive/refs/heads/master.tar.gz
 
 The full package provides the ``repolite`` executable as well as
 an example configuration file that provides defaults for all values.
@@ -249,7 +257,7 @@ Full list of additional ``tox`` commands:
 * ``tox -e lint`` will run ``pylint`` (somewhat less permissive than PEP8/flake8 checks)
 * ``tox -e mypy`` will run mypy import and type checking
 * ``tox -e style`` will run flake8 style checks
-* ``tox -e sync`` will install repolite in .sync and fetch the exammple repos
+* ``tox -e sync`` will install repolite in .sync and fetch the example repos
 * ``tox -e do`` will run a repolite command from the .sync environment
 
 To build/lint the api docs, use the following tox commands:
@@ -318,10 +326,6 @@ To run all ``pre-commit`` checks manually, try::
     :target: https://github.com/sarnold/repolite/actions/workflows/wheels.yml
     :alt: Wheel Status
 
-.. |badge| image:: https://github.com/sarnold/repolite/actions/workflows/pylint.yml/badge.svg
-    :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml
-    :alt: Pylint Status
-
 .. |release| image:: https://github.com/sarnold/repolite/actions/workflows/release.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/release.yml
     :alt: Release Status
@@ -329,6 +333,10 @@ To run all ``pre-commit`` checks manually, try::
 .. |bandit| image:: https://github.com/sarnold/repolite/actions/workflows/bandit.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/bandit.yml
     :alt: Security check - Bandit
+
+.. |cov| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/test-coverage.svg
+    :target: https://github.com/sarnold/repolite/actions/workflows/coverage.yml
+    :alt: Test coverage
 
 .. |pylint| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml
