@@ -134,11 +134,11 @@ def load_config(file_encoding='utf-8'):
     :return tuple: Munch cfg obj and cfg file as Path obj
     :raises FileTypeError: if the input file is not yml
     """
-    REPO_CFG = os.getenv('REPO_CFG', default='')
+    repo_cfg = os.getenv('REPO_CFG', default='')
 
-    cfgfile = Path(REPO_CFG) if REPO_CFG else Path('.repolite.yml')
+    cfgfile = Path(repo_cfg) if repo_cfg else Path('.repolite.yml')
     if not cfgfile.name.lower().endswith(('.yml', '.yaml')):
-        raise FileTypeError("FileTypeError: unknown file extension: %s", cfgfile.name)
+        raise FileTypeError(f"FileTypeError: unknown file extension: {cfgfile.name}")
     if not cfgfile.exists():
         cfgfile = importlib_resources.files('repolite.data').joinpath('example.yml')
     logging.debug('Using config: %s', str(cfgfile.resolve()))
@@ -274,6 +274,7 @@ def process_git_repos(flags, repos, pull, quiet):
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
     submodule_cmd = 'git submodule update --init --recursive'
     git_lfs_install = 'git lfs install'
+    gp_clone_opts = ['-q'] if quiet else []
 
     if pull:  # baseline git pull action, overrides repo-level option
         git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
@@ -283,6 +284,7 @@ def process_git_repos(flags, repos, pull, quiet):
         repo_url_str = str(item.repo_url)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
+        gp_clone_opts.append(f'--branch {item.repo_branch}')
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         logging.debug('Operating in git_dir: %s', git_dir)
         if not pull:
@@ -292,6 +294,7 @@ def process_git_repos(flags, repos, pull, quiet):
             else:
                 if item.repo_depth > 0:
                     git_action = git_action + f'--depth {item.repo_depth} '
+                    gp_clone_opts.append(f'--depth={item.repo_depth}')
                 git_clone = git_action + f'{repo_url_str} '
                 if item.repo_alias:
                     git_clone += item.repo_alias
@@ -304,12 +307,14 @@ def process_git_repos(flags, repos, pull, quiet):
                             check=True,
                             capture_output=True,
                         )
+                        logging.debug('result was: %r', ret)
                     except CalledProcessError as exc:
                         logging.exception('Could not clone repository: %s', exc)
-                        logging.exception('result was: %r', ret)
                 else:
                     try:
-                        Repo.clone_from(repo_url_str, git_dir)
+                        Repo.clone_from(
+                            repo_url_str, git_dir, multi_options=gp_clone_opts
+                        )
                     except ValueError as exc:
                         logging.exception('Could not clone repository: %s', exc)
                 os.chdir(git_dir)
