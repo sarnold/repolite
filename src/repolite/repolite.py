@@ -19,7 +19,6 @@ from pathlib import Path
 from shlex import split
 from shutil import which
 
-from git import Repo
 from munch import Munch
 
 if sys.version_info < (3, 8):
@@ -31,6 +30,7 @@ if sys.version_info < (3, 10):
     import importlib_resources
 else:
     import importlib.resources as importlib_resources
+
 
 # from logging_tree import printout  # debug logger environment
 
@@ -63,6 +63,21 @@ def check_for_git():
     if not lfs_path:
         logging.debug('Cannot initialize large files, git-lfs not found')
     return git_path, lfs_path
+
+
+def check_repo_url(url):
+    """
+    Make sure the url is sanitary on most platforms.
+
+    :param url: input url / path from pathlib or config
+    :return url: url / path to clone
+    :rtype str:
+    """
+    url = os.path.expandvars(url)
+    if url.startswith("~"):
+        url = os.path.expanduser(url)
+    url = url.replace("\\\\", "\\").replace("\\", "/")
+    return url
 
 
 def check_repo_state(ucfg):
@@ -267,17 +282,17 @@ def process_git_repos(flags, repos, pull, quiet):
             )
 
     os.chdir(top_dir)
+    git_action = 'git clone -q ' if quiet else 'git clone '
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
     submodule_cmd = 'git submodule update --init --recursive'
     git_lfs_install = 'git lfs install'
-    gp_clone_opts = ['-q'] if quiet else []
 
-    # baseline git pull action, overrides repo-level option
-    git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
+    if pull:  # baseline git pull action, overrides repo-level option
+        git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
-        repo_url_str = str(item.repo_url)
-        logging.debug('Make sure repo_url is a string => %r', repo_url_str)
+        repo_url_str = check_repo_url(item.repo_url)
+        logging.warning('Make sure repo_url is a string => %r', repo_url_str)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
@@ -287,19 +302,15 @@ def process_git_repos(flags, repos, pull, quiet):
             if git_dir in list(dir_name_repo_intersect):
                 logging.debug('Skipping existing repo: %s', git_dir)
             else:
-                gp_clone_opts.append(f'--branch {item.repo_branch}')
                 if item.repo_depth > 0:
-                    gp_clone_opts.append(f'--depth={item.repo_depth}')
-                logging.debug('Clone opts: %s', gp_clone_opts)
-                try:
-                    Repo.clone_from(
-                        repo_url_str,
-                        git_dir,
-                        multi_options=gp_clone_opts,
-                    )
-                except ValueError as exc:
-                    logging.exception('Could not clone repository: %s', exc)
+                    git_action = git_action + f'--depth {item.repo_depth} '
+                git_clone = git_action + f'{repo_url_str} '
+                if item.repo_alias:
+                    git_clone += item.repo_alias
+                logging.debug('Clone cmd: %s', git_clone)
+                sp.check_call(split(git_clone))
                 os.chdir(git_dir)
+                sp.check_call(split(git_checkout))
                 if item.repo_init_submodules:
                     sp.check_call(split(submodule_cmd))
                 if item.repo_has_lfs_files and has_lfs is not None:

@@ -17,6 +17,20 @@ def test_git_check():
     assert 'lfs' in lfs or not lfs
 
 
+def test_url_check():
+    url1 = 'https://github.com/sarnold/pyserv.git'
+    url2 = 'D:\\a\\repolite\\repolite\\tests\\testdata\\daffy'
+    url3 = '/home/user/src/repolite/tests/testdata/porky'
+    out2 = 'D:/a/repolite/repolite/tests/testdata/daffy'
+
+    url = check_repo_url(url1)
+    assert url == url1
+    url = check_repo_url(url2)
+    assert url == out2
+    url = check_repo_url(url3)
+    assert url == url3
+
+
 def test_resolve_top_dir(tmp_path):
     d = tmp_path / "proj"
     d.mkdir()
