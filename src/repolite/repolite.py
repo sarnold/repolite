@@ -18,8 +18,8 @@ import sys
 from pathlib import Path
 from shlex import split
 from shutil import which
-from subprocess import CalledProcessError
 
+from git import Repo
 from munch import Munch
 
 if sys.version_info < (3, 8):
@@ -31,9 +31,6 @@ if sys.version_info < (3, 10):
     import importlib_resources
 else:
     import importlib.resources as importlib_resources
-
-if sys.platform == 'win32':
-    from git import Repo
 
 # from logging_tree import printout  # debug logger environment
 
@@ -270,21 +267,19 @@ def process_git_repos(flags, repos, pull, quiet):
             )
 
     os.chdir(top_dir)
-    git_action = 'git clone -q ' if quiet else 'git clone '
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
     submodule_cmd = 'git submodule update --init --recursive'
     git_lfs_install = 'git lfs install'
     gp_clone_opts = ['-q'] if quiet else []
 
-    if pull:  # baseline git pull action, overrides repo-level option
-        git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
+    # baseline git pull action, overrides repo-level option
+    git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
-        logging.warning('Making sure repo_url is a string => %r', str(item.repo_url))
         repo_url_str = str(item.repo_url)
+        logging.debug('Make sure repo_url is a string => %r', repo_url_str)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
-        gp_clone_opts.append(f'--branch {item.repo_branch}')
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         logging.debug('Operating in git_dir: %s', git_dir)
         if not pull:
@@ -292,33 +287,19 @@ def process_git_repos(flags, repos, pull, quiet):
             if git_dir in list(dir_name_repo_intersect):
                 logging.debug('Skipping existing repo: %s', git_dir)
             else:
+                gp_clone_opts.append(f'--branch {item.repo_branch}')
                 if item.repo_depth > 0:
-                    git_action = git_action + f'--depth {item.repo_depth} '
                     gp_clone_opts.append(f'--depth={item.repo_depth}')
-                git_clone = git_action + f'{repo_url_str} '
-                if item.repo_alias:
-                    git_clone += item.repo_alias
-                logging.debug('Clone cmd: %s', git_clone)
-                if sys.platform != 'win32':
-                    try:
-                        ret = sp.run(
-                            split(git_clone),
-                            text=True,
-                            check=True,
-                            capture_output=True,
-                        )
-                        logging.debug('result was: %r', ret)
-                    except CalledProcessError as exc:
-                        logging.exception('Could not clone repository: %s', exc)
-                else:
-                    try:
-                        Repo.clone_from(
-                            repo_url_str, git_dir, multi_options=gp_clone_opts
-                        )
-                    except ValueError as exc:
-                        logging.exception('Could not clone repository: %s', exc)
+                logging.debug('Clone opts: %s', gp_clone_opts)
+                try:
+                    Repo.clone_from(
+                        repo_url_str,
+                        git_dir,
+                        multi_options=gp_clone_opts,
+                    )
+                except ValueError as exc:
+                    logging.exception('Could not clone repository: %s', exc)
                 os.chdir(git_dir)
-                sp.check_call(split(git_checkout))
                 if item.repo_init_submodules:
                     sp.check_call(split(submodule_cmd))
                 if item.repo_has_lfs_files and has_lfs is not None:

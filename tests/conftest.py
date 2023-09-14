@@ -32,8 +32,8 @@ def pytest_configure(config):
             print(f'Running full cmd: {git_cmd}')
             out = subprocess.check_output(git_cmd, universal_newlines=True)
             assert 'Generating dummy Git repo' in out
-            print(f'Out: {out}')
-            print(sorted(Path('tests/testdata').glob('*')))
+            # print(f'Out: {out}')
+            # print(sorted(Path('tests/testdata').glob('*')))
 
 
 @pytest.fixture(scope="module")

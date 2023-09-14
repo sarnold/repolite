@@ -49,7 +49,8 @@ repos:
         - importlib_resources
         - munch
         - munch-stubs
-        - ruamel.yaml
+        - PyYAML
+        - GitPython
       args:
         - --follow-imports=normal
         - --install-types

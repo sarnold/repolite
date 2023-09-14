@@ -56,14 +56,14 @@ def test_repolite_sync(script_loc, tmpdir_session):
 
     for repo in cfg.repos:
         pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
-        print(f'PurePath is {pure_path}')
+        # print(f'PurePath is {pure_path}')
         full_path = Path(pure_path).resolve()
-        print(f'Type is {type(full_path)}')
-        print(f'Path is {full_path}')
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
         print(f'Path string is {full_path.__str__()}')
         repo.repo_url = full_path.__str__()
-        print(f'Munch type is {type(repo.repo_url)}')
-        print(f'Munch value is {repo.repo_url}')
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # rint(f'Munch value is {repo.repo_url}')
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
@@ -84,14 +84,14 @@ def test_repolite_show(script_loc, tmpdir_session):
 
     for repo in cfg.repos:
         pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
-        print(f'PurePath is {pure_path}')
+        # print(f'PurePath is {pure_path}')
         full_path = Path(pure_path).resolve()
-        print(f'Type is {type(full_path)}')
-        print(f'Path is {full_path}')
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
         print(f'Path string is {full_path.__str__()}')
         repo.repo_url = full_path.__str__()
-        print(f'Munch type is {type(repo.repo_url)}')
-        print(f'Munch value is {repo.repo_url}')
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # rint(f'Munch value is {repo.repo_url}')
 
     show_repo_state(cfg)
 
@@ -104,14 +104,14 @@ def test_repolite_update(script_loc, tmpdir_session):
 
     for repo in cfg.repos:
         pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
-        print(f'PurePath is {pure_path}')
+        # print(f'PurePath is {pure_path}')
         full_path = Path(pure_path).resolve()
-        print(f'Type is {type(full_path)}')
-        print(f'Path is {full_path}')
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
         print(f'Path string is {full_path.__str__()}')
         repo.repo_url = full_path.__str__()
-        print(f'Munch type is {type(repo.repo_url)}')
-        print(f'Munch value is {repo.repo_url}')
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # rint(f'Munch value is {repo.repo_url}')
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
@@ -139,14 +139,14 @@ def test_repolite_locked_cfg(tmp_path, script_loc, tmpdir_session):
 
     for repo in cfg.repos:
         pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
-        print(f'PurePath is {pure_path}')
+        # print(f'PurePath is {pure_path}')
         full_path = Path(pure_path).resolve()
-        print(f'Type is {type(full_path)}')
-        print(f'Path is {full_path}')
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
         print(f'Path string is {full_path.__str__()}')
         repo.repo_url = full_path.__str__()
-        print(f'Munch type is {type(repo.repo_url)}')
-        print(f'Munch value is {repo.repo_url}')
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # rint(f'Munch value is {repo.repo_url}')
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
