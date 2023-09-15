@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite module &mdash; repolite 0.4.2 documentation</title>
+  <title>repolite.repolite module &mdash; repolite 0.4.3.dev12+g5d39e10 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=ff822928"></script>
+        <script src="../_static/documentation_options.js?v=c8e7f64f"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -124,8 +124,24 @@ match the configuration, else <code class="docutils literal notranslate"><span c
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.check_repo_url">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">check_repo_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#check_repo_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.check_repo_url" title="Link to this definition"></a></dt>
+<dd><p>Make sure the url is sanitary on most platforms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – input url / path from pathlib or config</p>
+</dd>
+<dt class="field-even">Return url<span class="colon">:</span></dt>
+<dd class="field-even"><p>url / path to clone</p>
+</dd>
+<dt class="field-odd">Rtype str<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="repolite.repolite.create_locked_cfg">
-<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">create_locked_cfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ufile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#create_locked_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.create_locked_cfg" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">create_locked_cfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ufile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#create_locked_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.create_locked_cfg" title="Link to this definition"></a></dt>
 <dd><p>Create a ‘locked’ cfg file, ie, read the active config file and
 populate the <code class="docutils literal notranslate"><span class="pre">repo_hash</span></code> values with HEAD from each branch, then
 write a new config file with ‘-locked’ appended to the name.</p>
@@ -135,6 +151,7 @@ write a new config file with ‘-locked’ appended to the name.</p>
 <li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
 <li><p><strong>ufile</strong> (<em>Path obj</em>) – active config file</p></li>
 <li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
+<li><p><strong>test</strong> (<em>str</em><em> or </em><em>None</em>) – test path for locked config file</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -206,7 +223,7 @@ of global options and list of Munch repo objects.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>flags</strong> (<em>list</em>) – List of options (from yaml cfg)</p></li>
 <li><p><strong>repos</strong> (<em>list</em>) – List of repository objs (from yaml cfg)</p></li>
-<li><p><strong>pull</strong> (<em>Boolean</em>) – Pull with rebase if True, else use –ff-only</p></li>
+<li><p><strong>pull</strong> (<em>Boolean</em>) – Update if True, else checkout</p></li>
 <li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
 </ul>
 </dd>
