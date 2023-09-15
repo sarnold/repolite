@@ -4,7 +4,8 @@ __pycache__/
 *$py.class
 
 # generated/user files and directories
-src/repolite/_version.py
+tests/testdata/porky
+tests/testdata/daffy
 .repo*.yml
 ext/
 

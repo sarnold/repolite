@@ -2,13 +2,13 @@
  repolite: git repo dependency manager
 =======================================
 
-A lightweight tool to manage a small set of repository dependencies without a
+A lightweight tool to manage a small set of project dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
 files in yaml instead.
 
-|ci| |wheels| |release| |badge| |bandit|
+|ci| |wheels| |release| |bandit|
 
-|pre| |pylint|
+|pre| |cov| |pylint|
 
 |tag| |license| |python|
 
@@ -16,6 +16,11 @@ files in yaml instead.
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
+
+Repolite is tested on the 3 primary GH runner platforms, so as long as you
+have a new-ish Python and a ``git`` binary it should run on your platform
+(meaning as long as ``which git`` succeeds there's a good chance it will
+Just Work).
 
 Quick Start
 ===========
@@ -72,7 +77,7 @@ To build from source, see the `Dev tools`_ section below.
 Prerequisites
 ~~~~~~~~~~~~~
 
-A supported linux distribution, mainly something that uses either
+A supported Linux distribution, mainly something that uses either
 ``.ebuilds`` (eg, Gentoo or funtoo) or ``.deb`` packages, starting with at
 least Ubuntu bionic or Debian stretch (see the above PPA package repo
 on Launchpad).
@@ -117,12 +122,15 @@ following to install the latest repolite on any platform::
 
 or use this command to install a specific version from source::
 
-  $ pip install git+https://github.com/sarnold/repolite.git@0.3.0
+  $ pip install git+https://github.com/sarnold/repolite.git@0.4.2
 
 If you have a ``requirements.txt`` file, you can add something like this::
 
-  repolite @ https://github.com/sarnold/repolite/releases/download/0.3.3/repolite-0.3.3-py3-none-any.whl
+  repolite @ https://github.com/sarnold/repolite/releases/download/0.4.2/repolite-0.4.2-py3-none-any.whl
 
+or even this::
+
+  repolite @ https://github.com/sarnold/repolite/archive/refs/heads/master.tar.gz
 
 The full package provides the ``repolite`` executable as well as
 an example configuration file that provides defaults for all values.
@@ -147,24 +155,25 @@ The current version supports minimal command options and there are no
 required arguments::
 
   (dev) user@host repolite (main) $ repolite -h
-  Usage: repolite [options]
+  usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-l]
 
-  Manage local (git) dependencies (default: clone and checkout).
+  Manage local (git) dependencies (default: clone and checkout)
 
-  Options:
-    --version          show program's version number and exit
+  options:
     -h, --help         show this help message and exit
-    -i, --install      install existing repositories (python only)
-    -u, --update       update existing repositories
-    -S, --show         display current repository state and exit
-    -q, --quiet        suppress output from git command
-    -v, --verbose      display more logging info
-    -d, --dump-config  dump active configuration file or example to stdout and
-                       exit
+    --version          show program's version number and exit
+    -v, --verbose      Display more processing info (default: False)
+    -q, --quiet        suppress output from git command (default: False)
+    -d, --dump-config  Dump default configuration file to stdout (default:
+                       False)
+    -s, --save-config  save active config to default filename (.ymltoxml.yml)
+                       and exit (default: False)
+    -i, --install      install existing repositories (python only) (default:
+                       False)
+    -u, --update       update existing repositories (default: False)
+    -S, --show         display current repository state (default: False)
     -l, --lock-config  lock active configuration in new config file and checkout
-                       hashes
-    -s, --save-config  save example config to default filename (.repolite.yml)
-                       and exit
+                       hashes (default: False)
 
 Configuration settings
 ----------------------
@@ -230,9 +239,9 @@ dependencies and run the specified commands, eg:
   $ cd repolite/
   $ tox -e py
 
-The above will run the default test commands (if we had tests) using the
-(local) default Python version.  To specify the Python version and host
-OS type, run something like::
+The above will run the default test command using the (local) default
+Python version.  To specify the Python version and host OS type, run
+something like::
 
   $ tox -e py39-linux
 
@@ -248,7 +257,7 @@ Full list of additional ``tox`` commands:
 * ``tox -e lint`` will run ``pylint`` (somewhat less permissive than PEP8/flake8 checks)
 * ``tox -e mypy`` will run mypy import and type checking
 * ``tox -e style`` will run flake8 style checks
-* ``tox -e sync`` will install repolite in .sync and fetch the exammple repos
+* ``tox -e sync`` will install repolite in .sync and fetch the example repos
 * ``tox -e do`` will run a repolite command from the .sync environment
 
 To build/lint the api docs, use the following tox commands:
@@ -317,10 +326,6 @@ To run all ``pre-commit`` checks manually, try::
     :target: https://github.com/sarnold/repolite/actions/workflows/wheels.yml
     :alt: Wheel Status
 
-.. |badge| image:: https://github.com/sarnold/repolite/actions/workflows/pylint.yml/badge.svg
-    :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml
-    :alt: Pylint Status
-
 .. |release| image:: https://github.com/sarnold/repolite/actions/workflows/release.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/release.yml
     :alt: Release Status
@@ -328,6 +333,10 @@ To run all ``pre-commit`` checks manually, try::
 .. |bandit| image:: https://github.com/sarnold/repolite/actions/workflows/bandit.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/bandit.yml
     :alt: Security check - Bandit
+
+.. |cov| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/test-coverage.svg
+    :target: https://github.com/sarnold/repolite/actions/workflows/coverage.yml
+    :alt: Test coverage
 
 .. |pylint| image:: https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml

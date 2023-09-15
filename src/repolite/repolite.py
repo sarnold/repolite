@@ -10,11 +10,11 @@ Manage a small set of repository dependencies without manifest.xml or git
 submodules. You get to write (local) project config files in yaml instead.
 """
 
+import argparse
 import logging
 import os
 import subprocess as sp
 import sys
-from optparse import OptionParser  # pylint: disable=W0402
 from pathlib import Path
 from shlex import split
 from shutil import which
@@ -26,7 +26,7 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import version
 
-if sys.version_info < (3, 9):
+if sys.version_info < (3, 10):
     import importlib_resources
 else:
     import importlib.resources as importlib_resources
@@ -60,9 +60,24 @@ def check_for_git():
     if not git_path:
         logging.error('Cannot continue, no path found for git')
         sys.exit(1)
-    elif not lfs_path:
+    if not lfs_path:
         logging.debug('Cannot initialize large files, git-lfs not found')
     return git_path, lfs_path
+
+
+def check_repo_url(url):
+    """
+    Make sure the url is sanitary on most platforms.
+
+    :param url: input url / path from pathlib or config
+    :return url: url / path to clone
+    :rtype str:
+    """
+    url = os.path.expandvars(url)
+    if url.startswith("~"):
+        url = os.path.expanduser(url)
+    url = url.replace("\\\\", "\\").replace("\\", "/")
+    return url
 
 
 def check_repo_state(ucfg):
@@ -131,9 +146,11 @@ def load_config(file_encoding='utf-8'):
     :return tuple: Munch cfg obj and cfg file as Path obj
     :raises FileTypeError: if the input file is not yml
     """
-    cfgfile = Path(REPO_CFG) if REPO_CFG else Path('.repolite.yml')
+    repo_cfg = os.getenv('REPO_CFG', default='')
+
+    cfgfile = Path(repo_cfg) if repo_cfg else Path('.repolite.yml')
     if not cfgfile.name.lower().endswith(('.yml', '.yaml')):
-        raise FileTypeError("FileTypeError: unknown config file extension")
+        raise FileTypeError(f"FileTypeError: unknown file extension: {cfgfile.name}")
     if not cfgfile.exists():
         cfgfile = importlib_resources.files('repolite.data').joinpath('example.yml')
     logging.debug('Using config: %s', str(cfgfile.resolve()))
@@ -173,7 +190,7 @@ def parse_config(ucfg):
     return [udir, urebase], urepos
 
 
-def create_locked_cfg(ucfg, ufile, quiet):
+def create_locked_cfg(ucfg, ufile, quiet, test=None):
     """
     Create a 'locked' cfg file, ie, read the active config file and
     populate the ``repo_hash`` values with HEAD from each branch, then
@@ -185,14 +202,17 @@ def create_locked_cfg(ucfg, ufile, quiet):
     :type ufile: Path obj
     :param quiet: Suppress some git output
     :type quiet: Boolean
+    :param test: test path for locked config file
+    :type test: str or None
     :raises DirectoryTypeError: if repo state is invalid
     """
 
-    def write_locked_cfg(ucfg, ufile):
+    def write_locked_cfg(ucfg, ufile, test=None):
         """
         Write a new config file with '-locked' appended to the name.
         """
-        locked_cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
+        cfg_name = f'{ufile.stem}-locked{ufile.suffix}'
+        locked_cfg_name = cfg_name if not test else Path(test).joinpath(cfg_name)
         Path(locked_cfg_name).write_text(Munch.toYAML(ucfg), encoding='utf-8')
 
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
@@ -216,7 +236,7 @@ def create_locked_cfg(ucfg, ufile, quiet):
 
         os.chdir(top_dir)
     os.chdir(work_dir)
-    write_locked_cfg(ucfg, ufile)
+    write_locked_cfg(ucfg, ufile, test)
 
 
 def process_git_repos(flags, repos, pull, quiet):
@@ -227,7 +247,7 @@ def process_git_repos(flags, repos, pull, quiet):
     :type flags: list
     :param repos: List of repository objs (from yaml cfg)
     :type repos: list
-    :param pull: Pull with rebase if True, else use --ff-only
+    :param pull: Update if True, else checkout
     :type pull: Boolean
     :param quiet: Suppress some git output
     :type quiet: Boolean
@@ -271,6 +291,8 @@ def process_git_repos(flags, repos, pull, quiet):
         git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
 
     for item in repos:
+        repo_url_str = check_repo_url(item.repo_url)
+        logging.debug('Make sure repo_url is a string => %r', repo_url_str)
         git_fetch = f'git fetch --tags {item.repo_remote}'
         git_checkout = checkout_cmd + f'{item.repo_branch}'
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
@@ -282,7 +304,7 @@ def process_git_repos(flags, repos, pull, quiet):
             else:
                 if item.repo_depth > 0:
                     git_action = git_action + f'--depth {item.repo_depth} '
-                git_clone = git_action + f'{item.repo_url} '
+                git_clone = git_action + f'{repo_url_str} '
                 if item.repo_alias:
                     git_clone += item.repo_alias
                 logging.debug('Clone cmd: %s', git_clone)
@@ -376,7 +398,7 @@ def show_repo_state(ucfg):
     os.chdir(work_dir)
 
 
-def main(argv=None):
+def main(argv=None):  # pragma: no cover
     """
     Manage git repository-based project dependencies.
     """
@@ -385,66 +407,64 @@ def main(argv=None):
 
     __version__ = version('repolite')
 
-    parser = OptionParser(usage="usage: %prog [options]", version=f"%prog {__version__}")
-    parser.description = 'Manage local (git) dependencies (default: clone and checkout).'
-    parser.add_option(
-        "-i",
-        "--install",
-        action="store_true",
-        dest="install",
-        help="install existing repositories (python only)",
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='Manage local (git) dependencies (default: clone and checkout)',
     )
-    parser.add_option(
-        "-u",
-        "--update",
-        action="store_true",
-        dest="update",
-        help="update existing repositories",
-    )
-    parser.add_option(
-        "-S",
-        "--show",
-        action="store_true",
-        dest="show",
-        help="display current repository state",
-    )
-    parser.add_option(
-        "-q",
-        "--quiet",
-        action="store_true",
-        dest="quiet",
-        help="suppress output from git command",
-    )
-    parser.add_option(
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
-        dest="verbose",
-        help="display more logging info",
+        help="Display more processing info",
     )
-    parser.add_option(
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Suppress output from git command",
+    )
+    parser.add_argument(
         '-d',
         '--dump-config',
         action='store_true',
         dest="dump",
-        help='dump active configuration file or example to stdout and exit',
+        help='Dump default configuration file to stdout',
     )
-    parser.add_option(
-        '-l',
-        '--lock-config',
-        action='store_true',
-        dest="lock",
-        help='lock active configuration in new config file and checkout hashes',
-    )
-    parser.add_option(
+    parser.add_argument(
         '-s',
         '--save-config',
         action='store_true',
         dest="save",
-        help='save example config to default filename (.repolite.yml) and exit',
+        help='Save active config to default filename (.ymltoxml.yml) and exit',
+    )
+    parser.add_argument(
+        "-i",
+        "--install",
+        action="store_true",
+        help="Install existing repositories (python only)",
+    )
+    parser.add_argument(
+        "-u",
+        "--update",
+        action="store_true",
+        help="Update existing repositories",
+    )
+    parser.add_argument(
+        "-S",
+        "--show",
+        action="store_true",
+        help="Display current repository state",
+    )
+    parser.add_argument(
+        '-l',
+        '--lock-config',
+        action='store_true',
+        dest="lock",
+        help='Lock active configuration in new config file and checkout hashes',
     )
 
-    (opts, _) = parser.parse_args()
+    opts = parser.parse_args()
 
     # basic logging setup must come before any other logging calls
     log_level = logging.DEBUG if opts.verbose else logging.INFO
@@ -489,10 +509,8 @@ def main(argv=None):
         process_git_repos(flag_list, repo_list, opts.update, opts.quiet)
     except FileExistsError as exc:
         logging.error('Top dir: %s', exc)
-
-
-REPO_CFG = os.getenv('REPO_CFG', default='')
+        logging.error('Did you sync your repositories first?')
 
 
 if __name__ == '__main__':
-    main()
+    main()  # pragma: no cover
