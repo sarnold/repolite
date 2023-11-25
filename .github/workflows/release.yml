@@ -89,7 +89,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            wheels/repo*.whl
+            artifact/*.whl
+            artifact/*.gz
 
   docs:
     name: Release docs
