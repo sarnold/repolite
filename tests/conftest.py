@@ -13,6 +13,7 @@ git_cmd = [
     sys.executable,
     '-m',
     'git_dummy',
+    '--allow-nested',
     '--constant-sha',
     '--branches=5',
     '--diverge-at=2',
