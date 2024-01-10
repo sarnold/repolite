@@ -298,6 +298,8 @@ def process_git_repos(flags, repos, pull, quiet):
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         logging.debug('Operating in git_dir: %s', git_dir)
         if not pull:
+            if item.repo_depth > 0 and item.repo_branch:
+                git_action = git_action + f'-b {item.repo_branch} '
             logging.debug('Checkout cmd: %s', git_checkout)
             if git_dir in list(dir_name_repo_intersect):
                 logging.debug('Skipping existing repo: %s', git_dir)
