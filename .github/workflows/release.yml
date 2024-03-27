@@ -82,7 +82,7 @@ jobs:
 
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -92,8 +92,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifact/*.whl
-            artifact/*.gz
+            packages/repolite*
 
   docs:
     name: Release docs
