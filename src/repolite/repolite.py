@@ -282,15 +282,16 @@ def process_git_repos(flags, repos, pull, quiet):
             )
 
     os.chdir(top_dir)
-    git_action = 'git clone -q ' if quiet else 'git clone '
     checkout_cmd = 'git checkout -q ' if quiet else 'git checkout '
     submodule_cmd = 'git submodule update --init --recursive'
     git_lfs_install = 'git lfs install'
 
-    if pull:  # baseline git pull action, overrides repo-level option
-        git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
-
     for item in repos:
+        # need to reset git_action for each repository
+        git_action = 'git clone -q ' if quiet else 'git clone '
+        if pull:  # baseline git pull action, overrides repo-level option
+            git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
+
         repo_url_str = check_repo_url(item.repo_url)
         logging.debug('Make sure repo_url is a string => %r', repo_url_str)
         git_fetch = f'git fetch --tags {item.repo_remote}'
