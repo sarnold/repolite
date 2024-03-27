@@ -2,6 +2,80 @@ Changelog
 =========
 
 
+0.5.2 (2024-03-26)
+------------------
+
+Changes
+~~~~~~~
+- Add a gitchangelog cfg and tox cmd to (re)generate changes. [Steve
+  Arnold]
+
+Fixes
+~~~~~
+- Re-init git_action to get proper clone args for each repository.
+  [Steve Arnold]
+
+  * fixes issue #20
+
+Other
+~~~~~
+- Merge pull request #21 from sarnold/issue-20. [Steve Arnold]
+
+  Fixes for Issue #20 and pytest fixtures
+
+
+0.5.1 (2024-01-12)
+------------------
+
+Changes
+~~~~~~~
+- Switch to upstream git_dummy instead of fork. [Stephen L Arnold]
+
+  * requires new arg for nested repos, but it does work
+
+Other
+~~~~~
+- Merge pull request #19 from sarnold/shallow-args. [Steve Arnold]
+
+  fix shallow clone error
+- Merge pull request #17 from sarnold/fixture-update. [Steve Arnold]
+
+  update test fixture and release workflow
+
+
+0.5.0 (2023-09-16)
+------------------
+
+New
+~~~
+- Use GitPython wrapper to clone on win32. [Stephen L Arnold]
+
+  * test passing some multi_options to clone_from()
+
+Other
+~~~~~
+- Merge pull request #16 from sarnold/fm-tests2. [Steve Arnold]
+
+  refactored version of fm-tests
+- Really fix coverage workflow, attempt to combine py37,py311 coverage
+  data. [Stephen L Arnold]
+
+
+0.4.2 (2023-09-02)
+------------------
+
+New
+~~~
+- Add tox self-test workflow example to go with example cfg. [Stephen L
+  Arnold]
+
+Other
+~~~~~
+- Merge pull request #14 from sarnold/import-ref. [Steve Arnold]
+
+  Import refactor, remove generated version module
+
+
 0.4.1 (2023-02-13)
 ------------------
 
@@ -14,8 +88,8 @@ Changes
 - Be more explicit about OS packages in the readme. [Stephen L Arnold]
 - Use defaults on gh-pages deploy action, bump to v4. [Stephen L Arnold]
 
-Fix
-~~~
+Fixes
+~~~~~
 - Stop using later constructs and pkg_resources. [Stephen L Arnold]
 
   * do not use pkg_resources or global version in repolite module
@@ -24,6 +98,7 @@ Fix
 
 Other
 ~~~~~
+- Update changelog file for new patch release. [Stephen L Arnold]
 - Merge pull request #13 from sarnold/changelog-docs. [Steve Arnold]
 
   cleanup imports, add changelog in docs
@@ -44,8 +119,8 @@ Changes
 ~~~~~~~
 - Update all workflows, mainly action versions. [Stephen L Arnold]
 
-Fix
-~~~
+Fixes
+~~~~~
 - Cleanup/improve docstring for module func. [Stephen L Arnold]
 
 Other
@@ -58,8 +133,8 @@ Other
 0.3.3 (2022-09-29)
 ------------------
 
-Fix
-~~~
+Fixes
+~~~~~
 - Add missing exit in cmd exception handler. [Stephen L Arnold]
 
   * inconsistent directory error should exit after log msg
@@ -78,8 +153,8 @@ New
 ~~~
 - Flesh out show cmd with branch and describe data. [Stephen L Arnold]
 
-Fix
-~~~
+Fixes
+~~~~~
 - Add missing refactor bits, update debug logging. [Stephen L Arnold]
 
   * remove secondary loop check, make sure repo context is available
@@ -107,8 +182,8 @@ Changes
 ~~~~~~~
 - Add new show option to usage output in readme. [Stephen L Arnold]
 
-Fix
-~~~
+Fixes
+~~~~~
 - Still more docstring cleanup. [Stephen L Arnold]
 
 Other
@@ -130,8 +205,8 @@ New
   * add bandit security check workflow
   * update docs/docstrings and tool configs
 
-Fix
-~~~
+Fixes
+~~~~~
 - Restore missing bits, un-disable some pylint checks. [Stephen L
   Arnold]
 
@@ -156,8 +231,8 @@ Changes
 ~~~~~~~
 - Main docs TOC meeds a better title. [Stephen L Arnold]
 
-Fix
-~~~
+Fixes
+~~~~~
 - Add missing repo branch option. [Stephen L Arnold]
 - Skip existing repos and allow clone if config updated. [Stephen L
   Arnold]
