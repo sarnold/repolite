@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite &mdash; repolite 0.5.1 documentation</title>
+  <title>repolite.repolite &mdash; repolite 0.5.2.dev4+g8c5b8ba documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="../../_static/documentation_options.js?v=9e34f887"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -386,15 +386,16 @@
             <span class="p">)</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
-    <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git clone -q &#39;</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="s1">&#39;git clone &#39;</span>
     <span class="n">checkout_cmd</span> <span class="o">=</span> <span class="s1">&#39;git checkout -q &#39;</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="s1">&#39;git checkout &#39;</span>
     <span class="n">submodule_cmd</span> <span class="o">=</span> <span class="s1">&#39;git submodule update --init --recursive&#39;</span>
     <span class="n">git_lfs_install</span> <span class="o">=</span> <span class="s1">&#39;git lfs install&#39;</span>
 
-    <span class="k">if</span> <span class="n">pull</span><span class="p">:</span>  <span class="c1"># baseline git pull action, overrides repo-level option</span>
-        <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git pull --rebase=merges &#39;</span> <span class="k">if</span> <span class="n">urebase</span> <span class="k">else</span> <span class="s1">&#39;git pull --ff-only &#39;</span>
-
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">repos</span><span class="p">:</span>
+        <span class="c1"># need to reset git_action for each repository</span>
+        <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git clone -q &#39;</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="s1">&#39;git clone &#39;</span>
+        <span class="k">if</span> <span class="n">pull</span><span class="p">:</span>  <span class="c1"># baseline git pull action, overrides repo-level option</span>
+            <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git pull --rebase=merges &#39;</span> <span class="k">if</span> <span class="n">urebase</span> <span class="k">else</span> <span class="s1">&#39;git pull --ff-only &#39;</span>
+
         <span class="n">repo_url_str</span> <span class="o">=</span> <span class="n">check_repo_url</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Make sure repo_url is a string =&gt; </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_url_str</span><span class="p">)</span>
         <span class="n">git_fetch</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;git fetch --tags </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_remote</span><span class="si">}</span><span class="s1">&#39;</span>
