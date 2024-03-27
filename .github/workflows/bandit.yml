@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       checks: write # for bandit-report-artifacts to publish the checks
       contents: read # for actions/checkout to fetch code
@@ -17,7 +17,7 @@ jobs:
       actions: read # only on private (maybe?) required to get the Action run status
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Run bandit
       uses: VCTLabs/bandit-report-artifacts@master

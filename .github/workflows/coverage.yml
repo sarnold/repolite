@@ -1,4 +1,4 @@
-# internal coverage with PR comment and badge v0.0.5
+# internal coverage with PR comment and badge v0.0.6
 # Note this works for public orgs but only for "internal" pull
 # requests. In the case of fork PRs, there needs to be org-level
 # github app with private key => ACCESS_TOKEN, with more job isolation
@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - name: Checkout Project
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
         fetch-depth: 2
@@ -66,7 +66,7 @@ jobs:
       base_cov: ${{ steps.get_base.outputs.base_cov }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: badges
         path: badges
@@ -134,11 +134,11 @@ jobs:
       PIP_DOWNLOAD_CACHE: ${{ github.workspace }}/../.pip_download_cache
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON }}
 
@@ -148,13 +148,13 @@ jobs:
         pip install tox
 
     - name: Setup old python for test
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.7
+        python-version: 3.8
 
     - name: Generate coverage
       run: |
-        tox -e coverage,py37,py311
+        tox -e coverage,py38,py311
 
     - name: Code Coverage Summary Report (data)
       uses: irongut/CodeCoverageSummary@v1.3.0
@@ -162,7 +162,7 @@ jobs:
         filename: coverage.xml
         output: 'both'
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: src_coverage_rpts
         path: |
@@ -296,7 +296,7 @@ jobs:
     #       use the following to change the scope of the next 2 jobs
     #       instead of running on branch push as shown below:
     #   - This is a pull request event and the pull actor is the same as the repo owner
-    #     if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/master' }}
+    #     if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/main' }}
     name: Generate badge image with test coverage value
     runs-on: ubuntu-20.04
     needs: [test, pre_ci]
@@ -306,14 +306,14 @@ jobs:
       markdown: ${{ steps.url.outputs.markdown }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: badges
         path: badges
 
     # Use the output from the `coverage` step
     - name: Generate the badge SVG image
-      uses: emibcn/badge-action@v2.0.2
+      uses: emibcn/badge-action@v2.0.3
       id: badge
       with:
         label: 'Branch Coverage'
