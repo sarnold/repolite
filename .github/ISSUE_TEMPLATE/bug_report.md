@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Linux]
- - Git package source [e.g. apt, euild]
+ - Git package source [e.g. apt, ebuild]
  - Version [e.g. 2.33.0]
 
 **Additional context**
