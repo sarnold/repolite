@@ -41,11 +41,11 @@ def pytest_configure(config):
 def script_loc(request):
     """Return the directory of the currently running test script"""
 
-    return Path(request.fspath).parent
+    return request.path.parent
 
 
 @pytest.fixture(scope='session')
-def tmpdir_session(request, tmpdir_factory):
+def tmpdir_session(request, tmp_path_factory):
     """A tmpdir fixture for the session scope. Persists throughout the pytest session."""
 
-    return tmpdir_factory.mktemp(request.session.name)
+    return tmp_path_factory.mktemp(tmp_path_factory.getbasetemp().name)
