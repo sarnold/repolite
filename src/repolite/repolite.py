@@ -254,15 +254,13 @@ def create_repo_tags(ucfg, utag, test=None):
     """
 
     work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
-    logging.debug('Using top-level repo dir: %s', str(top_dir))
-
     valid_repo_state = check_repo_state(ucfg)
     if not valid_repo_state:
         raise DirectoryTypeError('Cannot process cmd with mismatched directories')
 
     git_action = 'git config user.signingkey '
     logging.debug('Git action: %s', git_action)
-    git_push_tag = 'git push '
+    git_push_tag = 'git push --tags'
     tag_base = 'git tag '
     for item in [x for x in ucfg.repos if x.repo_enable]:
         git_action = (
@@ -270,7 +268,6 @@ def create_repo_tags(ucfg, utag, test=None):
             if item.repo_create_tag_signed
             else 'git status -s'
         )
-        git_push_tag = git_push_tag + f'{item.repo_remote} --tags'
         tag_cmd = tag_base + '-s ' if item.repo_create_tag_signed else tag_base + '-a '
         git_tag_cmd = tag_cmd + f'{utag} -m "{item.repo_create_tag_msg}"'
 
