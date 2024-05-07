@@ -559,6 +559,9 @@ def main(argv=None):  # pragma: no cover
         if opts.lock:
             create_locked_cfg(cfg, pfile, opts.quiet)
             sys.exit(0)
+        if opts.tag:
+            create_repo_tags(cfg, opts.tag)
+            sys.exit(0)
     except DirectoryTypeError as exc:
         logging.error('Top dir: %s', exc)
         sys.exit(1)

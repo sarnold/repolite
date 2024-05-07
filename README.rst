@@ -213,6 +213,8 @@ Configuration keys that change repository state:
 
 Notes:
 
+* when tagging, ``create_tag_annotated`` and ``create_tag_signed`` are
+  mutually exclusive, so only enable one of them
 * use ``--lock-config`` to create a new config file with git hashes, then
   run that config later to reproduce a build using those hashes (this uses
   the current active config as baseline)
