@@ -239,6 +239,55 @@ def create_locked_cfg(ucfg, ufile, quiet, test=None):
     write_locked_cfg(ucfg, ufile, test)
 
 
+def create_repo_tags(ucfg, utag, test=None):
+    """
+    Create a new signed or annotated tag in each configured repository.
+    (re)Set the gpg signing key from user config.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    :param utag: tag string to apply
+    :type utag: str obj
+    :param test: test path for config file
+    :type test: str or None
+    :raises DirectoryTypeError: if repo state is invalid
+    """
+
+    work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
+    logging.debug('Using top-level repo dir: %s', str(top_dir))
+
+    valid_repo_state = check_repo_state(ucfg)
+    if not valid_repo_state:
+        raise DirectoryTypeError('Cannot process cmd with mismatched directories')
+
+    git_action = 'git config user.signingkey '
+    logging.debug('Git action: %s', git_action)
+    git_push_tag = 'git push '
+    tag_base = 'git tag '
+    for item in [x for x in ucfg.repos if x.repo_enable]:
+        git_action = (
+            git_action + f'{item.repo_signing_key}'
+            if item.repo_create_tag_signed
+            else 'git status -s'
+        )
+        git_push_tag = git_push_tag + f'{item.repo_remote} --tags'
+        tag_cmd = tag_base + '-s ' if item.repo_create_tag_signed else tag_base + '-a '
+        git_tag_cmd = tag_cmd + f'{utag} -m "{item.repo_create_tag_msg}"'
+
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        os.chdir(git_dir)
+        sp.check_call(split(git_action))
+        logging.debug('Tag cmd: %s', git_tag_cmd)
+        sp.check_call(split(git_tag_cmd))
+
+        if item.repo_push_new_tags and not test:
+            logging.debug('Push cmd: %s', git_push_tag)
+            sp.check_call(split(git_push_tag))
+
+        os.chdir(top_dir)
+    os.chdir(work_dir)
+
+
 def process_git_repos(flags, repos, pull, quiet):
     """
     Process list of git repository objs and populate/update ``top_dir``.
@@ -458,6 +507,15 @@ def main(argv=None):  # pragma: no cover
         "--show",
         action="store_true",
         help="Display current repository state",
+    )
+    parser.add_argument(
+        "-T",
+        "--tag",
+        metavar="TAG",
+        action="store",
+        help="Tag string for each configured repository",
+        default=None,
+        type=str,
     )
     parser.add_argument(
         '-l',

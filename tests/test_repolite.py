@@ -24,6 +24,11 @@ repos:
     repo_opts: []
     repo_branch: main
     repo_hash: null
+    repo_create_tag_msg: tag for test
+    repo_create_tag_annotated: false
+    repo_create_tag_signed: false
+    repo_push_new_tags: false
+    repo_signing_key: null
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
@@ -37,6 +42,11 @@ repos:
     repo_opts: []
     repo_branch: branch1
     repo_hash: null
+    repo_create_tag_msg: tag for test
+    repo_create_tag_annotated: false
+    repo_create_tag_signed: false
+    repo_push_new_tags: false
+    repo_signing_key: null
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
@@ -111,7 +121,7 @@ def test_repolite_update(script_loc, tmpdir_session):
         print(f'Path string is {full_path.__str__()}')
         repo.repo_url = full_path.__str__()
         # print(f'Munch type is {type(repo.repo_url)}')
-        # rint(f'Munch value is {repo.repo_url}')
+        # print(f'Munch value is {repo.repo_url}')
 
     flag_list, repo_list = parse_config(cfg)
     git_cmd, lfs_cmd = check_for_git()
@@ -126,6 +136,33 @@ def test_repolite_update(script_loc, tmpdir_session):
     update = True
     quiet = True
     process_git_repos(flag_list, repo_list, update, quiet)
+
+
+def test_repolite_tag(script_loc, tmpdir_session):
+    """
+    Update the repos in the test config.
+    """
+    cfg.top_dir = str(tmpdir_session / 'ext')
+
+    for repo in cfg.repos:
+        pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
+        # print(f'PurePath is {pure_path}')
+        full_path = Path(pure_path).resolve()
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
+        print(f'Path string is {full_path.__str__()}')
+        repo.repo_url = full_path.__str__()
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # print(f'Munch value is {repo.repo_url}')
+
+    flag_list, repo_list = parse_config(cfg)
+    git_cmd, lfs_cmd = check_for_git()
+    flag_list.append(lfs_cmd)
+    ulock = False
+    flag_list.append(ulock)
+
+    tag = 'v9.9.9'
+    create_repo_tags(cfg, tag)
 
 
 def test_repolite_locked_cfg(tmp_path, script_loc, tmpdir_session):

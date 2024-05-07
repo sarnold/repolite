@@ -1,6 +1,6 @@
-=======================================
- repolite: git repo dependency manager
-=======================================
+========================================================
+ repolite: a git repo dependency manager for developers
+========================================================
 
 A lightweight tool to manage a small set of project dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
@@ -155,7 +155,8 @@ The current version supports minimal command options and there are no
 required arguments::
 
   (dev) user@host repolite (main) $ repolite -h
-  usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-l]
+  usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-T TAG]
+                  [-l]
 
   Manage local (git) dependencies (default: clone and checkout)
 
@@ -163,16 +164,17 @@ required arguments::
     -h, --help         show this help message and exit
     --version          show program's version number and exit
     -v, --verbose      Display more processing info (default: False)
-    -q, --quiet        suppress output from git command (default: False)
+    -q, --quiet        Suppress output from git command (default: False)
     -d, --dump-config  Dump default configuration file to stdout (default:
                        False)
-    -s, --save-config  save active config to default filename (.ymltoxml.yml)
+    -s, --save-config  Save active config to default filename (.ymltoxml.yml)
                        and exit (default: False)
-    -i, --install      install existing repositories (python only) (default:
+    -i, --install      Install existing repositories (python only) (default:
                        False)
-    -u, --update       update existing repositories (default: False)
-    -S, --show         display current repository state (default: False)
-    -l, --lock-config  lock active configuration in new config file and checkout
+    -u, --update       Update existing repositories (default: False)
+    -S, --show         Display current repository state (default: False)
+    -T TAG, --tag TAG  Tag string for each configured repository (default: None)
+    -l, --lock-config  Lock active configuration in new config file and checkout
                        hashes (default: False)
 
 Configuration settings
@@ -200,6 +202,14 @@ Configuration keys for optional extra features/behavior:
                      (requires ``git-lfs`` to be installed first)
 :repo_init_submodules: if true, initialize/update git submodules in that repository
 :repo_install: if true, try to install the repo with pip_
+
+Configuration keys that change repository state:
+
+:repo_create_tag_msg: default tag message text
+:repo_create_tag_annotated: create an annotated tag (no signature)
+:repo_create_tag_signed: create a signed tag (requires GPG key)
+:repo_push_new_tags: whether or not to push newly created tags
+:repo_signing_key: GPG signing key (requires trailing '!' if using a subkey)
 
 Notes:
 
