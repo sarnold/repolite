@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite module &mdash; repolite 0.5.2 documentation</title>
+  <title>repolite.repolite module &mdash; repolite 0.5.3.dev5+g45acd31 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,8 +15,8 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8e576371"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/documentation_options.js?v=1a7b2f0a"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -49,7 +49,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../README.html">repolite: git repo dependency manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">repolite: a git repo dependency manager for developers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">repolite</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="repolite.html">repolite package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="repolite.html#submodules">Submodules</a><ul class="current">
@@ -154,6 +154,25 @@ write a new config file with ‘-locked’ appended to the name.</p>
 <li><p><strong>ufile</strong> (<em>Path obj</em>) – active config file</p></li>
 <li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
 <li><p><strong>test</strong> (<em>str</em><em> or </em><em>None</em>) – test path for locked config file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.create_repo_tags">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">create_repo_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#create_repo_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.create_repo_tags" title="Link to this definition"></a></dt>
+<dd><p>Create a new signed or annotated tag in each configured repository.
+(re)Set the gpg signing key from user config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>utag</strong> (<em>str obj</em>) – tag string to apply</p></li>
+<li><p><strong>test</strong> (<em>str</em><em> or </em><em>None</em>) – test path for config file</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>

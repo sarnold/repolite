@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite: git repo dependency manager &mdash; repolite 0.5.2 documentation</title>
+  <title>repolite: a git repo dependency manager for developers &mdash; repolite 0.5.3.dev5+g45acd31 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,8 +15,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=8e576371"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=1a7b2f0a"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -49,7 +49,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">repolite: git repo dependency manager</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">repolite: a git repo dependency manager for developers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#os-package-install">OS Package Install</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
@@ -87,7 +87,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">repolite: git repo dependency manager</li>
+      <li class="breadcrumb-item active">repolite: a git repo dependency manager for developers</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/README.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -97,8 +97,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="repolite-git-repo-dependency-manager">
-<h1>repolite: git repo dependency manager<a class="headerlink" href="#repolite-git-repo-dependency-manager" title="Link to this heading"></a></h1>
+  <section id="repolite-a-git-repo-dependency-manager-for-developers">
+<h1>repolite: a git repo dependency manager for developers<a class="headerlink" href="#repolite-a-git-repo-dependency-manager-for-developers" title="Link to this heading"></a></h1>
 <p>A lightweight tool to manage a small set of project dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
 files in yaml instead.</p>
@@ -220,7 +220,8 @@ installed already, see the example <a class="reference external" href="https://g
 <p>The current version supports minimal command options and there are no
 required arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(dev) user@host repolite (main) $ repolite -h
-usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-l]
+usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-T TAG]
+                [-l]
 
 Manage local (git) dependencies (default: clone and checkout)
 
@@ -228,16 +229,17 @@ options:
   -h, --help         show this help message and exit
   --version          show program&#39;s version number and exit
   -v, --verbose      Display more processing info (default: False)
-  -q, --quiet        suppress output from git command (default: False)
+  -q, --quiet        Suppress output from git command (default: False)
   -d, --dump-config  Dump default configuration file to stdout (default:
                      False)
-  -s, --save-config  save active config to default filename (.ymltoxml.yml)
+  -s, --save-config  Save active config to default filename (.ymltoxml.yml)
                      and exit (default: False)
-  -i, --install      install existing repositories (python only) (default:
+  -i, --install      Install existing repositories (python only) (default:
                      False)
-  -u, --update       update existing repositories (default: False)
-  -S, --show         display current repository state (default: False)
-  -l, --lock-config  lock active configuration in new config file and checkout
+  -u, --update       Update existing repositories (default: False)
+  -S, --show         Display current repository state (default: False)
+  -T TAG, --tag TAG  Tag string for each configured repository (default: None)
+  -l, --lock-config  Lock active configuration in new config file and checkout
                      hashes (default: False)
 </pre></div>
 </div>
@@ -296,8 +298,28 @@ and fast-forward pull fails (see repo-level option)</p>
 <dd class="field-odd"><p>if true, try to install the repo with <a class="reference external" href="https://packaging.python.org/en/latest/key_projects/#pip">pip</a></p>
 </dd>
 </dl>
+<p>Configuration keys that change repository state:</p>
+<dl class="field-list simple">
+<dt class="field-odd">repo_create_tag_msg<span class="colon">:</span></dt>
+<dd class="field-odd"><p>default tag message text</p>
+</dd>
+<dt class="field-even">repo_create_tag_annotated<span class="colon">:</span></dt>
+<dd class="field-even"><p>create an annotated tag (no signature)</p>
+</dd>
+<dt class="field-odd">repo_create_tag_signed<span class="colon">:</span></dt>
+<dd class="field-odd"><p>create a signed tag (requires GPG key)</p>
+</dd>
+<dt class="field-even">repo_push_new_tags<span class="colon">:</span></dt>
+<dd class="field-even"><p>whether or not to push newly created tags</p>
+</dd>
+<dt class="field-odd">repo_signing_key<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GPG signing key (requires trailing ‘!’ if using a subkey)</p>
+</dd>
+</dl>
 <p>Notes:</p>
 <ul class="simple">
+<li><p>when tagging, <code class="docutils literal notranslate"><span class="pre">create_tag_annotated</span></code> and <code class="docutils literal notranslate"><span class="pre">create_tag_signed</span></code> are
+mutually exclusive, so only enable one of them</p></li>
 <li><p>use <code class="docutils literal notranslate"><span class="pre">--lock-config</span></code> to create a new config file with git hashes, then
 run that config later to reproduce a build using those hashes (this uses
 the current active config as baseline)</p></li>
