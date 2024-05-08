@@ -2,7 +2,27 @@ Changelog
 =========
 
 
-0.5.2 (2024-03-26)
+0.6.0 (2024-05-07)
+------------------
+
+New
+~~~
+- Add tagging feature, currently only one tag via args. [Steve Arnold]
+
+Changes
+~~~~~~~
+- Wire up tag function to cmdline arg and update readme. [Steve Arnold]
+- Set global git user params in CI before running (tag) tests. [Steve
+  Arnold]
+
+Other
+~~~~~
+- Merge pull request #22 from sarnold/feat-tagging. [Steve Arnold]
+
+  New tagging feature
+
+
+0.5.2 (2024-03-27)
 ------------------
 
 Changes
@@ -19,6 +39,7 @@ Fixes
 
 Other
 ~~~~~
+- Bump changelog for release. [Steve Arnold]
 - Merge pull request #21 from sarnold/issue-20. [Steve Arnold]
 
   Fixes for Issue #20 and pytest fixtures
@@ -295,3 +316,5 @@ Other
 0.0.0 (2022-08-14)
 ------------------
 - Add initial project files and example config. [Stephen L Arnold]
+
+
