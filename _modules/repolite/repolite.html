@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite &mdash; repolite 0.6.0 documentation</title>
+  <title>repolite.repolite &mdash; repolite 0.6.1.dev3+g8efa2cf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../../_static/documentation_options.js?v=8936182c"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -222,7 +222,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
         <span class="n">pkg_reqs</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;pip&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">])</span>
         <span class="n">pkg_deps</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pkg_reqs</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Installed </span><span class="si">%s</span><span class="s1"> dependencies: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_name</span><span class="p">,</span> <span class="n">pkg_deps</span><span class="p">)</span></div>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Installed </span><span class="si">%s</span><span class="s1"> dependencies: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_name</span><span class="p">,</span> <span class="n">pkg_deps</span><span class="p">)</span></div>
 
 
 
@@ -364,6 +364,7 @@
 
     <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git config user.signingkey &#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git action: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_action</span><span class="p">)</span>
+    <span class="n">git_check_tag</span> <span class="o">=</span> <span class="s1">&#39;git tag -l&#39;</span>
     <span class="n">git_push_tag</span> <span class="o">=</span> <span class="s1">&#39;git push --tags&#39;</span>
     <span class="n">tag_base</span> <span class="o">=</span> <span class="s1">&#39;git tag &#39;</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
@@ -373,19 +374,28 @@
             <span class="k">else</span> <span class="s1">&#39;git status -s&#39;</span>
         <span class="p">)</span>
         <span class="n">tag_cmd</span> <span class="o">=</span> <span class="n">tag_base</span> <span class="o">+</span> <span class="s1">&#39;-s &#39;</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_signed</span> <span class="k">else</span> <span class="n">tag_base</span> <span class="o">+</span> <span class="s1">&#39;-a &#39;</span>
-        <span class="n">git_tag_cmd</span> <span class="o">=</span> <span class="n">tag_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">utag</span><span class="si">}</span><span class="s1"> -m &quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_msg</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+        <span class="n">repo_tag</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_new</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_new</span> <span class="k">else</span> <span class="n">utag</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git tag resolved to: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_tag</span><span class="p">)</span>
+        <span class="n">git_tag_cmd</span> <span class="o">=</span> <span class="n">tag_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">repo_tag</span><span class="si">}</span><span class="s1"> -m &quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_msg</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
-        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
-        <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action</span><span class="p">))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Tag cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_tag_cmd</span><span class="p">)</span>
-        <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_tag_cmd</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">repo_tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+            <span class="n">tag_data</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_check_tag</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> tag list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">),</span> <span class="n">tag_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">repo_tag</span> <span class="ow">in</span> <span class="n">tag_data</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+                <span class="k">continue</span>
 
-        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_push_new_tags</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">test</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Push cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_push_tag</span><span class="p">)</span>
-            <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_push_tag</span><span class="p">))</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Tag cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_tag_cmd</span><span class="p">)</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_tag_cmd</span><span class="p">))</span>
 
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_push_new_tags</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Push cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_push_tag</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_push_tag</span><span class="p">))</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
 
 
@@ -537,9 +547,7 @@
 
     <span class="n">valid_repo_state</span> <span class="o">=</span> <span class="n">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_repo_state</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span>
-            <span class="s1">&#39;Inconsistent directories; try running ``--update`` first?&#39;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span><span class="s1">&#39;Inconsistent directories; try running --update first?&#39;</span><span class="p">)</span>
 
     <span class="n">git_action1</span> <span class="o">=</span> <span class="s1">&#39;git describe --tags --dirty --always&#39;</span>
     <span class="n">git_action2</span> <span class="o">=</span> <span class="s1">&#39;git rev-parse --abbrev-ref HEAD&#39;</span>
@@ -590,14 +598,14 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Suppress output from git command&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-d&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-D&#39;</span><span class="p">,</span>
         <span class="s1">&#39;--dump-config&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;dump&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dump default configuration file to stdout&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-s&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-S&#39;</span><span class="p">,</span>
         <span class="s1">&#39;--save-config&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span>
@@ -616,19 +624,17 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Update existing repositories&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-S&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
         <span class="s2">&quot;--show&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Display current repository state&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-T&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;--tag&quot;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;TAG&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Tag string for each configured repository&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="s2">&quot;-a&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--apply-tag&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;apply&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Apply the given tag (see TAG arg) or use one from config file&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;-l&#39;</span><span class="p">,</span>
@@ -636,6 +642,13 @@
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;lock&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Lock active configuration in new config file and checkout hashes&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tag&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;TAG&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Tag string override for all repositories (apply with -a)&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">opts</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
@@ -672,8 +685,9 @@
         <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
             <span class="n">create_locked_cfg</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">pfile</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
-            <span class="n">create_repo_tags</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">apply</span><span class="p">:</span>
+            <span class="n">new_tag</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span> <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">create_repo_tags</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">DirectoryTypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Top dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
