@@ -25,6 +25,7 @@ repos:
     repo_branch: main
     repo_hash: null
     repo_create_tag_msg: tag for test
+    repo_create_tag_new: null
     repo_create_tag_annotated: false
     repo_create_tag_signed: false
     repo_push_new_tags: false
@@ -43,6 +44,7 @@ repos:
     repo_branch: branch1
     repo_hash: null
     repo_create_tag_msg: tag for test
+    repo_create_tag_new: null
     repo_create_tag_annotated: false
     repo_create_tag_signed: false
     repo_push_new_tags: false
@@ -162,6 +164,11 @@ def test_repolite_tag(script_loc, tmpdir_session):
     flag_list.append(ulock)
 
     tag = 'v9.9.9'
+    create_repo_tags(cfg, tag)
+    tag = None
+    for repo in cfg.repos:
+        if repo.repo_name == 'daffy':
+            repo.repo_create_tag_new = '1.1.1'
     create_repo_tags(cfg, tag)
 
 

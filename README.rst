@@ -155,25 +155,30 @@ The current version supports minimal command options and there are no
 required arguments::
 
   (dev) user@host repolite (main) $ repolite -h
-  usage: repolite [-h] [--version] [-v] [-q] [-d] [-s] [-i] [-u] [-S] [-T TAG]
-                  [-l]
+  usage: repolite [-h] [--version] [-v] [-q] [-D] [-S] [-i] [-u] [-s] [-a] [-l]
+                  [TAG]
 
   Manage local (git) dependencies (default: clone and checkout)
+
+  positional arguments:
+    TAG                Tag string override for all repositories (apply with -a)
+                       (default: None)
 
   options:
     -h, --help         show this help message and exit
     --version          show program's version number and exit
     -v, --verbose      Display more processing info (default: False)
     -q, --quiet        Suppress output from git command (default: False)
-    -d, --dump-config  Dump default configuration file to stdout (default:
+    -D, --dump-config  Dump default configuration file to stdout (default:
                        False)
-    -s, --save-config  Save active config to default filename (.ymltoxml.yml)
+    -S, --save-config  Save active config to default filename (.ymltoxml.yml)
                        and exit (default: False)
     -i, --install      Install existing repositories (python only) (default:
                        False)
     -u, --update       Update existing repositories (default: False)
-    -S, --show         Display current repository state (default: False)
-    -T TAG, --tag TAG  Tag string for each configured repository (default: None)
+    -s, --show         Display current repository state (default: False)
+    -a, --apply-tag    Apply the given tag (see TAG arg) or use one from config
+                       file (default: False)
     -l, --lock-config  Lock active configuration in new config file and checkout
                        hashes (default: False)
 
@@ -206,6 +211,7 @@ Configuration keys for optional extra features/behavior:
 Configuration keys that change repository state:
 
 :repo_create_tag_msg: default tag message text
+:repo_create_tag_new: create new tag using string value
 :repo_create_tag_annotated: create an annotated tag (no signature)
 :repo_create_tag_signed: create a signed tag (requires GPG key)
 :repo_push_new_tags: whether or not to push newly created tags
@@ -213,6 +219,7 @@ Configuration keys that change repository state:
 
 Notes:
 
+* when tagging, tag from commandline is only used when config value is ``null``
 * when tagging, ``create_tag_annotated`` and ``create_tag_signed`` are
   mutually exclusive, so only enable one of them
 * use ``--lock-config`` to create a new config file with git hashes, then

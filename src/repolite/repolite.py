@@ -133,7 +133,7 @@ def install_with_pip(pip_name, quiet=False):
     if not quiet:
         pkg_reqs = sp.check_output([sys.executable, '-m', 'pip', 'freeze'])
         pkg_deps = [r.decode().split('@')[0] for r in pkg_reqs.split()]
-        logging.debug('Installed %s dependencies: %s', pip_name, pkg_deps)
+        logging.info('Installed %s dependencies: %s', pip_name, pkg_deps)
 
 
 def load_config(file_encoding='utf-8'):
@@ -260,6 +260,7 @@ def create_repo_tags(ucfg, utag, test=None):
 
     git_action = 'git config user.signingkey '
     logging.debug('Git action: %s', git_action)
+    git_check_tag = 'git tag -l'
     git_push_tag = 'git push --tags'
     tag_base = 'git tag '
     for item in [x for x in ucfg.repos if x.repo_enable]:
@@ -269,19 +270,28 @@ def create_repo_tags(ucfg, utag, test=None):
             else 'git status -s'
         )
         tag_cmd = tag_base + '-s ' if item.repo_create_tag_signed else tag_base + '-a '
-        git_tag_cmd = tag_cmd + f'{utag} -m "{item.repo_create_tag_msg}"'
+        repo_tag = item.repo_create_tag_new if item.repo_create_tag_new else utag
+        logging.debug('Git tag resolved to: %s', repo_tag)
+        git_tag_cmd = tag_cmd + f'{repo_tag} -m "{item.repo_create_tag_msg}"'
 
-        git_dir = item.repo_alias if item.repo_alias else item.repo_name
-        os.chdir(git_dir)
-        sp.check_call(split(git_action))
-        logging.debug('Tag cmd: %s', git_tag_cmd)
-        sp.check_call(split(git_tag_cmd))
+        if repo_tag is not None:
+            git_dir = item.repo_alias if item.repo_alias else item.repo_name
+            os.chdir(git_dir)
+            tag_data = sp.check_output(split(git_check_tag), text=True).splitlines()
+            logging.debug('%s tag list: %s', str(git_dir), tag_data)
+            if repo_tag in tag_data:
+                os.chdir(top_dir)
+                continue
 
-        if item.repo_push_new_tags and not test:
-            logging.debug('Push cmd: %s', git_push_tag)
-            sp.check_call(split(git_push_tag))
+            sp.check_call(split(git_action))
+            logging.debug('Tag cmd: %s', git_tag_cmd)
+            sp.check_call(split(git_tag_cmd))
 
-        os.chdir(top_dir)
+            if item.repo_push_new_tags and not test:
+                logging.debug('Push cmd: %s', git_push_tag)
+                sp.check_call(split(git_push_tag))
+
+            os.chdir(top_dir)
     os.chdir(work_dir)
 
 
@@ -424,9 +434,7 @@ def show_repo_state(ucfg):
 
     valid_repo_state = check_repo_state(ucfg)
     if not valid_repo_state:
-        raise DirectoryTypeError(
-            'Inconsistent directories; try running ``--update`` first?'
-        )
+        raise DirectoryTypeError('Inconsistent directories; try running --update first?')
 
     git_action1 = 'git describe --tags --dirty --always'
     git_action2 = 'git rev-parse --abbrev-ref HEAD'
@@ -474,14 +482,14 @@ def main(argv=None):  # pragma: no cover
         help="Suppress output from git command",
     )
     parser.add_argument(
-        '-d',
+        '-D',
         '--dump-config',
         action='store_true',
         dest="dump",
         help='Dump default configuration file to stdout',
     )
     parser.add_argument(
-        '-s',
+        '-S',
         '--save-config',
         action='store_true',
         dest="save",
@@ -500,19 +508,17 @@ def main(argv=None):  # pragma: no cover
         help="Update existing repositories",
     )
     parser.add_argument(
-        "-S",
+        "-s",
         "--show",
         action="store_true",
         help="Display current repository state",
     )
     parser.add_argument(
-        "-T",
-        "--tag",
-        metavar="TAG",
-        action="store",
-        help="Tag string for each configured repository",
-        default=None,
-        type=str,
+        "-a",
+        "--apply-tag",
+        action="store_true",
+        dest="apply",
+        help="Apply the given tag (see TAG arg) or use one from config file",
     )
     parser.add_argument(
         '-l',
@@ -520,6 +526,13 @@ def main(argv=None):  # pragma: no cover
         action='store_true',
         dest="lock",
         help='Lock active configuration in new config file and checkout hashes',
+    )
+    parser.add_argument(
+        "tag",
+        metavar="TAG",
+        nargs='?',
+        help="Tag string override for all repositories (apply with -a)",
+        type=str,
     )
 
     opts = parser.parse_args()
@@ -556,8 +569,9 @@ def main(argv=None):  # pragma: no cover
         if opts.lock:
             create_locked_cfg(cfg, pfile, opts.quiet)
             sys.exit(0)
-        if opts.tag:
-            create_repo_tags(cfg, opts.tag)
+        if opts.apply:
+            new_tag = opts.tag if opts.tag else None
+            create_repo_tags(cfg, new_tag)
             sys.exit(0)
     except DirectoryTypeError as exc:
         logging.error('Top dir: %s', exc)
