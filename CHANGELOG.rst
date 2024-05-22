@@ -2,7 +2,22 @@ Changelog
 =========
 
 
-0.6.0 (2024-05-07)
+0.6.1 (2024-05-22)
+------------------
+
+Changes
+~~~~~~~
+- Update readme, cleanup action versions in wheels workflow. [Steve
+  Arnold]
+
+Other
+~~~~~
+- Merge pull request #23 from sarnold/per-repo-tags. [Steve Arnold]
+
+  feat: add per-repo tag support
+
+
+0.6.0 (2024-05-08)
 ------------------
 
 New
@@ -11,6 +26,7 @@ New
 
 Changes
 ~~~~~~~
+- Update changelog for new release. [Stephen L Arnold]
 - Wire up tag function to cmdline arg and update readme. [Steve Arnold]
 - Set global git user params in CI before running (tag) tests. [Steve
   Arnold]
@@ -316,5 +332,3 @@ Other
 0.0.0 (2022-08-14)
 ------------------
 - Add initial project files and example config. [Stephen L Arnold]
-
-
