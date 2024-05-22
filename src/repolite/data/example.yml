@@ -12,6 +12,7 @@ repos:
     repo_branch: master
     repo_hash: null
     repo_create_tag_msg: tag for test
+    repo_create_tag_new: null
     repo_create_tag_annotated: false
     repo_create_tag_signed: false
     repo_push_new_tags: false
@@ -30,6 +31,7 @@ repos:
     repo_branch: master
     repo_hash: null
     repo_create_tag_msg: tag for test
+    repo_create_tag_new: null
     repo_create_tag_annotated: false
     repo_create_tag_signed: false
     repo_push_new_tags: false
