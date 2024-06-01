@@ -30,6 +30,8 @@ repos:
     repo_create_tag_signed: false
     repo_push_new_tags: false
     repo_signing_key: null
+    repo_change_base: null
+    repo_gen_changes: true
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
@@ -49,6 +51,8 @@ repos:
     repo_create_tag_signed: false
     repo_push_new_tags: false
     repo_signing_key: null
+    repo_change_base: null
+    repo_gen_changes: true
     repo_use_rebase: false
     repo_has_lfs_files: false
     repo_init_submodules: false
@@ -201,3 +205,27 @@ def test_repolite_locked_cfg(tmp_path, script_loc, tmpdir_session):
     update = False
     quiet = False
     create_locked_cfg(cfg, pfile, quiet, tpath)
+
+
+def test_repolite_changes(script_loc, tmpdir_session):
+    """
+    Show the repos in the test config.
+    """
+    cfg.top_dir = str(tmpdir_session / 'ext')
+
+    for repo in cfg.repos:
+        pure_path = PurePath(script_loc, 'testdata', repo.repo_url)
+        # print(f'PurePath is {pure_path}')
+        full_path = Path(pure_path).resolve()
+        # print(f'Type is {type(full_path)}')
+        # print(f'Path is {full_path}')
+        print(f'Path string is {full_path.__str__()}')
+        repo.repo_url = full_path.__str__()
+        # print(f'Munch type is {type(repo.repo_url)}')
+        # print(f'Munch value is {repo.repo_url}')
+
+    process_repo_changes(cfg)
+    changelogs = list(Path(cfg.top_dir).glob('**/*.rst'))
+    for fpath in changelogs:
+        print(fpath)
+        assert 'CHANGELOG.rst' in str(fpath)

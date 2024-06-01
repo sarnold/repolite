@@ -15,6 +15,7 @@ git_cmd = [
     'git_dummy',
     '--allow-nested',
     '--constant-sha',
+    '--commits=10',
     '--branches=5',
     '--diverge-at=2',
     '--git-dir',

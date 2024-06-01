@@ -96,6 +96,7 @@ def check_repo_state(ucfg):
         os.chdir(top_dir)
     except OSError as exc:
         logging.exception("Could not change to repo directory: %s", exc)
+        sys.exit(1)
 
     sorted_dir_list = sorted([x for x in top_dir.iterdir() if x.is_dir()])
     repo_name_list = []
@@ -111,6 +112,33 @@ def check_repo_state(ucfg):
             'Invalid state: %s not equal to %s', repo_name_list, sorted_name_list
         )
     return is_state_valid
+
+
+def generate_change_data(repo_name, base_tag, dir_name, cur_tag):
+    """
+    Generate a changelog (full or diff) for the given repository and drop
+    it in the configured top_dir directory. Checks repo config for base
+    tag to decide full vs diff.
+
+    :param repo_name: repository name
+    :type repo_name: str
+    :param base_tag: starting tag for change diff
+    :type base_tag: str or None
+    :dir_name: directory name for output (top_dir)
+    :type dir_name: str
+    :param cur_tag: ending tag for change diff (tag on current commit)
+    :type cur_tag: str
+    """
+    base_cmd_str = 'gitchangelog'
+    output_file = f'{dir_name}/{repo_name}-CHANGELOG.rst'
+
+    if base_tag:
+        base_cmd_str = base_cmd_str + f' {base_tag}..{cur_tag}'
+
+    logging.debug('Running gitchangelog cmd: %s', base_cmd_str)
+    chg_data = sp.check_output(split(base_cmd_str))
+    Path(output_file).write_bytes(chg_data)
+    logging.info('ChangeLog file: %s', Path(output_file))
 
 
 def install_with_pip(pip_name, quiet=False):
@@ -403,6 +431,40 @@ def process_git_repos(flags, repos, pull, quiet):
     os.chdir(work_dir)
 
 
+def process_repo_changes(ucfg):
+    """
+    Generate a changelog for any repos with the ``repo_gen_changes`` flag
+    set. Note we do not check repo state here, we just process each valid
+    repo entry.
+
+    :param ucfg: Munch configuration object extracted from config file
+    :type ucfg: Munch cfgobj
+    :param quiet: pass the ``quiet`` cmd line flag to install cmd
+    """
+    work_dir, top_dir = resolve_top_dir(ucfg.top_dir)
+    valid_repo_state = check_repo_state(ucfg)
+    if not valid_repo_state:
+        raise DirectoryTypeError('Inconsistent directories; try running repolite first?')
+
+    git_get_tags = 'git tag --sort=taggerdate'
+    git_check_tag = 'git tag --points-at'
+
+    for item in [x for x in ucfg.repos if x.repo_enable and x.repo_gen_changes]:
+        git_dir = item.repo_alias if item.repo_alias else item.repo_name
+        os.chdir(git_dir)
+
+        all_tags = sp.check_output(split(git_get_tags), text=True).splitlines()
+        logging.debug('%s tag list: %s', item.repo_name, all_tags)
+        commit_tags = sp.check_output(split(git_check_tag), text=True).splitlines()
+        logging.debug('commit tag(s): %s', commit_tags)
+        last_tag = all_tags[-1] if all_tags and all_tags[-1] in commit_tags else ''
+
+        generate_change_data(item.repo_name, item.repo_change_base, top_dir, last_tag)
+
+        os.chdir(top_dir)
+    os.chdir(work_dir)
+
+
 def process_repo_install(ucfg, quiet):
     """
     Install any repos with the ``repo_install`` flag set. Note we do not
@@ -499,13 +561,13 @@ def main(argv=None):  # pragma: no cover
         "-i",
         "--install",
         action="store_true",
-        help="Install existing repositories (python only)",
+        help="Install enabled repositories (python only)",
     )
     parser.add_argument(
         "-u",
         "--update",
         action="store_true",
-        help="Update existing repositories",
+        help="Update existing/enabled repositories",
     )
     parser.add_argument(
         "-s",
@@ -521,6 +583,12 @@ def main(argv=None):  # pragma: no cover
         help="Apply the given tag (see TAG arg) or use one from config file",
     )
     parser.add_argument(
+        "-g",
+        "--changelog",
+        action="store_true",
+        help="Run gitchangelog in enabled repositories, create files in top_dir",
+    )
+    parser.add_argument(
         '-l',
         '--lock-config',
         action='store_true',
@@ -531,7 +599,7 @@ def main(argv=None):  # pragma: no cover
         "tag",
         metavar="TAG",
         nargs='?',
-        help="Tag string override for all repositories (apply with -a)",
+        help="Optional tag string override (apply with -a)",
         type=str,
     )
 
@@ -560,6 +628,9 @@ def main(argv=None):  # pragma: no cover
         sys.exit(0)
 
     try:
+        if opts.changelog:
+            process_repo_changes(cfg)
+            sys.exit(0)
         if opts.install:
             process_repo_install(cfg, opts.quiet)
             sys.exit(0)
