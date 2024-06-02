@@ -114,14 +114,14 @@ def check_repo_state(ucfg):
     return is_state_valid
 
 
-def generate_change_data(repo_name, base_tag, dir_name, cur_tag):
+def generate_change_data(mrepo, base_tag, dir_name, cur_tag):
     """
     Generate a changelog (full or diff) for the given repository and drop
     it in the configured top_dir directory. Checks repo config for base
     tag to decide full vs diff.
 
-    :param repo_name: repository name
-    :type repo_name: str
+    :param mrepo: a Munch repo obj with Munch repos item
+    :type mrepo: Munch obj
     :param base_tag: starting tag for change diff
     :type base_tag: str or None
     :dir_name: directory name for output (top_dir)
@@ -130,7 +130,7 @@ def generate_change_data(repo_name, base_tag, dir_name, cur_tag):
     :type cur_tag: str
     """
     base_cmd_str = 'gitchangelog'
-    output_file = f'{dir_name}/{repo_name}-CHANGELOG.rst'
+    output_file = f'{dir_name}/{mrepo.name}-CHANGELOG.{mrepo.item.repo_changelog_ext}'
 
     if base_tag:
         base_cmd_str = base_cmd_str + f' {base_tag}..{cur_tag}'
@@ -450,6 +450,9 @@ def process_repo_changes(ucfg):
     git_check_tag = 'git tag --points-at'
 
     for item in [x for x in ucfg.repos if x.repo_enable and x.repo_gen_changes]:
+        repo = Munch()
+        repo.name = item.repo_name
+        repo.item = Munch(item)
         git_dir = item.repo_alias if item.repo_alias else item.repo_name
         os.chdir(git_dir)
 
@@ -459,7 +462,7 @@ def process_repo_changes(ucfg):
         logging.debug('commit tag(s): %s', commit_tags)
         last_tag = all_tags[-1] if all_tags and all_tags[-1] in commit_tags else ''
 
-        generate_change_data(item.repo_name, item.repo_change_base, top_dir, last_tag)
+        generate_change_data(repo, item.repo_changelog_base, top_dir, last_tag)
 
         os.chdir(top_dir)
     os.chdir(work_dir)

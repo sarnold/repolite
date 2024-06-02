@@ -16,6 +16,14 @@ files in yaml instead.
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
+The latest new/expanded workflow features now include:
+
+* **tagging support** - tag a set of enabled repositories via config file or
+  command line
+* **changelog support** in ``rSt`` or ``md`` - generate changelog documents
+  for enabled repositories
+
+See the optional feature keys in Usage_ for more info.
 
 Repolite is tested on the 3 primary GH runner platforms, so as long as you
 have a new-ish Python and a ``git`` binary it should run on your platform
@@ -206,7 +214,8 @@ Configuration keys for optional extra features/behavior:
                      (requires ``git-lfs`` to be installed first)
 :repo_init_submodules: if true, initialize/update git submodules in that repository
 :repo_install: if true, try to install the repo with pip_
-:repo_tag_base: base version to use for changelog data
+:repo_changelog_ext: changelog file extension (default: ``rst``)
+:repo_changelog_base: base version to use for changelog data
 :repo_gen_changes: if true, generate changelog file in ``top_dir``
 
 Configuration keys that change repository state:
@@ -220,6 +229,8 @@ Configuration keys that change repository state:
 
 Notes:
 
+* if your gitchangelog_ config uses Markdown, set ``repo_changelog_ext`` to
+  ``md`` instead of ``rst``
 * when tagging, tag from commandline is only used when config value is ``null``
 * when tagging, ``create_tag_annotated`` and ``create_tag_signed`` are
   mutually exclusive, so only enable one of them
@@ -237,6 +248,7 @@ Notes:
 * you may want to add your ``top_dir`` path or default local config file
   patterns to your ``.gitignore`` file
 
+.. _gitchangelog: https://github.com/sarnold/gitchangelog
 
 Dev tools
 =========

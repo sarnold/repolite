@@ -30,7 +30,8 @@ repos:
     repo_create_tag_signed: false
     repo_push_new_tags: false
     repo_signing_key: null
-    repo_change_base: null
+    repo_changelog_ext: rst
+    repo_changelog_base: null
     repo_gen_changes: true
     repo_use_rebase: false
     repo_has_lfs_files: false
@@ -51,7 +52,8 @@ repos:
     repo_create_tag_signed: false
     repo_push_new_tags: false
     repo_signing_key: null
-    repo_change_base: null
+    repo_changelog_ext: rst
+    repo_changelog_base: null
     repo_gen_changes: true
     repo_use_rebase: false
     repo_has_lfs_files: false
