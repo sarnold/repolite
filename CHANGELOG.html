@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; repolite 0.6.2.dev1+gd88ed66 documentation</title>
+  <title>Changelog &mdash; repolite 0.6.2.dev5+g795b17a documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=27930085"></script>
+        <script src="_static/documentation_options.js?v=b73abd28"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -51,93 +51,98 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html">repolite: a git repo dependency manager for developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">repolite</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.6.1 (2024-05-22)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.6.2 (2024-06-01)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.6.1 (2024-05-22)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.6.0 (2024-05-08)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Other</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">0.5.2 (2024-03-27)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.6.0 (2024-05-08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">New</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fixes">Fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id7">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">0.5.1 (2024-01-12)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id8">0.5.2 (2024-03-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id9">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixes">Fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id10">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id11">0.5.0 (2023-09-16)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id12">New</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">0.5.1 (2024-01-12)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id13">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id14">0.4.2 (2023-09-02)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id14">0.5.0 (2023-09-16)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id15">New</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id16">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id17">0.4.1 (2023-02-13)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id17">0.4.2 (2023-09-02)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id18">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id19">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id20">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id21">Other</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id22">0.4.0 (2022-12-23)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id23">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id24">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id25">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id26">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id20">0.4.1 (2023-02-13)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id21">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id27">0.3.3 (2022-09-29)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id25">0.4.0 (2022-12-23)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id28">Fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id29">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id30">0.3.2 (2022-09-29)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id31">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id32">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id33">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id30">0.3.3 (2022-09-29)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id31">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id34">0.3.1 (2022-09-13)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id35">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id36">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id37">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id38">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id33">0.3.2 (2022-09-29)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id34">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id39">0.3.0 (2022-09-04)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id40">New</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id41">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id42">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id37">0.3.1 (2022-09-13)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id38">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id43">0.2.1 (2022-08-31)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id44">Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id45">Fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id46">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id42">0.3.0 (2022-09-04)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id43">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id47">0.2.0 (2022-08-20)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id48">Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id46">0.2.1 (2022-08-31)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id47">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">Fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id49">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id50">0.1.0 (2022-08-17)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id51">New</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id50">0.2.0 (2022-08-20)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id51">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id52">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id53">0.0.0 (2022-08-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id53">0.1.0 (2022-08-17)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id54">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id56">0.0.0 (2022-08-14)</a></li>
 </ul>
 </li>
 </ul>
@@ -169,9 +174,34 @@
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
 <section id="id1">
-<h2>0.6.1 (2024-05-22)<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<h2>0.6.2 (2024-06-01)<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add changelog feature for release workflows. [Stephen L Arnold]</p>
+<ul>
+<li><p>uses <code class="docutils literal notranslate"><span class="pre">gitchangelog</span></code> to generate either full changelog.rst or
+changelog diff from given base tag</p></li>
+</ul>
+</li>
+</ul>
+</section>
 <section id="changes">
 <h3>Changes<a class="headerlink" href="#changes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add config option to set changelog file extension. [Stephen L Arnold]</p>
+<ul>
+<li><p>allowed options are ‘rst’ or ‘md’ depending on the gitchangelog
+configuration setting for <code class="docutils literal notranslate"><span class="pre">output_engine</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.6.1 (2024-05-22)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3>Changes<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Update readme, cleanup action versions in wheels workflow. [Steve
 Arnold]</p></li>
@@ -186,16 +216,16 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>0.6.0 (2024-05-08)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<section id="new">
-<h3>New<a class="headerlink" href="#new" title="Link to this heading"></a></h3>
+<section id="id4">
+<h2>0.6.0 (2024-05-08)<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<section id="id5">
+<h3>New<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add tagging feature, currently only one tag via args. [Steve Arnold]</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Changes<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<section id="id6">
+<h3>Changes<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Update changelog for new release. [Stephen L Arnold]</p></li>
 <li><p>Wire up tag function to cmdline arg and update readme. [Steve Arnold]</p></li>
@@ -203,8 +233,8 @@ Arnold]</p></li>
 Arnold]</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Other<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<section id="id7">
+<h3>Other<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #22 from sarnold/feat-tagging. [Steve Arnold]</p>
 <p>New tagging feature</p>
@@ -212,10 +242,10 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id5">
-<h2>0.5.2 (2024-03-27)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<section id="id6">
-<h3>Changes<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<section id="id8">
+<h2>0.5.2 (2024-03-27)<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<section id="id9">
+<h3>Changes<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add a gitchangelog cfg and tox cmd to (re)generate changes. [Steve
 Arnold]</p></li>
@@ -232,8 +262,8 @@ Arnold]</p></li>
 </li>
 </ul>
 </section>
-<section id="id7">
-<h3>Other<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<section id="id10">
+<h3>Other<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Bump changelog for release. [Steve Arnold]</p></li>
 <li><p>Merge pull request #21 from sarnold/issue-20. [Steve Arnold]</p>
@@ -242,10 +272,10 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id8">
-<h2>0.5.1 (2024-01-12)<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
-<section id="id9">
-<h3>Changes<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<section id="id11">
+<h2>0.5.1 (2024-01-12)<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<section id="id12">
+<h3>Changes<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Switch to upstream git_dummy instead of fork. [Stephen L Arnold]</p>
 <ul>
@@ -254,8 +284,8 @@ Arnold]</p></li>
 </li>
 </ul>
 </section>
-<section id="id10">
-<h3>Other<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<section id="id13">
+<h3>Other<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #19 from sarnold/shallow-args. [Steve Arnold]</p>
 <p>fix shallow clone error</p>
@@ -266,10 +296,10 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id11">
-<h2>0.5.0 (2023-09-16)<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
-<section id="id12">
-<h3>New<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<section id="id14">
+<h2>0.5.0 (2023-09-16)<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<section id="id15">
+<h3>New<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Use GitPython wrapper to clone on win32. [Stephen L Arnold]</p>
 <ul>
@@ -278,8 +308,8 @@ Arnold]</p></li>
 </li>
 </ul>
 </section>
-<section id="id13">
-<h3>Other<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<section id="id16">
+<h3>Other<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #16 from sarnold/fm-tests2. [Steve Arnold]</p>
 <p>refactored version of fm-tests</p>
@@ -289,17 +319,17 @@ data. [Stephen L Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id14">
-<h2>0.4.2 (2023-09-02)<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
-<section id="id15">
-<h3>New<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<section id="id17">
+<h2>0.4.2 (2023-09-02)<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
+<section id="id18">
+<h3>New<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add tox self-test workflow example to go with example cfg. [Stephen L
 Arnold]</p></li>
 </ul>
 </section>
-<section id="id16">
-<h3>Other<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<section id="id19">
+<h3>Other<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #14 from sarnold/import-ref. [Steve Arnold]</p>
 <p>Import refactor, remove generated version module</p>
@@ -307,23 +337,23 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id17">
-<h2>0.4.1 (2023-02-13)<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
-<section id="id18">
-<h3>New<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<section id="id20">
+<h2>0.4.1 (2023-02-13)<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
+<section id="id21">
+<h3>New<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add a changelog file and include it in docs build. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id19">
-<h3>Changes<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<section id="id22">
+<h3>Changes<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Be more explicit about OS packages in the readme. [Stephen L Arnold]</p></li>
 <li><p>Use defaults on gh-pages deploy action, bump to v4. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id20">
-<h3>Fixes<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<section id="id23">
+<h3>Fixes<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Stop using later constructs and pkg_resources. [Stephen L Arnold]</p>
 <ul>
@@ -334,8 +364,8 @@ launchpad builder env (ie, early py3.6)</p></li>
 </li>
 </ul>
 </section>
-<section id="id21">
-<h3>Other<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<section id="id24">
+<h3>Other<a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Update changelog file for new patch release. [Stephen L Arnold]</p></li>
 <li><p>Merge pull request #13 from sarnold/changelog-docs. [Steve Arnold]</p>
@@ -344,10 +374,10 @@ launchpad builder env (ie, early py3.6)</p></li>
 </ul>
 </section>
 </section>
-<section id="id22">
-<h2>0.4.0 (2022-12-23)<a class="headerlink" href="#id22" title="Link to this heading"></a></h2>
-<section id="id23">
-<h3>New<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<section id="id25">
+<h2>0.4.0 (2022-12-23)<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
+<section id="id26">
+<h3>New<a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add new config options, update readme and default yaml. [Stephen L
 Arnold]</p>
@@ -358,20 +388,20 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id24">
-<h3>Changes<a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+<section id="id27">
+<h3>Changes<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Update all workflows, mainly action versions. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id25">
-<h3>Fixes<a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<section id="id28">
+<h3>Fixes<a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Cleanup/improve docstring for module func. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id26">
-<h3>Other<a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<section id="id29">
+<h3>Other<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #12 from sarnold/older-python. [Steve Arnold]</p>
 <p>new features and older python</p>
@@ -379,10 +409,10 @@ Arnold]</p>
 </ul>
 </section>
 </section>
-<section id="id27">
-<h2>0.3.3 (2022-09-29)<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
-<section id="id28">
-<h3>Fixes<a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<section id="id30">
+<h2>0.3.3 (2022-09-29)<a class="headerlink" href="#id30" title="Link to this heading"></a></h2>
+<section id="id31">
+<h3>Fixes<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add missing exit in cmd exception handler. [Stephen L Arnold]</p>
 <ul>
@@ -391,8 +421,8 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id29">
-<h3>Other<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<section id="id32">
+<h3>Other<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #10 from sarnold/hotfix. [Steve Arnold]</p>
 <p>add missing exit in cmd exception handler</p>
@@ -400,16 +430,16 @@ Arnold]</p>
 </ul>
 </section>
 </section>
-<section id="id30">
-<h2>0.3.2 (2022-09-29)<a class="headerlink" href="#id30" title="Link to this heading"></a></h2>
-<section id="id31">
-<h3>New<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
+<section id="id33">
+<h2>0.3.2 (2022-09-29)<a class="headerlink" href="#id33" title="Link to this heading"></a></h2>
+<section id="id34">
+<h3>New<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Flesh out show cmd with branch and describe data. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id32">
-<h3>Fixes<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<section id="id35">
+<h3>Fixes<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add missing refactor bits, update debug logging. [Stephen L Arnold]</p>
 <ul>
@@ -420,8 +450,8 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id33">
-<h3>Other<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<section id="id36">
+<h3>Other<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #9 from sarnold/more-show. [Steve Arnold]</p>
 <p>Show more repo metadata, finish refactor</p>
@@ -429,10 +459,10 @@ Arnold]</p>
 </ul>
 </section>
 </section>
-<section id="id34">
-<h2>0.3.1 (2022-09-13)<a class="headerlink" href="#id34" title="Link to this heading"></a></h2>
-<section id="id35">
-<h3>New<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<section id="id37">
+<h2>0.3.1 (2022-09-13)<a class="headerlink" href="#id37" title="Link to this heading"></a></h2>
+<section id="id38">
+<h3>New<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Abstract code for valid_repo_state, add new show option. [Stephen L
 Arnold]</p>
@@ -442,20 +472,20 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id36">
-<h3>Changes<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
+<section id="id39">
+<h3>Changes<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add new show option to usage output in readme. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id37">
-<h3>Fixes<a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
+<section id="id40">
+<h3>Fixes<a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Still more docstring cleanup. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id38">
-<h3>Other<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
+<section id="id41">
+<h3>Other<a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #8 from sarnold/repo-state. [Steve Arnold]</p>
 <p>Display repo state</p>
@@ -463,10 +493,10 @@ Arnold]</p>
 </ul>
 </section>
 </section>
-<section id="id39">
-<h2>0.3.0 (2022-09-04)<a class="headerlink" href="#id39" title="Link to this heading"></a></h2>
-<section id="id40">
-<h3>New<a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
+<section id="id42">
+<h2>0.3.0 (2022-09-04)<a class="headerlink" href="#id42" title="Link to this heading"></a></h2>
+<section id="id43">
+<h3>New<a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add support for submodule update and bandit workflow. [Stephen L
 Arnold]</p>
@@ -478,8 +508,8 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id41">
-<h3>Fixes<a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
+<section id="id44">
+<h3>Fixes<a class="headerlink" href="#id44" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Restore missing bits, un-disable some pylint checks. [Stephen L
 Arnold]</p>
@@ -491,8 +521,8 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id42">
-<h3>Other<a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
+<section id="id45">
+<h3>Other<a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #7 from sarnold/more-cleanup. [Steve Arnold]</p>
 <p>submodule and doc updates</p>
@@ -503,16 +533,16 @@ Arnold]</p>
 </ul>
 </section>
 </section>
-<section id="id43">
-<h2>0.2.1 (2022-08-31)<a class="headerlink" href="#id43" title="Link to this heading"></a></h2>
-<section id="id44">
-<h3>Changes<a class="headerlink" href="#id44" title="Link to this heading"></a></h3>
+<section id="id46">
+<h2>0.2.1 (2022-08-31)<a class="headerlink" href="#id46" title="Link to this heading"></a></h2>
+<section id="id47">
+<h3>Changes<a class="headerlink" href="#id47" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Main docs TOC meeds a better title. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id45">
-<h3>Fixes<a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<section id="id48">
+<h3>Fixes<a class="headerlink" href="#id48" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add missing repo branch option. [Stephen L Arnold]</p></li>
 <li><p>Skip existing repos and allow clone if config updated. [Stephen L
@@ -525,8 +555,8 @@ newly enabled) repository</p></li>
 </li>
 </ul>
 </section>
-<section id="id46">
-<h3>Other<a class="headerlink" href="#id46" title="Link to this heading"></a></h3>
+<section id="id49">
+<h3>Other<a class="headerlink" href="#id49" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #5 from sarnold/new-repo-fix. [Steve Arnold]</p>
 <p>improve existing directory check</p>
@@ -534,16 +564,16 @@ newly enabled) repository</p></li>
 </ul>
 </section>
 </section>
-<section id="id47">
-<h2>0.2.0 (2022-08-20)<a class="headerlink" href="#id47" title="Link to this heading"></a></h2>
-<section id="id48">
-<h3>Changes<a class="headerlink" href="#id48" title="Link to this heading"></a></h3>
+<section id="id50">
+<h2>0.2.0 (2022-08-20)<a class="headerlink" href="#id50" title="Link to this heading"></a></h2>
+<section id="id51">
+<h3>Changes<a class="headerlink" href="#id51" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Flesh out table of configuration keys. [Stephen L Arnold]</p></li>
 </ul>
 </section>
-<section id="id49">
-<h3>Other<a class="headerlink" href="#id49" title="Link to this heading"></a></h3>
+<section id="id52">
+<h3>Other<a class="headerlink" href="#id52" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #3 from sarnold/still-more-docs. [Steve Arnold]</p>
 <p>expand cfg opts, update readme</p>
@@ -551,10 +581,10 @@ newly enabled) repository</p></li>
 </ul>
 </section>
 </section>
-<section id="id50">
-<h2>0.1.0 (2022-08-17)<a class="headerlink" href="#id50" title="Link to this heading"></a></h2>
-<section id="id51">
-<h3>New<a class="headerlink" href="#id51" title="Link to this heading"></a></h3>
+<section id="id53">
+<h2>0.1.0 (2022-08-17)<a class="headerlink" href="#id53" title="Link to this heading"></a></h2>
+<section id="id54">
+<h3>New<a class="headerlink" href="#id54" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Add lock-config option, update default config and readme. [Stephen L
 Arnold]</p></li>
@@ -566,8 +596,8 @@ Arnold]</p>
 </li>
 </ul>
 </section>
-<section id="id52">
-<h3>Other<a class="headerlink" href="#id52" title="Link to this heading"></a></h3>
+<section id="id55">
+<h3>Other<a class="headerlink" href="#id55" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Merge pull request #2 from sarnold/more-docs. [Steve Arnold]</p>
 <p>doc updates and cleanup</p>
@@ -586,8 +616,8 @@ Arnold]</p></li>
 </ul>
 </section>
 </section>
-<section id="id53">
-<h2>0.0.0 (2022-08-14)<a class="headerlink" href="#id53" title="Link to this heading"></a></h2>
+<section id="id56">
+<h2>0.0.0 (2022-08-14)<a class="headerlink" href="#id56" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Add initial project files and example config. [Stephen L Arnold]</p></li>
 </ul>

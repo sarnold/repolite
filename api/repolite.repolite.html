@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite.repolite module &mdash; repolite 0.6.2.dev1+gd88ed66 documentation</title>
+  <title>repolite.repolite module &mdash; repolite 0.6.2.dev5+g795b17a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=27930085"></script>
+        <script src="../_static/documentation_options.js?v=b73abd28"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -182,6 +182,26 @@ write a new config file with ‘-locked’ appended to the name.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.generate_change_data">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">generate_change_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mrepo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cur_tag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#generate_change_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.generate_change_data" title="Link to this definition"></a></dt>
+<dd><p>Generate a changelog (full or diff) for the given repository and drop
+it in the configured top_dir directory. Checks repo config for base
+tag to decide full vs diff.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mrepo</strong> (<em>Munch obj</em>) – a Munch repo obj with Munch repos item</p></li>
+<li><p><strong>base_tag</strong> (<em>str</em><em> or </em><em>None</em>) – starting tag for change diff</p></li>
+<li><p><strong>cur_tag</strong> (<em>str</em>) – ending tag for change diff (tag on current commit)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Dir_name<span class="colon">:</span></dt>
+<dd class="field-even"><p>directory name for output (top_dir)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="repolite.repolite.install_with_pip">
 <span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">install_with_pip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pip_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#install_with_pip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.install_with_pip" title="Link to this definition"></a></dt>
 <dd><p>Install a python repository via pip; this should be done in a local
@@ -250,6 +270,22 @@ of global options and list of Munch repo objects.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>FileExistsError</strong> – if cloning on top of existing directories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.process_repo_changes">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_repo_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_repo_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_repo_changes" title="Link to this definition"></a></dt>
+<dd><p>Generate a changelog for any repos with the <code class="docutils literal notranslate"><span class="pre">repo_gen_changes</span></code> flag
+set. Note we do not check repo state here, we just process each valid
+repo entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>quiet</strong> – pass the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> cmd line flag to install cmd</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

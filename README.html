@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>repolite: a git repo dependency manager for developers &mdash; repolite 0.6.2.dev1+gd88ed66 documentation</title>
+  <title>repolite: a git repo dependency manager for developers &mdash; repolite 0.6.2.dev5+g795b17a documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=27930085"></script>
+        <script src="_static/documentation_options.js?v=b73abd28"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -105,6 +105,14 @@ files in yaml instead.</p>
 <p><a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/ci.yml"><img alt="CI Status" src="https://github.com/sarnold/repolite/actions/workflows/ci.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/wheels.yml"><img alt="Wheel Status" src="https://github.com/sarnold/repolite/actions/workflows/wheels.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/release.yml"><img alt="Release Status" src="https://github.com/sarnold/repolite/actions/workflows/release.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/bandit.yml"><img alt="Security check - Bandit" src="https://github.com/sarnold/repolite/actions/workflows/bandit.yml/badge.svg" /></a></p>
 <p><a class="reference external" href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/coverage.yml"><img alt="Test coverage" src="https://raw.githubusercontent.com/sarnold/repolite/badges/master/test-coverage.svg" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/actions/workflows/pylint.yml"><img alt="Pylint Score" src="https://raw.githubusercontent.com/sarnold/repolite/badges/master/pylint-score.svg" /></a></p>
 <p><a class="reference external" href="https://github.com/sarnold/repolite/releases"><img alt="GitHub tag" src="https://img.shields.io/github/v/tag/sarnold/repolite?color=green&amp;include_prereleases&amp;label=latest%20release" /></a> <a class="reference external" href="https://github.com/sarnold/repolite/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/sarnold/repolite" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Python" src="https://img.shields.io/badge/python-3.6+-blue.svg" /></a></p>
+<p>The latest new/expanded workflow features now include:</p>
+<ul class="simple">
+<li><p><strong>tagging support</strong> - tag a set of enabled repositories via config file or
+command line</p></li>
+<li><p><strong>changelog support</strong> in <code class="docutils literal notranslate"><span class="pre">rSt</span></code> or <code class="docutils literal notranslate"><span class="pre">md</span></code> - generate changelog documents
+for enabled repositories</p></li>
+</ul>
+<p>See the optional feature keys in <a class="reference internal" href="#usage">Usage</a> for more info.</p>
 <p>Repolite is tested on the 3 primary GH runner platforms, so as long as you
 have a new-ish Python and a <code class="docutils literal notranslate"><span class="pre">git</span></code> binary it should run on your platform
 (meaning as long as <code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">git</span></code> succeeds there’s a good chance it will
@@ -220,32 +228,31 @@ installed already, see the example <a class="reference external" href="https://g
 <p>The current version supports minimal command options and there are no
 required arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(dev) user@host repolite (main) $ repolite -h
-usage: repolite [-h] [--version] [-v] [-q] [-D] [-S] [-i] [-u] [-s] [-a] [-l]
+usage: repolite [-h] [--version] [-v] [-q] [-D] [-S] [-i] [-u] [-s] [-a] [-g] [-l]
                 [TAG]
 
 Manage local (git) dependencies (default: clone and checkout)
 
 positional arguments:
-  TAG                Tag string override for all repositories (apply with -a)
-                     (default: None)
+  TAG                Optional tag string override (apply with -a) (default: None)
 
 options:
   -h, --help         show this help message and exit
   --version          show program&#39;s version number and exit
   -v, --verbose      Display more processing info (default: False)
   -q, --quiet        Suppress output from git command (default: False)
-  -D, --dump-config  Dump default configuration file to stdout (default:
-                     False)
-  -S, --save-config  Save active config to default filename (.ymltoxml.yml)
-                     and exit (default: False)
-  -i, --install      Install existing repositories (python only) (default:
-                     False)
-  -u, --update       Update existing repositories (default: False)
+  -D, --dump-config  Dump default configuration file to stdout (default: False)
+  -S, --save-config  Save active config to default filename (.ymltoxml.yml) and exit
+                     (default: False)
+  -i, --install      Install enabled repositories (python only) (default: False)
+  -u, --update       Update existing/enabled repositories (default: False)
   -s, --show         Display current repository state (default: False)
-  -a, --apply-tag    Apply the given tag (see TAG arg) or use one from config
-                     file (default: False)
-  -l, --lock-config  Lock active configuration in new config file and checkout
-                     hashes (default: False)
+  -a, --apply-tag    Apply the given tag (see TAG arg) or use one from config file
+                     (default: False)
+  -g, --changelog    Run gitchangelog in enabled repositories, create files in top_dir
+                     (default: False)
+  -l, --lock-config  Lock active configuration in new config file and checkout hashes
+                     (default: False)
 </pre></div>
 </div>
 <section id="configuration-settings">
@@ -302,6 +309,15 @@ and fast-forward pull fails (see repo-level option)</p>
 <dt class="field-odd">repo_install<span class="colon">:</span></dt>
 <dd class="field-odd"><p>if true, try to install the repo with <a class="reference external" href="https://packaging.python.org/en/latest/key_projects/#pip">pip</a></p>
 </dd>
+<dt class="field-even">repo_changelog_ext<span class="colon">:</span></dt>
+<dd class="field-even"><p>changelog file extension (default: <code class="docutils literal notranslate"><span class="pre">rst</span></code>)</p>
+</dd>
+<dt class="field-odd">repo_changelog_base<span class="colon">:</span></dt>
+<dd class="field-odd"><p>base version to use for changelog data</p>
+</dd>
+<dt class="field-even">repo_gen_changes<span class="colon">:</span></dt>
+<dd class="field-even"><p>if true, generate changelog file in <code class="docutils literal notranslate"><span class="pre">top_dir</span></code></p>
+</dd>
 </dl>
 <p>Configuration keys that change repository state:</p>
 <dl class="field-list simple">
@@ -326,6 +342,8 @@ and fast-forward pull fails (see repo-level option)</p>
 </dl>
 <p>Notes:</p>
 <ul class="simple">
+<li><p>if your <a class="reference external" href="https://github.com/sarnold/gitchangelog">gitchangelog</a> config uses Markdown, set <code class="docutils literal notranslate"><span class="pre">repo_changelog_ext</span></code> to
+<code class="docutils literal notranslate"><span class="pre">md</span></code> instead of <code class="docutils literal notranslate"><span class="pre">rst</span></code></p></li>
 <li><p>when tagging, tag from commandline is only used when config value is <code class="docutils literal notranslate"><span class="pre">null</span></code></p></li>
 <li><p>when tagging, <code class="docutils literal notranslate"><span class="pre">create_tag_annotated</span></code> and <code class="docutils literal notranslate"><span class="pre">create_tag_signed</span></code> are
 mutually exclusive, so only enable one of them</p></li>

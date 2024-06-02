@@ -2,6 +2,24 @@ Changelog
 =========
 
 
+0.6.2 (2024-06-01)
+------------------
+
+New
+~~~
+- Add changelog feature for release workflows. [Stephen L Arnold]
+
+  * uses ``gitchangelog`` to generate either full changelog.rst or
+    changelog diff from given base tag
+
+Changes
+~~~~~~~
+- Add config option to set changelog file extension. [Stephen L Arnold]
+
+  * allowed options are 'rst' or 'md' depending on the gitchangelog
+    configuration setting for ``output_engine``
+
+
 0.6.1 (2024-05-22)
 ------------------
 
