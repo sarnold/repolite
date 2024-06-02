@@ -26,8 +26,7 @@ jobs:
 
     - name: Build docs
       run: |
-        tox -e docs-lint
-        tox -e docs
+        tox -e ldocs,docs
 
     - uses: actions/upload-artifact@v4
       with:
