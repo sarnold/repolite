@@ -16,6 +16,14 @@ files in yaml instead.
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
 
+The latest new/expanded workflow features now include:
+
+* **tagging support** - tag a set of enabled repositories via config file or
+  command line
+* **changelog support** in ``rSt`` or ``md`` - generate changelog documents
+  for enabled repositories
+
+See the optional feature keys in Usage_ for more info.
 
 Repolite is tested on the 3 primary GH runner platforms, so as long as you
 have a new-ish Python and a ``git`` binary it should run on your platform
@@ -155,32 +163,31 @@ The current version supports minimal command options and there are no
 required arguments::
 
   (dev) user@host repolite (main) $ repolite -h
-  usage: repolite [-h] [--version] [-v] [-q] [-D] [-S] [-i] [-u] [-s] [-a] [-l]
+  usage: repolite [-h] [--version] [-v] [-q] [-D] [-S] [-i] [-u] [-s] [-a] [-g] [-l]
                   [TAG]
 
   Manage local (git) dependencies (default: clone and checkout)
 
   positional arguments:
-    TAG                Tag string override for all repositories (apply with -a)
-                       (default: None)
+    TAG                Optional tag string override (apply with -a) (default: None)
 
   options:
     -h, --help         show this help message and exit
     --version          show program's version number and exit
     -v, --verbose      Display more processing info (default: False)
     -q, --quiet        Suppress output from git command (default: False)
-    -D, --dump-config  Dump default configuration file to stdout (default:
-                       False)
-    -S, --save-config  Save active config to default filename (.ymltoxml.yml)
-                       and exit (default: False)
-    -i, --install      Install existing repositories (python only) (default:
-                       False)
-    -u, --update       Update existing repositories (default: False)
+    -D, --dump-config  Dump default configuration file to stdout (default: False)
+    -S, --save-config  Save active config to default filename (.ymltoxml.yml) and exit
+                       (default: False)
+    -i, --install      Install enabled repositories (python only) (default: False)
+    -u, --update       Update existing/enabled repositories (default: False)
     -s, --show         Display current repository state (default: False)
-    -a, --apply-tag    Apply the given tag (see TAG arg) or use one from config
-                       file (default: False)
-    -l, --lock-config  Lock active configuration in new config file and checkout
-                       hashes (default: False)
+    -a, --apply-tag    Apply the given tag (see TAG arg) or use one from config file
+                       (default: False)
+    -g, --changelog    Run gitchangelog in enabled repositories, create files in top_dir
+                       (default: False)
+    -l, --lock-config  Lock active configuration in new config file and checkout hashes
+                       (default: False)
 
 Configuration settings
 ----------------------
@@ -207,6 +214,9 @@ Configuration keys for optional extra features/behavior:
                      (requires ``git-lfs`` to be installed first)
 :repo_init_submodules: if true, initialize/update git submodules in that repository
 :repo_install: if true, try to install the repo with pip_
+:repo_changelog_ext: changelog file extension (default: ``rst``)
+:repo_changelog_base: base version to use for changelog data
+:repo_gen_changes: if true, generate changelog file in ``top_dir``
 
 Configuration keys that change repository state:
 
@@ -219,6 +229,8 @@ Configuration keys that change repository state:
 
 Notes:
 
+* if your gitchangelog_ config uses Markdown, set ``repo_changelog_ext`` to
+  ``md`` instead of ``rst``
 * when tagging, tag from commandline is only used when config value is ``null``
 * when tagging, ``create_tag_annotated`` and ``create_tag_signed`` are
   mutually exclusive, so only enable one of them
@@ -236,6 +248,7 @@ Notes:
 * you may want to add your ``top_dir`` path or default local config file
   patterns to your ``.gitignore`` file
 
+.. _gitchangelog: https://github.com/sarnold/gitchangelog
 
 Dev tools
 =========
