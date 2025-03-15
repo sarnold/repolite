@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
-        python-version: [3.8, '3.10', '3.12']
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+        python-version: [3.9, '3.11', '3.13']
 
     steps:
     - name: Set git crlf/eol
@@ -46,7 +46,7 @@ jobs:
         tox -e build
 
     - name: Upload artifacts
-      if: matrix.python-version == 3.8 && runner.os == 'Linux'
+      if: matrix.python-version == 3.9 && runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: packages
@@ -55,7 +55,7 @@ jobs:
   create_release:
     name: Create Release
     needs: [wheels]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Get version
@@ -97,7 +97,7 @@ jobs:
   docs:
     name: Release docs
     needs: [create_release]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
