@@ -253,7 +253,7 @@ Notes:
 Dev tools
 =========
 
-Local tool dependencies to aid in development; install both tools for
+Local tool dependencies to aid in development; install them for
 maximum enjoyment.
 
 Tox
@@ -348,7 +348,43 @@ To run all ``pre-commit`` checks manually, try::
   $ pre-commit run -a
 
 
+SBOM and license info
+=====================
+
+This project is now compliant the REUSE Specification Version 3.3, so the
+corresponding license information for all files can be found in the ``REUSE.toml``
+configuration file with license text(s) in the ``LICENSES/`` folder.
+
+Related metadata can be (re)generated with the following tools and command
+examples.
+
+* reuse-tool_ - REUSE_ compliance linting and sdist (source files) SBOM generation
+* sbom4python_ - generate SBOM with full dependency chain
+
+Commands
+--------
+
+Use tox to create the environment and run the lint command::
+
+  $ tox -e reuse                      # --or--
+  $ tox -e reuse -- spdx > sbom.txt   # generate sdist files sbom
+
+Note you can pass any of the other reuse commands after the ``--`` above.
+
+Use the above environment to generate the full SBOM in text format::
+
+  $ source .tox/reuse/bin/activate
+  $ sbom4python --system --use-pip -o <file_name>.txt
+
+Be patient; the last command above may take several minutes. See the
+doc links above for more detailed information on the tools and
+specifications.
+
+
 .. _pre-commit: https://pre-commit.com/index.html
+.. _reuse-tool: https://github.com/fsfe/reuse-tool
+.. _REUSE: https://reuse.software/spec-3.3/
+.. _sbom4python: https://github.com/anthonyharrison/sbom4python
 
 .. |ci| image:: https://github.com/sarnold/repolite/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/sarnold/repolite/actions/workflows/ci.yml
