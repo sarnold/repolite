@@ -411,7 +411,7 @@ specifications.
     :alt: Pylint Score
 
 .. |license| image:: https://img.shields.io/github/license/sarnold/repolite
-    :target: https://github.com/sarnold/repolite/blob/master/LICENSE
+    :target: https://github.com/sarnold/repolite/blob/master/COPYING
     :alt: License
 
 .. |tag| image:: https://img.shields.io/github/v/tag/sarnold/repolite?color=green&include_prereleases&label=latest%20release

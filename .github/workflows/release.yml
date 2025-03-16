@@ -59,7 +59,7 @@ jobs:
     needs: [wheels]
     runs-on: ubuntu-22.04
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Get version
@@ -102,9 +102,9 @@ jobs:
   docs:
     name: Release docs
     needs: [create_release]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
