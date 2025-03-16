@@ -2,7 +2,58 @@ Changelog
 =========
 
 
-0.6.2 (2024-06-01)
+0.6.3 (2025-03-16)
+------------------
+
+Changes
+~~~~~~~
+- Improve readme descriptions, add example repo links. [Stephen L
+  Arnold]
+- Rename symlink bacl to LICENSE, update readme badge uri. [Stephen L
+  Arnold]
+- Update .pre-commit-config.yaml, fix clean targets. [Stephen L Arnold]
+- Add readme section on SBOM and licensing info. [Stephen L Arnold]
+- Add REUSE.toml config and become reuse spec 3.3 compliant. [Stephen L
+  Arnold]
+
+  * repolite-sdist-sbom.txt was generated using ``reuse spdx`` cmd
+  * COPYING is now a symlink pointing to LICENSES/LGPL-2.1-or-later.txt
+- Update all workflow actions and python versions. [Stephen L Arnold]
+- Move description text and add version. [Stephen L Arnold]
+
+Fixes
+~~~~~
+- Change license badge to static instead. [Stephen L Arnold]
+
+  * github decided to cry about license symlink so use static badge text
+- Sort out git quiet and add info log line. [Stephen L Arnold]
+
+  * closes issue #25
+- Make sure release workflow has the right job permissions. [Stephen L
+  Arnold]
+
+  * fix readme uri, add more clean to tox cmd
+
+Other
+~~~~~
+- Merge pull request #30 from sarnold/doc-examples. [Steve Arnold]
+
+  readme improvements
+- Merge pull request #29 from sarnold/license-fiddling. [Steve Arnold]
+
+  static licesnse badge
+- Merge pull request #28 from sarnold/license-fiddling. [Steve Arnold]
+
+  license link not detected
+- Merge pull request #27 from sarnold/issue-readme. [Steve Arnold]
+
+  workflow fixes
+- Merge pull request #26 from sarnold/metadata-cleanup. [Steve Arnold]
+
+  metadata cleanup
+
+
+0.6.2 (2024-06-02)
 ------------------
 
 New
@@ -19,9 +70,28 @@ Changes
   * allowed options are 'rst' or 'md' depending on the gitchangelog
     configuration setting for ``output_engine``
 
+Fixes
+~~~~~
+- Update docs cmds in release workflow. [Stephen L Arnold]
+
+Other
+~~~~~
+- Merge pull request #24 from sarnold/changelogs. [Steve Arnold]
+
+  Add changelog support
+- Update our own changelog for next release, combine tox doc envs.
+  [Stephen L Arnold]
+
 
 0.6.1 (2024-05-22)
 ------------------
+
+New
+~~~
+- Support per-repo tag in config file for tag creation. [Steve Arnold]
+
+  * add new config key repo_create_tag_new
+  * repo tag takes precedence over command-line tag
 
 Changes
 ~~~~~~~
@@ -45,6 +115,7 @@ New
 Changes
 ~~~~~~~
 - Update changelog for new release. [Stephen L Arnold]
+- Start with the simplest tag push, update debug logging. [Steve Arnold]
 - Wire up tag function to cmdline arg and update readme. [Steve Arnold]
 - Set global git user params in CI before running (tag) tests. [Steve
   Arnold]
@@ -63,9 +134,14 @@ Changes
 ~~~~~~~
 - Add a gitchangelog cfg and tox cmd to (re)generate changes. [Steve
   Arnold]
+- Update python and GH workflow action versions. [Steve Arnold]
 
 Fixes
 ~~~~~
+- Refactor test fixtures for pytest 8 and temp_path. [Steve Arnold]
+
+  * session.name is now an empty string, use getbasetemp().name instead
+  * use tmp_path_factory instead of tmpdir
 - Re-init git_action to get proper clone args for each repository.
   [Steve Arnold]
 
@@ -88,6 +164,10 @@ Changes
 
   * requires new arg for nested repos, but it does work
 
+Fixes
+~~~~~
+- Use branch arg for clone with non-zero depth. [Stephen L Arnold]
+
 Other
 ~~~~~
 - Merge pull request #19 from sarnold/shallow-args. [Steve Arnold]
@@ -103,9 +183,47 @@ Other
 
 New
 ~~~
+- Introduce check_repo_url() to sanitize windows paths. [Stephen L
+  Arnold]
+
+  * inspired by SO and GitPython url polishing
+- Use clone_from() on all platforms, cleanup test output. [Stephen L
+  Arnold]
 - Use GitPython wrapper to clone on win32. [Stephen L Arnold]
 
   * test passing some multi_options to clone_from()
+- Add some misc tests, minor refactor for testability. [Stephen L
+  Arnold]
+
+  * swap out optparse and swap in argparse, maintain original interface
+  * add another tox command to setup dummy test repositories
+
+Changes
+~~~~~~~
+- Readme and ci cleanup, add coverage workflow. [Stephen L Arnold]
+- Use joinpath for pytest urls, cleanup paths, add windows to ci.
+  [Stephen L Arnold]
+
+  * refactor default url paths so we can do a proper join of path elements
+  * resolve all test paths, add some introspection to CI test output
+  * stringify repo_url and add more logging calls in process_git_repos()
+  * switch check_output call to run with capture_output
+  * test alternate GitPython wrapper for cloning on win32
+  * Munch is actually tested on Windows, but we should check it anyway
+- Add test for locked_cfg, fix testability bit. [Stephen L Arnold]
+- Remove windows from pytest CI matrix, Path obj not iterable. [Stephen
+  L Arnold]
+- Add pytest fixtures so we can add more tests. [Stephen L Arnold]
+
+  * uses (forked) git_dummy to create git repos for testing
+  * update project/test configs, add testdata paths to .gitignore
+
+Fixes
+~~~~~
+- Improve testability, cleanup CI env names. [Stephen L Arnold]
+
+  * make sure we use importlib backport in older environments
+  * try pytest on windows-latest
 
 Other
 ~~~~~
@@ -123,6 +241,19 @@ New
 ~~~
 - Add tox self-test workflow example to go with example cfg. [Stephen L
   Arnold]
+- Vendor tox plugin file, use for workflow self-test cmds. [Stephen L
+  Arnold]
+
+Changes
+~~~~~~~
+- Fix bandit workflow (needs to run on just push) [Stephen L Arnold]
+- Update pre-commit hooks, adjust config. [Stephen L Arnold]
+- Refactor upstream imports, remove generated version module. [Stephen L
+  Arnold]
+
+  * use setuptools_scm instead of versioningit, do not use write_to_file
+  * use importlib resources/metadata instead of pkg_resources/version mod
+  * cleanup tox file, manifest, and docs config
 
 Other
 ~~~~~
@@ -141,6 +272,7 @@ New
 Changes
 ~~~~~~~
 - Be more explicit about OS packages in the readme. [Stephen L Arnold]
+- Cleanup ci artifacts. [Stephen L Arnold]
 - Use defaults on gh-pages deploy action, bump to v4. [Stephen L Arnold]
 
 Fixes
@@ -177,6 +309,12 @@ Changes
 Fixes
 ~~~~~
 - Cleanup/improve docstring for module func. [Stephen L Arnold]
+- Make setup.py compatible with older python, eg, py36 bionic. [Stephen
+  L Arnold]
+
+  * required for python envs still using distutils that do not
+    like projects with src/ layout
+  * update tox file to generate egg_info for mypy
 
 Other
 ~~~~~
@@ -306,6 +444,14 @@ Other
 0.2.0 (2022-08-20)
 ------------------
 
+New
+~~~
+- Expand cfg options, wire up submodules, rebase, lfs, update readme.
+  [Stephen L Arnold]
+
+  * support initializing submodules and lfs when configured
+  * check for git and git-lfs and log (or exit if both are missing)
+
 Changes
 ~~~~~~~
 - Flesh out table of configuration keys. [Stephen L Arnold]
@@ -324,10 +470,26 @@ New
 ~~~
 - Add lock-config option, update default config and readme. [Stephen L
   Arnold]
+- Add docs build as the last job in release workflow. [Stephen L Arnold]
+
+  * we should have matching doc version on new tag
+- Add option to save example cfg to default filename. [Stephen L Arnold]
+
+  * update readme with new help/examples
 - Add sphinx/api doc sources and ci workflow, more cleanup. [Stephen L
   Arnold]
 
   * update readme, add missing license file
+- Add tool configs for pep8speaks and pre-commit. [Stephen L Arnold]
+
+Changes
+~~~~~~~
+- Update readme and doc strings, remove unused import,subclass. [Stephen
+  L Arnold]
+
+Fixes
+~~~~~
+- Implement directory-check TODO and update readme. [Stephen L Arnold]
 
 Other
 ~~~~~
