@@ -58,6 +58,11 @@ apidoc_output_dir = 'api'
 apidoc_excluded_paths = ['tests']
 apidoc_separate_modules = True
 
+linkcheck_ignore = [
+    "https://github.com/VCTLabs/vct-asterisk-dev-artifacts/blob/develop/.repolite.yml",
+    "git@github.com:sarnold/repolite/commit/*",
+]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

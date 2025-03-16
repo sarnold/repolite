@@ -122,7 +122,7 @@ jobs:
 
     - name: Build docs
       run: |
-        tox -e docs-lint
+        tox -e ldocs
         tox -e docs
 
     - uses: actions/upload-artifact@v4
