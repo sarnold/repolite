@@ -372,9 +372,12 @@ def process_git_repos(flags, repos, pull, quiet):
 
     for item in repos:
         # need to reset git_action for each repository
-        git_action = 'git clone -q ' if quiet else 'git clone '
+        git_quiet = '-q '
+        git_action = 'git clone '
         if pull:  # baseline git pull action, overrides repo-level option
             git_action = 'git pull --rebase=merges ' if urebase else 'git pull --ff-only '
+        if quiet:
+            git_action = git_action + git_quiet
 
         repo_url_str = check_repo_url(item.repo_url)
         logging.debug('Make sure repo_url is a string => %r', repo_url_str)
@@ -415,6 +418,7 @@ def process_git_repos(flags, repos, pull, quiet):
             except OSError as exc:
                 logging.exception("Could not change to repo directory: %s", exc)
 
+            logging.info('Current repository is %s', str(git_dir))
             if ulock:
                 logging.debug('Checkout cmd: %s', git_checkout)
                 sp.check_call(split(checkout_lock))
