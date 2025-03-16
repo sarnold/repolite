@@ -1,6 +1,6 @@
-========================================================
- repolite: a git repo dependency manager for developers
-========================================================
+===========================================================
+ repolite: a dependency manager for working with git repos
+===========================================================
 
 A lightweight tool to manage a small set of project dependencies without a
 manifest.xml file or git submodules. You get to write (local) project config
@@ -12,9 +12,24 @@ files in yaml instead.
 
 |tag| |license| |python|
 
-
 .. _tox: https://github.com/tox-dev/tox
 .. _pip: https://packaging.python.org/en/latest/key_projects/#pip
+
+Example consumer repos include:
+
+* SCAP Security Guide `(SSG) workflows`_
+* `ARM64 u-boot analysis`_
+* Structured `(RST) document development`_
+* Asterisk\* `interface evaluation`_
+* sysstat `graphing tool evaluation`_
+
+
+.. _(SSG) workflows: https://github.com/VCTLabs/scap-workbench/blob/v1-2/.repolite.yml
+.. _ARM64 u-boot analysis: https://github.com/sarnold/u-boot-ATF-manifest/blob/marvell-armada/.repolite-locked.yml
+.. _(RST) document development: https://github.com/VCTLabs/software_design_description_template/blob/master/.repolite.yml
+.. _interface evaluation: https://github.com/VCTLabs/vct-asterisk-dev-artifacts/blob/develop/.repolite.yml
+.. _graphing tool evaluation: https://github.com/sarnold/sar-graph-artifacts/blob/main/.repolite.yml
+
 
 The latest new/expanded workflow features now include:
 
