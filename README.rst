@@ -410,9 +410,9 @@ specifications.
     :target: https://github.com/sarnold/repolite/actions/workflows/pylint.yml
     :alt: Pylint Score
 
-.. |license| image:: https://img.shields.io/github/license/sarnold/repolite
+.. |license| image:: https://img.shields.io/badge/license-LGPL_2.1-blue
     :target: https://github.com/sarnold/repolite/blob/master/LICENSE
-    :alt: License
+    :alt: License (static)
 
 .. |tag| image:: https://img.shields.io/github/v/tag/sarnold/repolite?color=green&include_prereleases&label=latest%20release
     :target: https://github.com/sarnold/repolite/releases
