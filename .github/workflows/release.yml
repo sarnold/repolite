@@ -96,8 +96,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            packages/proc*.whl
-            packages/proc*.tar.gz
+            packages/*.whl
+            packages/*.tar.gz
 
   docs:
     name: Release docs
