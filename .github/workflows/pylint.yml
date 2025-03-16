@@ -9,7 +9,9 @@ on:
 jobs:
   pylint:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     defaults:
       run:
         shell: bash
@@ -73,19 +75,23 @@ jobs:
     #   - This is a pull request event and the pull actor is the same as the repo owner
     #     if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/main' }}
     name: Generate badge image with pylint score
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: read
+      contents: write
+      actions: read
     needs: [pylint]
     if: ${{ github.event_name == 'push' }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: badges
         path: badges
 
     # Use the output from the `analyze` step
     - name: Create pylint badge
-      uses: emibcn/badge-action@v2.0.3
+      uses: emibcn/badge-action@808173dd03e2f30c980d03ee49e181626088eee8  # v2.0.3
       id: badge
       with:
         label: 'Pylint score'
@@ -108,7 +114,7 @@ jobs:
         git commit -m "Add/Update badge" || true
 
     - name: Push badge commit
-      uses: ad-m/github-push-action@master
+      uses: ad-m/github-push-action@d91a481090679876dfc4178fef17f286781251df  # v0.8.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: badges

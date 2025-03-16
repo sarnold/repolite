@@ -3,6 +3,14 @@ Repolite helps you manage git repo project dependencies according to your local 
 config file(s).
 """
 
-__description__ = "Lite git repository manager for small-ish projects."
+import sys
 
-__all__ = ["__description__"]
+if sys.version_info < (3, 8):
+    from importlib_metadata import version
+else:
+    from importlib.metadata import version
+
+__version__ = version('repolite')
+__all__ = [
+    "__version__",
+]

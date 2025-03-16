@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  security_check:
     runs-on: ubuntu-22.04
     permissions:
       checks: write # for bandit-report-artifacts to publish the checks
