@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>repolite.repolite module &mdash; repolite 0.6.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=73d9a94e"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog" href="../CHANGELOG.html" />
+    <link rel="prev" title="repolite package" href="repolite.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            repolite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">repolite: a dependency manager for working with git repos</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">repolite</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="repolite.html">repolite package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="repolite.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">repolite.repolite module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repolite.html#module-repolite">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">repolite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">repolite</a></li>
+          <li class="breadcrumb-item"><a href="repolite.html">repolite package</a></li>
+      <li class="breadcrumb-item active">repolite.repolite module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/repolite.repolite.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-repolite.repolite">
+<span id="repolite-repolite-module"></span><h1>repolite.repolite module<a class="headerlink" href="#module-repolite.repolite" title="Link to this heading"></a></h1>
+<p>Manage a small set of repository dependencies without manifest.xml or git
+submodules. You get to write (local) project config files in yaml instead.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.check_for_git">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">check_for_git</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#check_for_git"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.check_for_git" title="Link to this definition"></a></dt>
+<dd><p>Make sure we can find the <code class="docutils literal notranslate"><span class="pre">git</span></code> and <code class="docutils literal notranslate"><span class="pre">git-lfs</span></code> binaries in the
+user environment and return a tuple of path strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return git_path, lfs_path<span class="colon">:</span></dt>
+<dd class="field-odd"><p>program path strings</p>
+</dd>
+<dt class="field-even">Rtype tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>path to program if found, else None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.check_repo_state">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">check_repo_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#check_repo_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.check_repo_state" title="Link to this definition"></a></dt>
+<dd><p>Check if repo configuration is consistent, ie, does current repo state
+match repo configuration items.  Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if current directories
+match the configuration, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
+</dd>
+<dt class="field-even">Return is_state_valid<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.check_repo_url">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">check_repo_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#check_repo_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.check_repo_url" title="Link to this definition"></a></dt>
+<dd><p>Make sure the url is sanitary on most platforms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – input url / path from pathlib or config</p>
+</dd>
+<dt class="field-even">Return url<span class="colon">:</span></dt>
+<dd class="field-even"><p>url / path to clone</p>
+</dd>
+<dt class="field-odd">Rtype str<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.create_locked_cfg">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">create_locked_cfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ufile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#create_locked_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.create_locked_cfg" title="Link to this definition"></a></dt>
+<dd><p>Create a ‘locked’ cfg file, ie, read the active config file and
+populate the <code class="docutils literal notranslate"><span class="pre">repo_hash</span></code> values with HEAD from each branch, then
+write a new config file with ‘-locked’ appended to the name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>ufile</strong> (<em>Path obj</em>) – active config file</p></li>
+<li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
+<li><p><strong>test</strong> (<em>str</em><em> or </em><em>None</em>) – test path for locked config file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.create_repo_tags">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">create_repo_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#create_repo_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.create_repo_tags" title="Link to this definition"></a></dt>
+<dd><p>Create a new signed or annotated tag in each configured repository.
+(re)Set the gpg signing key from user config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>utag</strong> (<em>str obj</em>) – tag string to apply</p></li>
+<li><p><strong>test</strong> (<em>str</em><em> or </em><em>None</em>) – test path for config file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.generate_change_data">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">generate_change_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mrepo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cur_tag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#generate_change_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.generate_change_data" title="Link to this definition"></a></dt>
+<dd><p>Generate a changelog (full or diff) for the given repository and drop
+it in the configured top_dir directory. Checks repo config for base
+tag to decide full vs diff.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mrepo</strong> (<em>Munch obj</em>) – a Munch repo obj with Munch repos item</p></li>
+<li><p><strong>base_tag</strong> (<em>str</em><em> or </em><em>None</em>) – starting tag for change diff</p></li>
+<li><p><strong>cur_tag</strong> (<em>str</em>) – ending tag for change diff (tag on current commit)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Dir_name<span class="colon">:</span></dt>
+<dd class="field-even"><p>directory name for output (top_dir)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.install_with_pip">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">install_with_pip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pip_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#install_with_pip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.install_with_pip" title="Link to this definition"></a></dt>
+<dd><p>Install a python repository via pip; this should be done in a local
+virtual environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pip_name</strong> (<em>str</em>) – path to directory name of python repo to install</p></li>
+<li><p><strong>quiet</strong> (<em>boolean</em>) – filter most of the install cmd output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.load_config">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.load_config" title="Link to this definition"></a></dt>
+<dd><p>Load yaml configuration file and munchify the data. If ENV path or local
+file is not found in current directory, the default will be loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_encoding</strong> (<em>str</em>) – file encoding of config file</p>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Munch cfg obj and cfg file as Path obj</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>FileTypeError</strong> – if the input file is not yml</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.main">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.main" title="Link to this definition"></a></dt>
+<dd><p>Manage git repository-based project dependencies.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.parse_config">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">parse_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#parse_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.parse_config" title="Link to this definition"></a></dt>
+<dd><p>Parse config file options and build list of repo objects. Return list
+of global options and list of Munch repo objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of flags, list of repository objs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.process_git_repos">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_git_repos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pull</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_git_repos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_git_repos" title="Link to this definition"></a></dt>
+<dd><p>Process list of git repository objs and populate/update <code class="docutils literal notranslate"><span class="pre">top_dir</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> (<em>list</em>) – List of options (from yaml cfg)</p></li>
+<li><p><strong>repos</strong> (<em>list</em>) – List of repository objs (from yaml cfg)</p></li>
+<li><p><strong>pull</strong> (<em>Boolean</em>) – Update if True, else checkout</p></li>
+<li><p><strong>quiet</strong> (<em>Boolean</em>) – Suppress some git output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileExistsError</strong> – if cloning on top of existing directories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.process_repo_changes">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_repo_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_repo_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_repo_changes" title="Link to this definition"></a></dt>
+<dd><p>Generate a changelog for any repos with the <code class="docutils literal notranslate"><span class="pre">repo_gen_changes</span></code> flag
+set. Note we do not check repo state here, we just process each valid
+repo entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>quiet</strong> – pass the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> cmd line flag to install cmd</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.process_repo_install">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">process_repo_install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#process_repo_install"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.process_repo_install" title="Link to this definition"></a></dt>
+<dd><p>Install any repos with the <code class="docutils literal notranslate"><span class="pre">repo_install</span></code> flag set. Note we do not
+check repo state here, we just process each valid repo entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p></li>
+<li><p><strong>quiet</strong> – pass the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> cmd line flag to install cmd</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.resolve_top_dir">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">resolve_top_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#resolve_top_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.resolve_top_dir" title="Link to this definition"></a></dt>
+<dd><p>Resolve top_dir, ie, containing directory for git repositories. The
+suggested path is inside the project working directory, but we should
+support any writable path. Also set the working dir path and return
+both as Path objs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return workpath, userpath<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple of Path objs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="repolite.repolite.show_repo_state">
+<span class="sig-prename descclassname"><span class="pre">repolite.repolite.</span></span><span class="sig-name descname"><span class="pre">show_repo_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ucfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/repolite/repolite.html#show_repo_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#repolite.repolite.show_repo_state" title="Link to this definition"></a></dt>
+<dd><p>Display the current state of each repository using git describe/rev-parse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ucfg</strong> (<em>Munch cfgobj</em>) – Munch configuration object extracted from config file</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DirectoryTypeError</strong> – if repo state is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="repolite.html" class="btn btn-neutral float-left" title="repolite package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../CHANGELOG.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Stephen L Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

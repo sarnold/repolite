@@ -1,0 +1,887 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog &mdash; repolite 0.6.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=73d9a94e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="repolite.repolite module" href="api/repolite.repolite.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            repolite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">repolite: a dependency manager for working with git repos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">repolite</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.6.3 (2025-03-16)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixes">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.6.2 (2024-06-02)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.6.1 (2024-05-22)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.6.0 (2024-05-08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">0.5.2 (2024-03-27)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id18">0.5.1 (2024-01-12)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id22">0.5.0 (2023-09-16)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id23">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id27">0.4.2 (2023-09-02)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id28">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id31">0.4.1 (2023-02-13)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id32">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id36">0.4.0 (2022-12-23)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id37">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id41">0.3.3 (2022-09-29)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id42">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id44">0.3.2 (2022-09-29)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id45">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id48">0.3.1 (2022-09-13)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id49">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id53">0.3.0 (2022-09-04)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id54">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id56">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id57">0.2.1 (2022-08-31)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id58">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id61">0.2.0 (2022-08-20)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id62">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id65">0.1.0 (2022-08-17)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id66">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id67">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id68">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id69">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id70">0.0.0 (2022-08-14)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">repolite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changelog</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CHANGELOG.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>0.6.3 (2025-03-16)<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="changes">
+<h3>Changes<a class="headerlink" href="#changes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Improve readme descriptions, add example repo links. [Stephen L
+Arnold]</p></li>
+<li><p>Rename symlink bacl to LICENSE, update readme badge uri. [Stephen L
+Arnold]</p></li>
+<li><p>Update .pre-commit-config.yaml, fix clean targets. [Stephen L Arnold]</p></li>
+<li><p>Add readme section on SBOM and licensing info. [Stephen L Arnold]</p></li>
+<li><p>Add REUSE.toml config and become reuse spec 3.3 compliant. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>repolite-sdist-sbom.txt was generated using <code class="docutils literal notranslate"><span class="pre">reuse</span> <span class="pre">spdx</span></code> cmd</p></li>
+<li><p>COPYING is now a symlink pointing to LICENSES/LGPL-2.1-or-later.txt</p></li>
+</ul>
+</li>
+<li><p>Update all workflow actions and python versions. [Stephen L Arnold]</p></li>
+<li><p>Move description text and add version. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Change license badge to static instead. [Stephen L Arnold]</p>
+<ul>
+<li><p>github decided to cry about license symlink so use static badge text</p></li>
+</ul>
+</li>
+<li><p>Sort out git quiet and add info log line. [Stephen L Arnold]</p>
+<ul>
+<li><p>closes issue #25</p></li>
+</ul>
+</li>
+<li><p>Make sure release workflow has the right job permissions. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>fix readme uri, add more clean to tox cmd</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="other">
+<h3>Other<a class="headerlink" href="#other" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #30 from sarnold/doc-examples. [Steve Arnold]</p>
+<p>readme improvements</p>
+</li>
+<li><p>Merge pull request #29 from sarnold/license-fiddling. [Steve Arnold]</p>
+<p>static licesnse badge</p>
+</li>
+<li><p>Merge pull request #28 from sarnold/license-fiddling. [Steve Arnold]</p>
+<p>license link not detected</p>
+</li>
+<li><p>Merge pull request #27 from sarnold/issue-readme. [Steve Arnold]</p>
+<p>workflow fixes</p>
+</li>
+<li><p>Merge pull request #26 from sarnold/metadata-cleanup. [Steve Arnold]</p>
+<p>metadata cleanup</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.6.2 (2024-06-02)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add changelog feature for release workflows. [Stephen L Arnold]</p>
+<ul>
+<li><p>uses <code class="docutils literal notranslate"><span class="pre">gitchangelog</span></code> to generate either full changelog.rst or
+changelog diff from given base tag</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id3">
+<h3>Changes<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add config option to set changelog file extension. [Stephen L Arnold]</p>
+<ul>
+<li><p>allowed options are ‘rst’ or ‘md’ depending on the gitchangelog
+configuration setting for <code class="docutils literal notranslate"><span class="pre">output_engine</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id4">
+<h3>Fixes<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update docs cmds in release workflow. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Other<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #24 from sarnold/changelogs. [Steve Arnold]</p>
+<p>Add changelog support</p>
+</li>
+<li><p>Update our own changelog for next release, combine tox doc envs.
+[Stephen L Arnold]</p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h2>0.6.1 (2024-05-22)<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3>New<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Support per-repo tag in config file for tag creation. [Steve Arnold]</p>
+<ul>
+<li><p>add new config key repo_create_tag_new</p></li>
+<li><p>repo tag takes precedence over command-line tag</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id8">
+<h3>Changes<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update readme, cleanup action versions in wheels workflow. [Steve
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>Other<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #23 from sarnold/per-repo-tags. [Steve Arnold]</p>
+<p>feat: add per-repo tag support</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id10">
+<h2>0.6.0 (2024-05-08)<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<section id="id11">
+<h3>New<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add tagging feature, currently only one tag via args. [Steve Arnold]</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>Changes<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update changelog for new release. [Stephen L Arnold]</p></li>
+<li><p>Start with the simplest tag push, update debug logging. [Steve Arnold]</p></li>
+<li><p>Wire up tag function to cmdline arg and update readme. [Steve Arnold]</p></li>
+<li><p>Set global git user params in CI before running (tag) tests. [Steve
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>Other<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #22 from sarnold/feat-tagging. [Steve Arnold]</p>
+<p>New tagging feature</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id14">
+<h2>0.5.2 (2024-03-27)<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<section id="id15">
+<h3>Changes<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add a gitchangelog cfg and tox cmd to (re)generate changes. [Steve
+Arnold]</p></li>
+<li><p>Update python and GH workflow action versions. [Steve Arnold]</p></li>
+</ul>
+</section>
+<section id="id16">
+<h3>Fixes<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Refactor test fixtures for pytest 8 and temp_path. [Steve Arnold]</p>
+<ul>
+<li><p>session.name is now an empty string, use getbasetemp().name instead</p></li>
+<li><p>use tmp_path_factory instead of tmpdir</p></li>
+</ul>
+</li>
+<li><p>Re-init git_action to get proper clone args for each repository.
+[Steve Arnold]</p>
+<ul>
+<li><p>fixes issue #20</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id17">
+<h3>Other<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Bump changelog for release. [Steve Arnold]</p></li>
+<li><p>Merge pull request #21 from sarnold/issue-20. [Steve Arnold]</p>
+<p>Fixes for Issue #20 and pytest fixtures</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id18">
+<h2>0.5.1 (2024-01-12)<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
+<section id="id19">
+<h3>Changes<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Switch to upstream git_dummy instead of fork. [Stephen L Arnold]</p>
+<ul>
+<li><p>requires new arg for nested repos, but it does work</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id20">
+<h3>Fixes<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use branch arg for clone with non-zero depth. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id21">
+<h3>Other<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #19 from sarnold/shallow-args. [Steve Arnold]</p>
+<p>fix shallow clone error</p>
+</li>
+<li><p>Merge pull request #17 from sarnold/fixture-update. [Steve Arnold]</p>
+<p>update test fixture and release workflow</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id22">
+<h2>0.5.0 (2023-09-16)<a class="headerlink" href="#id22" title="Link to this heading"></a></h2>
+<section id="id23">
+<h3>New<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Introduce check_repo_url() to sanitize windows paths. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>inspired by SO and GitPython url polishing</p></li>
+</ul>
+</li>
+<li><p>Use clone_from() on all platforms, cleanup test output. [Stephen L
+Arnold]</p></li>
+<li><p>Use GitPython wrapper to clone on win32. [Stephen L Arnold]</p>
+<ul>
+<li><p>test passing some multi_options to clone_from()</p></li>
+</ul>
+</li>
+<li><p>Add some misc tests, minor refactor for testability. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>swap out optparse and swap in argparse, maintain original interface</p></li>
+<li><p>add another tox command to setup dummy test repositories</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id24">
+<h3>Changes<a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Readme and ci cleanup, add coverage workflow. [Stephen L Arnold]</p></li>
+<li><p>Use joinpath for pytest urls, cleanup paths, add windows to ci.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>refactor default url paths so we can do a proper join of path elements</p></li>
+<li><p>resolve all test paths, add some introspection to CI test output</p></li>
+<li><p>stringify repo_url and add more logging calls in process_git_repos()</p></li>
+<li><p>switch check_output call to run with capture_output</p></li>
+<li><p>test alternate GitPython wrapper for cloning on win32</p></li>
+<li><p>Munch is actually tested on Windows, but we should check it anyway</p></li>
+</ul>
+</li>
+<li><p>Add test for locked_cfg, fix testability bit. [Stephen L Arnold]</p></li>
+<li><p>Remove windows from pytest CI matrix, Path obj not iterable. [Stephen
+L Arnold]</p></li>
+<li><p>Add pytest fixtures so we can add more tests. [Stephen L Arnold]</p>
+<ul>
+<li><p>uses (forked) git_dummy to create git repos for testing</p></li>
+<li><p>update project/test configs, add testdata paths to .gitignore</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id25">
+<h3>Fixes<a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Improve testability, cleanup CI env names. [Stephen L Arnold]</p>
+<ul>
+<li><p>make sure we use importlib backport in older environments</p></li>
+<li><p>try pytest on windows-latest</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id26">
+<h3>Other<a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #16 from sarnold/fm-tests2. [Steve Arnold]</p>
+<p>refactored version of fm-tests</p>
+</li>
+<li><p>Really fix coverage workflow, attempt to combine py37,py311 coverage
+data. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+</section>
+<section id="id27">
+<h2>0.4.2 (2023-09-02)<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
+<section id="id28">
+<h3>New<a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add tox self-test workflow example to go with example cfg. [Stephen L
+Arnold]</p></li>
+<li><p>Vendor tox plugin file, use for workflow self-test cmds. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id29">
+<h3>Changes<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fix bandit workflow (needs to run on just push) [Stephen L Arnold]</p></li>
+<li><p>Update pre-commit hooks, adjust config. [Stephen L Arnold]</p></li>
+<li><p>Refactor upstream imports, remove generated version module. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>use setuptools_scm instead of versioningit, do not use write_to_file</p></li>
+<li><p>use importlib resources/metadata instead of pkg_resources/version mod</p></li>
+<li><p>cleanup tox file, manifest, and docs config</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id30">
+<h3>Other<a class="headerlink" href="#id30" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #14 from sarnold/import-ref. [Steve Arnold]</p>
+<p>Import refactor, remove generated version module</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id31">
+<h2>0.4.1 (2023-02-13)<a class="headerlink" href="#id31" title="Link to this heading"></a></h2>
+<section id="id32">
+<h3>New<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add a changelog file and include it in docs build. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3>Changes<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Be more explicit about OS packages in the readme. [Stephen L Arnold]</p></li>
+<li><p>Cleanup ci artifacts. [Stephen L Arnold]</p></li>
+<li><p>Use defaults on gh-pages deploy action, bump to v4. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id34">
+<h3>Fixes<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Stop using later constructs and pkg_resources. [Stephen L Arnold]</p>
+<ul>
+<li><p>do not use pkg_resources or global version in repolite module</p></li>
+<li><p>python setup.py &lt;foo&gt; commands should work as expected back to bionic
+launchpad builder env (ie, early py3.6)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id35">
+<h3>Other<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Update changelog file for new patch release. [Stephen L Arnold]</p></li>
+<li><p>Merge pull request #13 from sarnold/changelog-docs. [Steve Arnold]</p>
+<p>cleanup imports, add changelog in docs</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id36">
+<h2>0.4.0 (2022-12-23)<a class="headerlink" href="#id36" title="Link to this heading"></a></h2>
+<section id="id37">
+<h3>New<a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add new config options, update readme and default yaml. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>add option for clone depth with default 0 (ala gh workflows)</p></li>
+<li><p>add option to install a repo into the current env using pip</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id38">
+<h3>Changes<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update all workflows, mainly action versions. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3>Fixes<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Cleanup/improve docstring for module func. [Stephen L Arnold]</p></li>
+<li><p>Make setup.py compatible with older python, eg, py36 bionic. [Stephen
+L Arnold]</p>
+<ul>
+<li><p>required for python envs still using distutils that do not
+like projects with src/ layout</p></li>
+<li><p>update tox file to generate egg_info for mypy</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id40">
+<h3>Other<a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #12 from sarnold/older-python. [Steve Arnold]</p>
+<p>new features and older python</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id41">
+<h2>0.3.3 (2022-09-29)<a class="headerlink" href="#id41" title="Link to this heading"></a></h2>
+<section id="id42">
+<h3>Fixes<a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add missing exit in cmd exception handler. [Stephen L Arnold]</p>
+<ul>
+<li><p>inconsistent directory error should exit after log msg</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id43">
+<h3>Other<a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #10 from sarnold/hotfix. [Steve Arnold]</p>
+<p>add missing exit in cmd exception handler</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id44">
+<h2>0.3.2 (2022-09-29)<a class="headerlink" href="#id44" title="Link to this heading"></a></h2>
+<section id="id45">
+<h3>New<a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Flesh out show cmd with branch and describe data. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id46">
+<h3>Fixes<a class="headerlink" href="#id46" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add missing refactor bits, update debug logging. [Stephen L Arnold]</p>
+<ul>
+<li><p>remove secondary loop check, make sure repo context is available</p></li>
+<li><p>add more useful output to show cmd, make sure we fetch tags</p></li>
+<li><p>add more logging introspection</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id47">
+<h3>Other<a class="headerlink" href="#id47" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #9 from sarnold/more-show. [Steve Arnold]</p>
+<p>Show more repo metadata, finish refactor</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id48">
+<h2>0.3.1 (2022-09-13)<a class="headerlink" href="#id48" title="Link to this heading"></a></h2>
+<section id="id49">
+<h3>New<a class="headerlink" href="#id49" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Abstract code for valid_repo_state, add new show option. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>for display of current repo state, ie, git describe output</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id50">
+<h3>Changes<a class="headerlink" href="#id50" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add new show option to usage output in readme. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id51">
+<h3>Fixes<a class="headerlink" href="#id51" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Still more docstring cleanup. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id52">
+<h3>Other<a class="headerlink" href="#id52" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #8 from sarnold/repo-state. [Steve Arnold]</p>
+<p>Display repo state</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id53">
+<h2>0.3.0 (2022-09-04)<a class="headerlink" href="#id53" title="Link to this heading"></a></h2>
+<section id="id54">
+<h3>New<a class="headerlink" href="#id54" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add support for submodule update and bandit workflow. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>add submodule handling to repo update cmd</p></li>
+<li><p>add bandit security check workflow</p></li>
+<li><p>update docs/docstrings and tool configs</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id55">
+<h3>Fixes<a class="headerlink" href="#id55" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Restore missing bits, un-disable some pylint checks. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>add missing recursive arg for submodule update</p></li>
+<li><p>re-flow readme text, add missing updates</p></li>
+<li><p>remove pylint-disable comments, update tox file</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id56">
+<h3>Other<a class="headerlink" href="#id56" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #7 from sarnold/more-cleanup. [Steve Arnold]</p>
+<p>submodule and doc updates</p>
+</li>
+<li><p>Merge pull request #6 from sarnold/more-subs. [Steve Arnold]</p>
+<p>add support for submodule update</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id57">
+<h2>0.2.1 (2022-08-31)<a class="headerlink" href="#id57" title="Link to this heading"></a></h2>
+<section id="id58">
+<h3>Changes<a class="headerlink" href="#id58" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Main docs TOC meeds a better title. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id59">
+<h3>Fixes<a class="headerlink" href="#id59" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add missing repo branch option. [Stephen L Arnold]</p></li>
+<li><p>Skip existing repos and allow clone if config updated. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>meaning the config file must have at least one repo configured that
+does not yet exist in the target directory, eg, a new ( or at least
+newly enabled) repository</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id60">
+<h3>Other<a class="headerlink" href="#id60" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #5 from sarnold/new-repo-fix. [Steve Arnold]</p>
+<p>improve existing directory check</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id61">
+<h2>0.2.0 (2022-08-20)<a class="headerlink" href="#id61" title="Link to this heading"></a></h2>
+<section id="id62">
+<h3>New<a class="headerlink" href="#id62" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Expand cfg options, wire up submodules, rebase, lfs, update readme.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>support initializing submodules and lfs when configured</p></li>
+<li><p>check for git and git-lfs and log (or exit if both are missing)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id63">
+<h3>Changes<a class="headerlink" href="#id63" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Flesh out table of configuration keys. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id64">
+<h3>Other<a class="headerlink" href="#id64" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #3 from sarnold/still-more-docs. [Steve Arnold]</p>
+<p>expand cfg opts, update readme</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="id65">
+<h2>0.1.0 (2022-08-17)<a class="headerlink" href="#id65" title="Link to this heading"></a></h2>
+<section id="id66">
+<h3>New<a class="headerlink" href="#id66" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Add lock-config option, update default config and readme. [Stephen L
+Arnold]</p></li>
+<li><p>Add docs build as the last job in release workflow. [Stephen L Arnold]</p>
+<ul>
+<li><p>we should have matching doc version on new tag</p></li>
+</ul>
+</li>
+<li><p>Add option to save example cfg to default filename. [Stephen L Arnold]</p>
+<ul>
+<li><p>update readme with new help/examples</p></li>
+</ul>
+</li>
+<li><p>Add sphinx/api doc sources and ci workflow, more cleanup. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>update readme, add missing license file</p></li>
+</ul>
+</li>
+<li><p>Add tool configs for pep8speaks and pre-commit. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id67">
+<h3>Changes<a class="headerlink" href="#id67" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update readme and doc strings, remove unused import,subclass. [Stephen
+L Arnold]</p></li>
+</ul>
+</section>
+<section id="id68">
+<h3>Fixes<a class="headerlink" href="#id68" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Implement directory-check TODO and update readme. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+<section id="id69">
+<h3>Other<a class="headerlink" href="#id69" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Merge pull request #2 from sarnold/more-docs. [Steve Arnold]</p>
+<p>doc updates and cleanup</p>
+</li>
+<li><p>Merge pull request #1 from sarnold/docs-and-ci. [Steve Arnold]</p>
+<p>docs and CI workflows</p>
+</li>
+<li><p>Create readme file, add base github CI workflows, more cleanup.
+[Stephen L Arnold]</p></li>
+<li><p>Finish initial git cmds, wire up logging, cleanup packaging. [Stephen
+L Arnold]</p></li>
+<li><p>Apply more flesh and lint cleanup, update cfg and tox files. [Stephen
+L Arnold]</p></li>
+<li><p>Add more (half)skeleton, update reqs, setup, tox files. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+</section>
+<section id="id70">
+<h2>0.0.0 (2022-08-14)<a class="headerlink" href="#id70" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Add initial project files and example config. [Stephen L Arnold]</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/repolite.repolite.html" class="btn btn-neutral float-left" title="repolite.repolite module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Stephen L Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

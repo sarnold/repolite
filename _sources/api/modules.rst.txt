@@ -1,0 +1,7 @@
+repolite
+========
+
+.. toctree::
+   :maxdepth: 4
+
+   repolite

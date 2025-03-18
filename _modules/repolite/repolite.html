@@ -1,0 +1,817 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>repolite.repolite &mdash; repolite 0.6.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=73d9a94e"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            repolite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">repolite: a dependency manager for working with git repos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">repolite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">repolite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">repolite.repolite</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for repolite.repolite</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Copyright 2022 Stephen L Arnold</span>
+<span class="c1">#</span>
+<span class="c1"># This is free software, licensed under the LGPL-2.1 license</span>
+<span class="c1"># available in the accompanying LICENSE file.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Manage a small set of repository dependencies without manifest.xml or git</span>
+<span class="sd">submodules. You get to write (local) project config files in yaml instead.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shlex</span><span class="w"> </span><span class="kn">import</span> <span class="n">split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">which</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">munch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Munch</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">importlib_metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">importlib_resources</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">importlib_resources</span>
+
+
+<span class="c1"># from logging_tree import printout  # debug logger environment</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DirectoryTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise when there is a directory mismatch between cfg and actual&quot;&quot;&quot;</span>
+
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="ne">Exception</span><span class="o">.</span><span class="vm">__module__</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FileTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise when the file extension is not &#39;.yml&#39; or &#39;.yaml&#39;&quot;&quot;&quot;</span>
+
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="ne">Exception</span><span class="o">.</span><span class="vm">__module__</span>
+
+
+<div class="viewcode-block" id="check_for_git">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.check_for_git">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_for_git</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make sure we can find the ``git`` and ``git-lfs`` binaries in the</span>
+<span class="sd">    user environment and return a tuple of path strings.</span>
+
+<span class="sd">    :return git_path, lfs_path: program path strings</span>
+<span class="sd">    :rtype tuple: path to program if found, else None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">git_path</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;git&#39;</span><span class="p">)</span>
+    <span class="n">lfs_path</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;git-lfs&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">git_path</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cannot continue, no path found for git&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">lfs_path</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Cannot initialize large files, git-lfs not found&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">git_path</span><span class="p">,</span> <span class="n">lfs_path</span></div>
+
+
+
+<div class="viewcode-block" id="check_repo_url">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.check_repo_url">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_repo_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make sure the url is sanitary on most platforms.</span>
+
+<span class="sd">    :param url: input url / path from pathlib or config</span>
+<span class="sd">    :return url: url / path to clone</span>
+<span class="sd">    :rtype str:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">url</span></div>
+
+
+
+<div class="viewcode-block" id="check_repo_state">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.check_repo_state">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if repo configuration is consistent, ie, does current repo state</span>
+<span class="sd">    match repo configuration items.  Return ``True`` if current directories</span>
+<span class="sd">    match the configuration, else ``False``.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :return is_state_valid: Boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Could not change to repo directory: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">sorted_dir_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">top_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()])</span>
+    <span class="n">repo_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sorted_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sorted_dir_list</span><span class="p">:</span>
+        <span class="n">sorted_name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
+        <span class="n">dir_name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">repo_name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
+    <span class="n">is_state_valid</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">repo_name_list</span><span class="p">)</span> <span class="o">==</span> <span class="n">sorted_name_list</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_state_valid</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid state: </span><span class="si">%s</span><span class="s1"> not equal to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_name_list</span><span class="p">,</span> <span class="n">sorted_name_list</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">is_state_valid</span></div>
+
+
+
+<div class="viewcode-block" id="generate_change_data">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.generate_change_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_change_data</span><span class="p">(</span><span class="n">mrepo</span><span class="p">,</span> <span class="n">base_tag</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">cur_tag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a changelog (full or diff) for the given repository and drop</span>
+<span class="sd">    it in the configured top_dir directory. Checks repo config for base</span>
+<span class="sd">    tag to decide full vs diff.</span>
+
+<span class="sd">    :param mrepo: a Munch repo obj with Munch repos item</span>
+<span class="sd">    :type mrepo: Munch obj</span>
+<span class="sd">    :param base_tag: starting tag for change diff</span>
+<span class="sd">    :type base_tag: str or None</span>
+<span class="sd">    :dir_name: directory name for output (top_dir)</span>
+<span class="sd">    :type dir_name: str</span>
+<span class="sd">    :param cur_tag: ending tag for change diff (tag on current commit)</span>
+<span class="sd">    :type cur_tag: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_cmd_str</span> <span class="o">=</span> <span class="s1">&#39;gitchangelog&#39;</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">mrepo</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-CHANGELOG.</span><span class="si">{</span><span class="n">mrepo</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">repo_changelog_ext</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="k">if</span> <span class="n">base_tag</span><span class="p">:</span>
+        <span class="n">base_cmd_str</span> <span class="o">=</span> <span class="n">base_cmd_str</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">base_tag</span><span class="si">}</span><span class="s1">..</span><span class="si">{</span><span class="n">cur_tag</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running gitchangelog cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">base_cmd_str</span><span class="p">)</span>
+    <span class="n">chg_data</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">base_cmd_str</span><span class="p">))</span>
+    <span class="n">Path</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">chg_data</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ChangeLog file: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_file</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="install_with_pip">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.install_with_pip">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">install_with_pip</span><span class="p">(</span><span class="n">pip_name</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Install a python repository via pip; this should be done in a local</span>
+<span class="sd">    virtual environment.</span>
+
+<span class="sd">    :param pip_name: path to directory name of python repo to install</span>
+<span class="sd">    :type pip_name: str</span>
+<span class="sd">    :param quiet: filter most of the install cmd output</span>
+<span class="sd">    :type quiet: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pip_cmd_str</span> <span class="o">=</span> <span class="s1">&#39;-m pip install&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">pip_name</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">pip_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">]</span> <span class="o">+</span> <span class="n">pip_cmd_str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running install cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_cmd</span><span class="p">)</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">runner</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span>
+    <span class="n">runner</span><span class="p">(</span><span class="n">pip_cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">pkg_reqs</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;pip&#39;</span><span class="p">,</span> <span class="s1">&#39;freeze&#39;</span><span class="p">])</span>
+        <span class="n">pkg_deps</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pkg_reqs</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Installed </span><span class="si">%s</span><span class="s1"> dependencies: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pip_name</span><span class="p">,</span> <span class="n">pkg_deps</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_config">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.load_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_config</span><span class="p">(</span><span class="n">file_encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load yaml configuration file and munchify the data. If ENV path or local</span>
+<span class="sd">    file is not found in current directory, the default will be loaded.</span>
+
+<span class="sd">    :param file_encoding: file encoding of config file</span>
+<span class="sd">    :type file_encoding: str</span>
+<span class="sd">    :return tuple: Munch cfg obj and cfg file as Path obj</span>
+<span class="sd">    :raises FileTypeError: if the input file is not yml</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">repo_cfg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REPO_CFG&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">cfgfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">repo_cfg</span><span class="p">)</span> <span class="k">if</span> <span class="n">repo_cfg</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.repolite.yml&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cfgfile</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s1">&#39;.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;.yaml&#39;</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">FileTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FileTypeError: unknown file extension: </span><span class="si">{</span><span class="n">cfgfile</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cfgfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">cfgfile</span> <span class="o">=</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;repolite.data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;example.yml&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using config: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cfgfile</span><span class="o">.</span><span class="n">resolve</span><span class="p">()))</span>
+    <span class="n">cfgobj</span> <span class="o">=</span> <span class="n">Munch</span><span class="o">.</span><span class="n">fromYAML</span><span class="p">(</span><span class="n">cfgfile</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">file_encoding</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">cfgobj</span><span class="p">,</span> <span class="n">cfgfile</span></div>
+
+
+
+<div class="viewcode-block" id="resolve_top_dir">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.resolve_top_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_top_dir</span><span class="p">(</span><span class="n">upath</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolve top_dir, ie, containing directory for git repositories. The</span>
+<span class="sd">    suggested path is inside the project working directory, but we should</span>
+<span class="sd">    support any writable path. Also set the working dir path and return</span>
+<span class="sd">    both as Path objs.</span>
+
+<span class="sd">    :return workpath, userpath: tuple of Path objs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">userpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">upath</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">workpath</span><span class="p">,</span> <span class="n">userpath</span></div>
+
+
+
+<div class="viewcode-block" id="parse_config">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.parse_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_config</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse config file options and build list of repo objects. Return list</span>
+<span class="sd">    of global options and list of Munch repo objects.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :return tuple: list of flags, list of repository objs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">urepos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">udir</span> <span class="o">=</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span>
+    <span class="n">urebase</span> <span class="o">=</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">pull_with_rebase</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
+        <span class="n">urepos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">udir</span><span class="p">,</span> <span class="n">urebase</span><span class="p">],</span> <span class="n">urepos</span></div>
+
+
+
+<div class="viewcode-block" id="create_locked_cfg">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.create_locked_cfg">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">,</span> <span class="n">quiet</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a &#39;locked&#39; cfg file, ie, read the active config file and</span>
+<span class="sd">    populate the ``repo_hash`` values with HEAD from each branch, then</span>
+<span class="sd">    write a new config file with &#39;-locked&#39; appended to the name.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :param ufile: active config file</span>
+<span class="sd">    :type ufile: Path obj</span>
+<span class="sd">    :param quiet: Suppress some git output</span>
+<span class="sd">    :type quiet: Boolean</span>
+<span class="sd">    :param test: test path for locked config file</span>
+<span class="sd">    :type test: str or None</span>
+<span class="sd">    :raises DirectoryTypeError: if repo state is invalid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write a new config file with &#39;-locked&#39; appended to the name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cfg_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ufile</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">-locked</span><span class="si">{</span><span class="n">ufile</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">locked_cfg_name</span> <span class="o">=</span> <span class="n">cfg_name</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">test</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">cfg_name</span><span class="p">)</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">locked_cfg_name</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">Munch</span><span class="o">.</span><span class="n">toYAML</span><span class="p">(</span><span class="n">ucfg</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="n">work_dir</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+
+    <span class="n">valid_repo_state</span> <span class="o">=</span> <span class="n">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_repo_state</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span><span class="s1">&#39;Cannot lock cfg with mismatched directories&#39;</span><span class="p">)</span>
+
+    <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git rev-parse --verify HEAD&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Get hash cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_action</span><span class="p">)</span>
+    <span class="n">checkout_cmd</span> <span class="o">=</span> <span class="s1">&#39;git checkout -q &#39;</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="s1">&#39;git checkout &#39;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">repo_hash</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Repository </span><span class="si">%s</span><span class="s1"> HEAD is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">),</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_hash</span><span class="p">)</span>
+        <span class="n">git_checkout</span> <span class="o">=</span> <span class="n">checkout_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_hash</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Checkout cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_checkout</span><span class="p">)</span>
+        <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_checkout</span><span class="p">))</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span>
+    <span class="n">write_locked_cfg</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">ufile</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_repo_tags">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.create_repo_tags">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_repo_tags</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">utag</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new signed or annotated tag in each configured repository.</span>
+<span class="sd">    (re)Set the gpg signing key from user config.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :param utag: tag string to apply</span>
+<span class="sd">    :type utag: str obj</span>
+<span class="sd">    :param test: test path for config file</span>
+<span class="sd">    :type test: str or None</span>
+<span class="sd">    :raises DirectoryTypeError: if repo state is invalid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">work_dir</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">valid_repo_state</span> <span class="o">=</span> <span class="n">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_repo_state</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span><span class="s1">&#39;Cannot process cmd with mismatched directories&#39;</span><span class="p">)</span>
+
+    <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git config user.signingkey &#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git action: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_action</span><span class="p">)</span>
+    <span class="n">git_check_tag</span> <span class="o">=</span> <span class="s1">&#39;git tag -l&#39;</span>
+    <span class="n">git_push_tag</span> <span class="o">=</span> <span class="s1">&#39;git push --tags&#39;</span>
+    <span class="n">tag_base</span> <span class="o">=</span> <span class="s1">&#39;git tag &#39;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
+        <span class="n">git_action</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_signing_key</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_signed</span>
+            <span class="k">else</span> <span class="s1">&#39;git status -s&#39;</span>
+        <span class="p">)</span>
+        <span class="n">tag_cmd</span> <span class="o">=</span> <span class="n">tag_base</span> <span class="o">+</span> <span class="s1">&#39;-s &#39;</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_signed</span> <span class="k">else</span> <span class="n">tag_base</span> <span class="o">+</span> <span class="s1">&#39;-a &#39;</span>
+        <span class="n">repo_tag</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_new</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_new</span> <span class="k">else</span> <span class="n">utag</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git tag resolved to: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_tag</span><span class="p">)</span>
+        <span class="n">git_tag_cmd</span> <span class="o">=</span> <span class="n">tag_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">repo_tag</span><span class="si">}</span><span class="s1"> -m &quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_create_tag_msg</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+
+        <span class="k">if</span> <span class="n">repo_tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+            <span class="n">tag_data</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_check_tag</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> tag list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">),</span> <span class="n">tag_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">repo_tag</span> <span class="ow">in</span> <span class="n">tag_data</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Tag cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_tag_cmd</span><span class="p">)</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_tag_cmd</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_push_new_tags</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Push cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_push_tag</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_push_tag</span><span class="p">))</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_git_repos">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.process_git_repos">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_git_repos</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">repos</span><span class="p">,</span> <span class="n">pull</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process list of git repository objs and populate/update ``top_dir``.</span>
+
+<span class="sd">    :param flags: List of options (from yaml cfg)</span>
+<span class="sd">    :type flags: list</span>
+<span class="sd">    :param repos: List of repository objs (from yaml cfg)</span>
+<span class="sd">    :type repos: list</span>
+<span class="sd">    :param pull: Update if True, else checkout</span>
+<span class="sd">    :type pull: Boolean</span>
+<span class="sd">    :param quiet: Suppress some git output</span>
+<span class="sd">    :type quiet: Boolean</span>
+<span class="sd">    :raises FileExistsError: if cloning on top of existing directories</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">udir</span><span class="p">,</span> <span class="n">urebase</span><span class="p">,</span> <span class="n">has_lfs</span><span class="p">,</span> <span class="n">ulock</span> <span class="o">=</span> <span class="n">flags</span>
+    <span class="n">work_dir</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">udir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running with top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">top_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">FileExistsError</span><span class="p">,</span> <span class="ne">PermissionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Could not create top repo directory: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+
+    <span class="c1"># find any existing directories and check for name clash</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pull</span><span class="p">:</span>
+        <span class="n">path_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">top_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()])</span>
+        <span class="n">top_dir_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+            <span class="n">top_dir_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+        <span class="n">repo_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">repos</span><span class="p">:</span>
+            <span class="n">dir_name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+            <span class="n">repo_name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Current dirs in config: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_name_list</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Current dirs in top_dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">top_dir_list</span><span class="p">)</span>
+        <span class="n">invalid_repo_state</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">repo_name_list</span><span class="p">)</span> <span class="o">==</span> <span class="n">top_dir_list</span>
+        <span class="n">dir_name_repo_intersect</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">top_dir_list</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">repo_name_list</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Top_dir / repo intersect: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">dir_name_repo_intersect</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">invalid_repo_state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                <span class="s1">&#39;Git cannot clone when config matches existing directories&#39;</span>
+            <span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">checkout_cmd</span> <span class="o">=</span> <span class="s1">&#39;git checkout -q &#39;</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="s1">&#39;git checkout &#39;</span>
+    <span class="n">submodule_cmd</span> <span class="o">=</span> <span class="s1">&#39;git submodule update --init --recursive&#39;</span>
+    <span class="n">git_lfs_install</span> <span class="o">=</span> <span class="s1">&#39;git lfs install&#39;</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">repos</span><span class="p">:</span>
+        <span class="c1"># need to reset git_action for each repository</span>
+        <span class="n">git_quiet</span> <span class="o">=</span> <span class="s1">&#39;-q &#39;</span>
+        <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git clone &#39;</span>
+        <span class="k">if</span> <span class="n">pull</span><span class="p">:</span>  <span class="c1"># baseline git pull action, overrides repo-level option</span>
+            <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git pull --rebase=merges &#39;</span> <span class="k">if</span> <span class="n">urebase</span> <span class="k">else</span> <span class="s1">&#39;git pull --ff-only &#39;</span>
+        <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+            <span class="n">git_action</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="n">git_quiet</span>
+
+        <span class="n">repo_url_str</span> <span class="o">=</span> <span class="n">check_repo_url</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Make sure repo_url is a string =&gt; </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">repo_url_str</span><span class="p">)</span>
+        <span class="n">git_fetch</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;git fetch --tags </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_remote</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">git_checkout</span> <span class="o">=</span> <span class="n">checkout_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_branch</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Operating in git_dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pull</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_depth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_branch</span><span class="p">:</span>
+                <span class="n">git_action</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;-b </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_branch</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Checkout cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_checkout</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">git_dir</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dir_name_repo_intersect</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Skipping existing repo: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_dir</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">git_action</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;--depth </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_depth</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="n">git_clone</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">repo_url_str</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span><span class="p">:</span>
+                    <span class="n">git_clone</span> <span class="o">+=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clone cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_clone</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_clone</span><span class="p">))</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_checkout</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_init_submodules</span><span class="p">:</span>
+                    <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">submodule_cmd</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_has_lfs_files</span> <span class="ow">and</span> <span class="n">has_lfs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_lfs_install</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_use_rebase</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">urebase</span><span class="p">:</span>
+                <span class="n">git_action</span> <span class="o">=</span> <span class="s1">&#39;git pull --rebase=merges &#39;</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_init_submodules</span><span class="p">:</span>
+                <span class="n">submodule_cmd</span> <span class="o">=</span> <span class="s1">&#39;git submodule update --recursive&#39;</span>
+            <span class="n">git_pull</span> <span class="o">=</span> <span class="n">git_action</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_remote</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_branch</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">ulock</span><span class="p">:</span>
+                <span class="n">checkout_lock</span> <span class="o">=</span> <span class="n">checkout_cmd</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">repo_hash</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Could not change to repo directory: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Current repository is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ulock</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Checkout cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_checkout</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">checkout_lock</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Fetch cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_fetch</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_fetch</span><span class="p">))</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_checkout</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pull cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_pull</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_pull</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_init_submodules</span><span class="p">:</span>
+                    <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">submodule_cmd</span><span class="p">))</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_repo_changes">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.process_repo_changes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_repo_changes</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a changelog for any repos with the ``repo_gen_changes`` flag</span>
+<span class="sd">    set. Note we do not check repo state here, we just process each valid</span>
+<span class="sd">    repo entry.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :param quiet: pass the ``quiet`` cmd line flag to install cmd</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">work_dir</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">valid_repo_state</span> <span class="o">=</span> <span class="n">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_repo_state</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span><span class="s1">&#39;Inconsistent directories; try running repolite first?&#39;</span><span class="p">)</span>
+
+    <span class="n">git_get_tags</span> <span class="o">=</span> <span class="s1">&#39;git tag --sort=taggerdate&#39;</span>
+    <span class="n">git_check_tag</span> <span class="o">=</span> <span class="s1">&#39;git tag --points-at&#39;</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_gen_changes</span><span class="p">]:</span>
+        <span class="n">repo</span> <span class="o">=</span> <span class="n">Munch</span><span class="p">()</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">Munch</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+
+        <span class="n">all_tags</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_get_tags</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> tag list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span><span class="p">,</span> <span class="n">all_tags</span><span class="p">)</span>
+        <span class="n">commit_tags</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_check_tag</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;commit tag(s): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">commit_tags</span><span class="p">)</span>
+        <span class="n">last_tag</span> <span class="o">=</span> <span class="n">all_tags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">all_tags</span> <span class="ow">and</span> <span class="n">all_tags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">commit_tags</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">generate_change_data</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_changelog_base</span><span class="p">,</span> <span class="n">top_dir</span><span class="p">,</span> <span class="n">last_tag</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_repo_install">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.process_repo_install">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_repo_install</span><span class="p">(</span><span class="n">ucfg</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Install any repos with the ``repo_install`` flag set. Note we do not</span>
+<span class="sd">    check repo state here, we just process each valid repo entry.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :param quiet: pass the ``quiet`` cmd line flag to install cmd</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_install</span><span class="p">]:</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">tgt_dir</span> <span class="o">=</span> <span class="n">top_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>  <span class="c1"># fun with Path objects</span>
+        <span class="n">install_with_pip</span><span class="p">(</span><span class="n">tgt_dir</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="show_repo_state">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.show_repo_state">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display the current state of each repository using git describe/rev-parse.</span>
+
+<span class="sd">    :param ucfg: Munch configuration object extracted from config file</span>
+<span class="sd">    :type ucfg: Munch cfgobj</span>
+<span class="sd">    :raises DirectoryTypeError: if repo state is invalid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">work_dir</span><span class="p">,</span> <span class="n">top_dir</span> <span class="o">=</span> <span class="n">resolve_top_dir</span><span class="p">(</span><span class="n">ucfg</span><span class="o">.</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using top-level repo dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">top_dir</span><span class="p">))</span>
+
+    <span class="n">valid_repo_state</span> <span class="o">=</span> <span class="n">check_repo_state</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_repo_state</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DirectoryTypeError</span><span class="p">(</span><span class="s1">&#39;Inconsistent directories; try running --update first?&#39;</span><span class="p">)</span>
+
+    <span class="n">git_action1</span> <span class="o">=</span> <span class="s1">&#39;git describe --tags --dirty --always&#39;</span>
+    <span class="n">git_action2</span> <span class="o">=</span> <span class="s1">&#39;git rev-parse --abbrev-ref HEAD&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git describe cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_action1</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Git rev-parse cmd: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_action2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ucfg</span><span class="o">.</span><span class="n">repos</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">repo_enable</span><span class="p">]:</span>
+        <span class="n">git_dir</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_alias</span> <span class="k">else</span> <span class="n">item</span><span class="o">.</span><span class="n">repo_name</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">git_dir</span><span class="p">)</span>
+        <span class="n">item1_data</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action1</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">item2_data</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">git_action2</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Repository </span><span class="si">%s</span><span class="s1">: branch is </span><span class="si">%s</span><span class="s1">, commit is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">git_dir</span><span class="p">),</span>
+            <span class="n">item2_data</span><span class="p">,</span>
+            <span class="n">item1_data</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">top_dir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../api/repolite.repolite.html#repolite.repolite.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manage git repository-based project dependencies.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+
+    <span class="n">__version__</span> <span class="o">=</span> <span class="n">version</span><span class="p">(</span><span class="s1">&#39;repolite&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Manage local (git) dependencies (default: clone and checkout)&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;%(prog)s </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Display more processing info&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-q&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Suppress output from git command&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;-D&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;--dump-config&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;dump&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dump default configuration file to stdout&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;-S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;--save-config&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Save active config to default filename (.ymltoxml.yml) and exit&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--install&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Install enabled repositories (python only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-u&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--update&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Update existing/enabled repositories&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--show&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Display current repository state&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-a&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--apply-tag&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;apply&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Apply the given tag (see TAG arg) or use one from config file&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-g&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--changelog&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run gitchangelog in enabled repositories, create files in top_dir&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;-l&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;--lock-config&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;lock&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Lock active configuration in new config file and checkout hashes&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tag&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;TAG&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Optional tag string override (apply with -a)&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">opts</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># basic logging setup must come before any other logging calls</span>
+    <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+    <span class="c1"># printout()  # logging_tree</span>
+
+    <span class="n">cfg</span><span class="p">,</span> <span class="n">pfile</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+    <span class="n">flag_list</span><span class="p">,</span> <span class="n">repo_list</span> <span class="o">=</span> <span class="n">parse_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+
+    <span class="n">git_cmd</span><span class="p">,</span> <span class="n">lfs_cmd</span> <span class="o">=</span> <span class="n">check_for_git</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found at least one git binary: </span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_cmd</span><span class="p">,</span> <span class="n">lfs_cmd</span><span class="p">)</span>
+    <span class="n">flag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lfs_cmd</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">save</span><span class="p">:</span>
+        <span class="n">cfg_data</span> <span class="o">=</span> <span class="n">pfile</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
+        <span class="n">def_config</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.repolite.yml&#39;</span><span class="p">)</span>
+        <span class="n">def_config</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">cfg_data</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">dump</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pfile</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">changelog</span><span class="p">:</span>
+            <span class="n">process_repo_changes</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">install</span><span class="p">:</span>
+            <span class="n">process_repo_install</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">show</span><span class="p">:</span>
+            <span class="n">show_repo_state</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="n">create_locked_cfg</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">pfile</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">apply</span><span class="p">:</span>
+            <span class="n">new_tag</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span> <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">tag</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">create_repo_tags</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DirectoryTypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Top dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ulock</span> <span class="o">=</span> <span class="s1">&#39;locked&#39;</span> <span class="ow">in</span> <span class="n">pfile</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">flag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ulock</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">process_git_repos</span><span class="p">(</span><span class="n">flag_list</span><span class="p">,</span> <span class="n">repo_list</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileExistsError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Top dir: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Did you sync your repositories first?&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>  <span class="c1"># pragma: no cover</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Stephen L Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
